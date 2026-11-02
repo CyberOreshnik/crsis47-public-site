@@ -1,0 +1,17 @@
+name: Verify approved classroom release
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Reconstruct and verify original archive
+        run: python3 prepare_public_site.py
+      - name: Verify and apply approved classroom pages
+        run: python3 apply_approved_case_studies.py
+      - name: Check every site reference
+        run: python3 qa/regress_site.py
