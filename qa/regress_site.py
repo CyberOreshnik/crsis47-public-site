@@ -33,7 +33,10 @@ for p in root.rglob("*.html"):
    if dest.is_dir():dest=dest/"index.html"
    if not dest.is_file():issues.append(f"{p}: missing local asset {link}");continue
    counts["assets"]+=1
-  if frag and not target and frag not in s.ids:issues.append(f"{p}: missing fragment {link}")
+  if frag and dest.suffix.lower()==".html":
+   target_scan=s if dest==p else Scan()
+   if dest!=p:target_scan.feed(dest.read_text(encoding="utf-8"))
+   if frag not in target_scan.ids:issues.append(f"{p}: missing fragment {link}")
   counts["links"]+=1
 report={"status":"PASS" if not issues else "FAIL","counts":counts,"issues":issues[:250],"issue_count":len(issues)}
 Path("qa-results.json").write_text(json.dumps(report,indent=2))
