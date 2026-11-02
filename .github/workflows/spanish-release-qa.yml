@@ -1,0 +1,28 @@
+name: Verify original website release (no deploy)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/spanish-release-qa.yml'
+      - 'qa/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct original release and verify archive SHA-256
+        run: python3 prepare_public_site.py
+      - name: Check website-wide internal references and identifiers
+        run: python3 qa/regress_site.py
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-website-regression
+          path: |
+            qa-results.json
+            site/deployment-manifest.json
+          if-no-files-found: warn
