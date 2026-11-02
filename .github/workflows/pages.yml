@@ -22,6 +22,10 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Verify and prepare audited static release
         run: python3 prepare_public_site.py
+      - name: Apply approved multilingual case-study release
+        run: python3 apply_approved_case_studies.py
+      - name: Verify complete site references
+        run: python3 qa/regress_site.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
