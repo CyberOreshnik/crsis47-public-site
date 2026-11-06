@@ -5,14 +5,14 @@ site=Path('site')
 url='https://payhip.com/b/kvM9I'
 card='''<section id="case-study-2-offer" lang="en" dir="ltr" aria-labelledby="case2-title" style="max-width:1100px;margin:64px auto;padding:40px 28px;background:#101e32;color:#fff;border:1px solid #c7a768;border-radius:12px;box-sizing:border-box"><p style="color:#e1c58b;letter-spacing:.12em;font-size:.8rem;text-transform:uppercase">CRSIS-47 · Case Study 2 · Professional Edition</p><h2 id="case2-title" style="color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.2;margin:16px 0">Leadership Under Uncertainty</h2><p style="font-size:1.1rem;line-height:1.7;max-width:760px">Explore leadership decisions under uncertainty with this cybersecurity case study and its accompanying learning materials.</p><p style="line-height:1.7">By Constantin Jean-Pierre · English edition · Digital download</p><a href="https://payhip.com/b/kvM9I" style="display:inline-block;background:#e1c58b;color:#101e32;padding:15px 24px;border-radius:5px;font-weight:700;text-decoration:underline;text-underline-offset:4px">Get the Professional Edition — $5 USD</a><p style="font-size:.9rem;line-height:1.6;margin-top:18px">Purchase and download through Payhip. Any applicable taxes are shown at checkout.</p></section>'''
 # Keep the existing React-rendered release intact: add the offer after hydration.
-js='''(() => { const add = () => { if(document.getElementById('case-study-2-offer')) return; const main=document.querySelector('main'); if(!main) return; const holder=document.createElement('div'); holder.innerHTML=CARD; main.appendChild(holder.firstElementChild); if(location.hash==='#case-study-2-offer') document.getElementById('case-study-2-offer').scrollIntoView(); }; const observer=new MutationObserver(add); observer.observe(document.body,{childList:true,subtree:true}); add(); })();'''.replace('CARD',json.dumps(card))
+js='''(() => { const add = () => { if(document.getElementById('case-study-2-offer')) return; const main=document.querySelector('main'); if(!main) return; const holder=document.createElement('div'); holder.innerHTML=CARD; main.appendChild(holder.firstElementChild); if(location.hash==='#case-study-2-offer') document.getElementById('case-study-2-offer').scrollIntoView(); }; const observer=new MutationObserver(add); observer.observe(document,{childList:true,subtree:true}); if(document.readyState==='complete') add(); else window.addEventListener('load',add,{once:true}); })();'''.replace('CARD',json.dumps(card))
 (site/'case2-offer.js').write_text(js,encoding='utf8')
 # Discoverability across existing site pages, preserving every locale's content.
 changed=[]
 for p in site.rglob('*.html'):
  text=p.read_text(encoding='utf8')
  if '<main' not in text: continue
- tag='<script src="/crsis47-public-site./case2-offer.js" defer></script>'
+ tag='<script src="/crsis47-public-site./case2-offer.js?v=2" defer></script>'
  if tag not in text:
   assert '</body>' in text
   text=text.replace('</body>',tag+'</body>')
