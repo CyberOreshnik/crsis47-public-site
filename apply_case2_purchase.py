@@ -11,8 +11,11 @@ js='''(() => { const add = () => { if(document.getElementById('case-study-2-offe
 changed=[]
 for p in site.rglob('*.html'):
  text=p.read_text(encoding='utf8')
- if '<main' not in text: continue
- tag='<script src="/crsis47-public-site./case2-offer.js?v=2" defer></script>'
+ relative=p.relative_to(site)
+ is_home=relative.name=='index.html' and (len(relative.parts)==1 or (len(relative.parts)==2 and relative.parts[0] in {'fr','ht','es','pt-BR','pt-PT','ru','ar','zh-Hans','zh-Hant','ja','fa','he','tr'}))
+ is_case=relative.parts[0]=='case-studies'
+ if '<main' not in text or not (is_home or is_case): continue
+ tag='<script src="/crsis47-public-site./case2-offer.js?v=3" defer></script>'
  if tag not in text:
   assert '</body>' in text
   text=text.replace('</body>',tag+'</body>')
@@ -22,6 +25,15 @@ for p in (site/'case-studies').rglob('index.html'):
  text=p.read_text(encoding='utf8')
  if '<main' not in text and 'id="case-study-2-offer"' not in text:
   text=text.replace('</body>',card+'</body>');p.write_text(text,encoding='utf8');changed.append(str(p.relative_to(site)))
+catalog=site/'case-studies/index.html'
+catalog.write_bytes(Path('case_studies_catalog.html').read_bytes())
+changed.append('case-studies/index.html')
+# Clean visibly corrupted navigation glyphs in retained classroom pages.
+for p in (site/'case-studies').rglob('*.html'):
+ text=p.read_text(encoding='utf8')
+ fixed=text.replace('Author website ?', 'Author website').replace('class="arrow" aria-hidden="true">?</span>', 'class="arrow" aria-hidden="true">Read case study</span>')
+ if fixed!=text:
+  p.write_text(fixed,encoding='utf8');changed.append(str(p.relative_to(site)))
 assert 'case2-offer.js' in (site/'index.html').read_text()
 manifest_path=site/'deployment-manifest.json'
 m=json.loads(manifest_path.read_text())
