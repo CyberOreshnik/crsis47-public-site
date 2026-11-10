@@ -25,7 +25,7 @@ for p in root.rglob("*.html"):
   if link.startswith(("https:","http:","mailto:","tel:","data:","javascript:","//")):continue
   target,_,frag=link.partition("#")
   target=target.split("?")[0]
-  if target.startswith("/crsis47-public-site./"): dest=root/target[len("/crsis47-public-site./"):]
+  if target.startswith("/crsis47-public-site/"): dest=root/target[len("/crsis47-public-site/"):]
   elif target.startswith("/"): issues.append(f"{p}: unexpected root path {link}");continue
   elif target:dest=p.parent/target
   else:dest=p
