@@ -1,0 +1,13 @@
+/* CRSIS-47 Evidence Chamber — additive styles, no site-wide resets.
+   Approved image remains unchanged. Gold/royal blue are surrounding accents. */
+.crsis47-brand{display:inline-flex;align-items:center;gap:.65rem;color:inherit;text-decoration:none}
+.crsis47-brand img,.crsis47-brand-hero img{display:block;object-fit:contain;max-width:100%;height:auto}
+.crsis47-brand--nav{font-weight:700;letter-spacing:.045em}
+.crsis47-brand--nav img{width:48px}
+.crsis47-brand-hero{display:flex;flex-direction:column;align-items:center;gap:.75rem;margin-inline:auto;text-align:center}
+.crsis47-brand-hero img{width:min(360px,78vw)}
+.crsis47-brand-hero__caption{color:#e2b85b;letter-spacing:.16em;font-size:.8rem;font-weight:650;margin:0}
+.crsis47-brand--footer{font-size:.85rem;letter-spacing:.05em}
+.crsis47-brand--footer img{width:64px}
+@media(max-width:480px){.crsis47-brand--nav img{width:36px}.crsis47-brand-hero img{width:min(280px,80vw)}.crsis47-brand-hero__caption{letter-spacing:.08em;font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.crsis47-brand,.crsis47-brand-hero{animation:none;transition:none}}
