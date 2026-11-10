@@ -17,7 +17,7 @@ with zipfile.ZipFile(io.BytesIO(data)) as z:
   if p.suffix in {".html",".js",".css",".json",".txt",".rsc",".xml"}:
    text=payload.decode("utf-8")
    assert not re.search(r"libfile_[a-f0-9]{32}|[A-Za-z]:[\\/]Users[\\/]",text), "Private marker"
-   text=text.replace("/crsis47-author-website","/crsis47-public-site.")
+   text=text.replace("/crsis47-author-website","/crsis47-public-site")
    payload=text.encode("utf-8")
   target=out/p; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(payload)
 (out/".nojekyll").write_text("")
@@ -30,7 +30,7 @@ assert "noindex" not in case.split("</head>")[0]
 for p in out.rglob("*.html"):
  for dest in re.findall(r'(?:href|src)="([^"]+)"',p.read_text()):
   if dest.startswith("/") and not dest.startswith("//"):
-   assert dest.startswith("/crsis47-public-site./"), (str(p),dest)
+   assert dest.startswith("/crsis47-public-site/"), (str(p),dest)
 manifest={str(p.relative_to(out)):hashlib.sha256(p.read_bytes()).hexdigest() for p in out.rglob("*") if p.is_file()}
 (out/"deployment-manifest.json").write_text(json.dumps({"source_commit":"f414f6eccdc271c5a03d4d763e16a2a2b51f6c02","archive_sha256":hashlib.sha256(data).hexdigest(),"files":manifest},indent=2))
 print("PASS",len(manifest),"public files; verified archive; deployment paths updated")
