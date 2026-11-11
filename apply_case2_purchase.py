@@ -15,7 +15,7 @@ for p in site.rglob('*.html'):
  is_home=relative.name=='index.html' and (len(relative.parts)==1 or (len(relative.parts)==2 and relative.parts[0] in {'fr','ht','es','pt-BR','pt-PT','ru','ar','zh-Hans','zh-Hant','ja','fa','he','tr'}))
  is_case=relative.parts[0]=='case-studies'
  if '<main' not in text or not (is_home or is_case): continue
- tag='<script src="/crsis47-public-site/case2-offer.js?v=4" defer></script>'
+ tag='<script src="/crsis47-public-site./case2-offer.js?v=4" defer></script>'
  if tag not in text:
   assert '</body>' in text
   text=text.replace('</body>',tag+'</body>')
@@ -33,7 +33,7 @@ for p in (site/'case-studies').rglob('*.html'):
  text=p.read_text(encoding='utf8')
  fixed=text.replace('Author website ?', 'Author website').replace('class="arrow" aria-hidden="true">?</span>', 'class="arrow" aria-hidden="true">Read case study</span>')
  if p==site/'case-studies/Binance_First_Case_Study_Free.html':
-  fixed=fixed.replace('href="#case-studies"', 'href="/crsis47-public-site/case-studies/index.html#case-studies"')
+  fixed=fixed.replace('href="#case-studies"', 'href="/crsis47-public-site./case-studies/index.html#case-studies"')
  if fixed!=text:
   p.write_text(fixed,encoding='utf8');changed.append(str(p.relative_to(site)))
 assert 'case2-offer.js' in (site/'index.html').read_text()
