@@ -21,6 +21,21 @@ closing_asset=site/"assets/brand/crsis47-closing-composition-approved.png"
 closing_asset.write_bytes(closing_source.read_bytes())
 root="/crsis47-public-site/"
 css=(Path("brand/evidence-chamber/evidence-chamber.css").read_text(encoding="utf8"))
+css += """
+.crsis47-case-study-collection{max-width:1120px;margin:48px auto;padding:34px 24px;color:#172c29}
+.crsis47-case-eyebrow{font-size:12px;letter-spacing:.16em;font-weight:700;color:#766029}
+.crsis47-case-study-collection h2{font:normal clamp(30px,4vw,48px)/1.12 Georgia,serif;margin:12px 0 16px}
+.crsis47-case-intro{max-width:720px;line-height:1.65;margin-bottom:25px}
+.crsis47-case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.crsis47-case-grid article{border:1px solid #c6b78f;background:#101e32;color:#f9f5e8;padding:26px;border-radius:8px}
+.crsis47-case-grid article span{font-size:11px;letter-spacing:.09em;color:#e1c58b}
+.crsis47-case-grid h3{font:normal 27px/1.2 Georgia,serif;margin:15px 0}
+.crsis47-case-grid p{color:#e3e6e9;line-height:1.5}
+.crsis47-case-grid a{color:#ffe0a0;font-weight:700;text-underline-offset:4px}
+.crsis47-case-all{margin-top:20px;font-weight:700}
+.crsis47-case-study-nav{font-weight:700}
+@media(max-width:680px){.crsis47-case-grid{grid-template-columns:1fr}.crsis47-case-study-collection{padding:24px 16px}}
+"""
 (site/"evidence-chamber.css").write_text(css,encoding="utf8")
 # Inject only on English home page, preserving existing React application and links.
 p=site/"index.html"
@@ -51,19 +66,31 @@ const add=()=>{
       brand.classList.add('crsis47-header-brand-link');brand.prepend(img);
     }
   }
-  const panel=document.getElementById('crsis47-t47-research-panel');
-  const signature=document.getElementById('crsis47-evidence-footer');
-  if(!home()){panel?.remove();signature?.remove();return}
-  const main=document.querySelector('main');
-  if(main&&!panel&&!main.querySelector('.crsis47-t47-panel')){
-    const section=make('section','crsis47-t47-panel');section.id='crsis47-t47-research-panel';section.setAttribute('aria-label','T plus 47 assessment protocol');
-    const dial=make('div','crsis47-t47-dial');
-    const mark=make('strong','crsis47-t47-mark');mark.textContent='T+47';
-    const caption=make('span','crsis47-t47-caption');caption.textContent='ASSESSMENT PROTOCOL';
-    dial.append(mark,caption);section.append(dial);
-    const first=main.querySelector('section');
-    if(first)first.insertAdjacentElement('afterend',section);else main.prepend(section);
+  const existingCases=document.getElementById('crsis47-case-study-collection');
+  if(!home()){existingCases?.remove()}
+  else if(!existingCases){
+    const main=document.querySelector('main');
+    if(main){
+      const section=make('section','crsis47-case-study-collection');
+      section.id='crsis47-case-study-collection';
+      section.setAttribute('aria-labelledby','crsis47-case-study-heading');
+      section.innerHTML=`<p class="crsis47-case-eyebrow">CRSIS-47 PROFESSIONAL CASE STUDIES</p>
+<h2 id="crsis47-case-study-heading">Follow the evidence. Make the decision.</h2>
+<p class="crsis47-case-intro">Explore the CRSIS-47 case-study progression, from incident assessment to leadership under uncertainty and operational resilience.</p>
+<div class="crsis47-case-grid">
+<article><span>001 · COMPLIMENTARY</span><h3>Binance</h3><p>Incident response and evidence assessment.</p><a href="/crsis47-public-site/case-studies/index.html">Read free case study</a></article>
+<article><span>002 · PROFESSIONAL EDITION · $5</span><h3>Leadership Under Uncertainty</h3><p>Leadership decisions under evolving evidence.</p><a href="https://payhip.com/b/kvM9I">View professional edition</a></article>
+<article><span>003 · PROFESSIONAL EDITION · $5</span><h3>FORTRESS America</h3><p>Assessing a reported 90-day resilience commitment.</p><a href="https://payhip.com/b/wym8f">View professional edition</a></article>
+<article><span>004 · IN DEVELOPMENT</span><h3>CrowdStrike Outage</h3><p>Cyber resilience and the consequences of non-malicious failure.</p><a href="/crsis47-public-site/case-studies/index.html">Explore the series</a></article>
+</div><p class="crsis47-case-all"><a href="/crsis47-public-site/case-studies/index.html">Explore all case studies and available languages</a></p>`;
+      const first=main.querySelector('section');
+      if(first)first.insertAdjacentElement('afterend',section);else main.prepend(section);
+    }
   }
+  // The original homepage already displays T+47 prominently; do not add a second dial.
+  document.getElementById('crsis47-t47-research-panel')?.remove();
+  const signature=document.getElementById('crsis47-evidence-footer');
+  if(!home()){signature?.remove();return}
   const footer=document.querySelector('footer');
   if(footer&&!signature){
     const wrap=make('div','crsis47-evidence-footer-signature');wrap.id='crsis47-evidence-footer';
@@ -81,6 +108,6 @@ manifest_path=site/"deployment-manifest.json"
 manifest=json.loads(manifest_path.read_text(encoding="utf8"))
 for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-header-shield-approved.png","assets/brand/crsis47-closing-composition-approved.png"]:
  manifest["files"][name]=hashlib.sha256((site/name).read_bytes()).hexdigest()
-manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","homepage research panel","footer final signature"],"source_sha256":expected}
+manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","homepage case-study progression","footer final signature"],"source_sha256":expected}
 manifest_path.write_text(json.dumps(manifest,indent=2),encoding="utf8")
 print("PASS: approved assets validated; header, T+47 research panel, and closing signature integrated")
