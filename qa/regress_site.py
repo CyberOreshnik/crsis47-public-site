@@ -44,8 +44,9 @@ if home.is_file():
   issues.append("homepage: no CSS stylesheet or inline styles")
  if "/crsis47-public-site./" in home_html:
   issues.append("homepage: malformed Pages base path with trailing period")
- for match in __import__("re").findall(r'<link[^>]+rel=["\\']stylesheet["\\'][^>]*>',home_html):
-  href=__import__("re").search(r'href=["\\']([^"\\']+)',match)
+ for match in __import__("re").findall(r"<link[^>]*>",home_html):
+  if "stylesheet" not in match:continue
+  href=__import__("re").search(r'href="([^"]+)"',match)
   if href:
    url=href.group(1).split("?")[0]
    if url.startswith("/crsis47-public-site/"):
