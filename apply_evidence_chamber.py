@@ -4,7 +4,11 @@ Fail closed if the owner-approved artwork is absent. Do not change case-study or
 from pathlib import Path
 import hashlib,json,re
 site=Path("site")
+source=Path("brand/evidence-chamber/crsis47-evidence-chamber-approved.png")
+assert source.is_file(), "Approved shield source PNG missing: do not deploy placeholders"
 asset=site/"assets/brand/crsis47-evidence-chamber-approved.png"
+asset.parent.mkdir(parents=True,exist_ok=True)
+asset.write_bytes(source.read_bytes())
 assert asset.is_file(), "Approved shield asset missing: do not deploy placeholders"
 expected="178737391e814ee911de2082573c8d6986f3dada748ef2f2c2050017988b8ee0"
 assert hashlib.sha256(asset.read_bytes()).hexdigest()==expected,"Shield image does not match approved original"
