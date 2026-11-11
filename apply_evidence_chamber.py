@@ -8,7 +8,7 @@ asset=site/"assets/brand/crsis47-evidence-chamber-approved.png"
 assert asset.is_file(), "Approved shield asset missing: do not deploy placeholders"
 expected="178737391e814ee911de2082573c8d6986f3dada748ef2f2c2050017988b8ee0"
 assert hashlib.sha256(asset.read_bytes()).hexdigest()==expected,"Shield image does not match approved original"
-root="/crsis47-public-site./"
+root="/crsis47-public-site/"
 css=(Path("brand/evidence-chamber/evidence-chamber.css").read_text(encoding="utf8"))
 (site/"evidence-chamber.css").write_text(css,encoding="utf8")
 # Inject only on English home page, preserving existing React application and links.
@@ -23,7 +23,7 @@ p.write_text(html,encoding="utf8")
 # Additive DOM insertion only, with MutationObserver for React hydration.
 # The observer keeps existing React-controlled navigation, content, and purchase links untouched.
 js=r'''(() => {
-const root='/crsis47-public-site./';
+const root='/crsis47-public-site/';
 const image=root+'assets/brand/crsis47-evidence-chamber-approved.png';
 const make=(tag,cls)=>{const e=document.createElement(tag);e.className=cls;return e};
 const logo=(alt,width)=>{const i=document.createElement('img');i.src=image;i.alt=alt;i.width=width;i.decoding='async';return i};
@@ -31,13 +31,13 @@ const add=()=>{
   const header=document.querySelector('header');
   if(header&&!document.getElementById('crsis47-evidence-nav')){
     const a=make('a','crsis47-brand crsis47-brand--nav');a.id='crsis47-evidence-nav';a.href=root;a.setAttribute('aria-label','CRSIS-47 home');
-    a.append(logo('',48));const s=document.createElement('span');s.textContent='CRSIS-47';a.append(s);header.prepend(a);
+    a.append(logo('',48));header.prepend(a);
   }
   const main=document.querySelector('main');
   if(main&&!document.getElementById('crsis47-evidence-hero')){
     const hero=make('div','crsis47-brand-hero');hero.id='crsis47-evidence-hero';
-    hero.append(logo('CRSIS-47 — The Evidence Chamber',360));
-    const p=make('p','crsis47-brand-hero__caption');p.textContent='WHERE EVIDENCE BECOMES JUDGMENT';hero.append(p);main.prepend(hero);
+    hero.append(logo('CRSIS-47 — The Evidence Chamber',300));
+    const p=make('p','crsis47-brand-hero__caption');p.textContent='WHERE EVIDENCE BECOMES JUDGMENT';hero.append(p);const first=main.firstElementChild; if(first)first.insertAdjacentElement('afterend',hero);else main.append(hero);
   }
   const footer=document.querySelector('footer');
   if(footer&&!document.getElementById('crsis47-evidence-footer')){
