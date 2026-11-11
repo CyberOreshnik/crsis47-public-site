@@ -13,11 +13,11 @@ modified=[]
 for p in pages:
  text=p.read_text(encoding="utf-8")
  # Preserve content: only add inline fallback for existing LOCAL stylesheets.
- links=re.findall(r"<link\\b[^>]*\\brel=[\u0027\\\"]stylesheet[\u0027\\\"][^>]*>",text,re.I)
+ links=re.findall(r"<link\b[^>]*\brel=['\"]stylesheet['\"][^>]*>",text,re.I)
  if not links:continue
  fallback=[]
  for tag in links:
-  m=re.search(r"\\bhref=[\u0027\\\"]([^\u0027\\\"]+)",tag,re.I)
+  m=re.search(r"\bhref=['\"]([^'\"]+)",tag,re.I)
   if not m:continue
   href=m.group(1).split("?")[0]
   if href.startswith(("https:","http:","//","data:")):continue
@@ -33,7 +33,7 @@ for p in pages:
    quote=m.group(1);url=m.group(2).strip()
    if url.startswith(("data:","http:","https:","/","#")):return m.group(0)
    return "url("+quote+base+url+quote+")"
-  css=re.sub(r"url\\(\\s*([\u0027\\\"]?)([^)\u0027\\\"]+)\\1\\s*\\)",rebase,css)
+  css=re.sub(r"url\(\s*(['\"]?)([^)'\"]+)\1\s*\)",rebase,css)
   css=css.replace("</style","<\/style")
   fallback.append(css)
  if fallback:
