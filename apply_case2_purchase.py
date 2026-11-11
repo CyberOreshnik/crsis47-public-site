@@ -36,6 +36,16 @@ for p in (site/'case-studies').rglob('*.html'):
   fixed=fixed.replace('href="#case-studies"', 'href="/crsis47-public-site/case-studies/index.html#case-studies"')
  if fixed!=text:
   p.write_text(fixed,encoding='utf8');changed.append(str(p.relative_to(site)))
+# Normalize legacy release paths AFTER all approved classroom overlays.
+# Original ZIP and approved source hashes remain untouched.
+for asset in site.rglob('*'):
+ if asset.is_file() and asset.suffix.lower() in {'.html','.css','.js','.json','.xml','.txt'} and asset.name!='deployment-manifest.json':
+  original=asset.read_text(encoding='utf8')
+  fixed=original.replace('/crsis47-public-site./','/crsis47-public-site/')
+  if fixed!=original:
+   asset.write_text(fixed,encoding='utf8')
+   rel=str(asset.relative_to(site))
+   if rel not in changed: changed.append(rel)
 assert 'case2-offer.js' in (site/'index.html').read_text()
 manifest_path=site/'deployment-manifest.json'
 m=json.loads(manifest_path.read_text())
