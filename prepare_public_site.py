@@ -18,8 +18,17 @@ with zipfile.ZipFile(io.BytesIO(data)) as z:
    text=payload.decode("utf-8")
    assert not re.search(r"libfile_[a-f0-9]{32}|[A-Za-z]:[\\/]Users[\\/]",text), "Private marker"
    text=text.replace("/crsis47-author-website","/crsis47-public-site")
+   text=text.replace("/crsis47-public-site./","/crsis47-public-site/")
+   text=text.replace("cyberoreshnik.github.io/crsis47-public-site./","cyberoreshnik.github.io/crsis47-public-site/")
    payload=text.encode("utf-8")
   target=out/p; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(payload)
+# Normalize URLs in all generated HTML/CSS/JS, including embedded styles and scripts.
+# The canonical GitHub Pages project prefix has NO trailing period.
+for target in out.rglob("*"):
+ if target.is_file() and target.suffix.lower() in {".html",".css",".js",".json",".xml",".txt"}:
+  original=target.read_text(encoding="utf-8")
+  fixed=original.replace("/crsis47-public-site./","/crsis47-public-site/").replace("cyberoreshnik.github.io/crsis47-public-site./","cyberoreshnik.github.io/crsis47-public-site/")
+  if fixed!=original:target.write_text(fixed,encoding="utf-8")
 (out/".nojekyll").write_text("")
 assert (out/"index.html").is_file()
 assert (out/"case-studies/index.html").is_file()
