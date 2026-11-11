@@ -39,7 +39,6 @@
 @media(max-width:900px){.crsis47-case-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.crsis47-case-grid{grid-template-columns:1fr}.crsis47-case-art{height:130px}.crsis47-case-series{margin:2rem auto}}
 
-/* Closing institutional signature: final footer element only. */
-.crsis47-evidence-footer-signature{display:flex;justify-content:center;align-items:center;clear:both;width:100%;padding:1.5rem 1rem .5rem;margin-top:1.25rem;border-top:1px solid rgba(170,143,73,.35);box-sizing:border-box}
-.crsis47-evidence-footer-signature img{width:50%;max-width:680px;min-width:0;height:auto;object-fit:contain;display:block}
-@media(max-width:640px){.crsis47-evidence-footer-signature img{width:85%;max-width:440px}}
+/* Approved full closing composition appears AFTER the existing footer. */
+.crsis47-evidence-footer-signature{display:block;clear:both;width:100%;margin:0;padding:0;background:#020c23;box-sizing:border-box;line-height:0}
+.crsis47-evidence-footer-signature img{display:block;width:100%;max-width:1650px;height:auto;object-fit:contain;margin:0 auto}
