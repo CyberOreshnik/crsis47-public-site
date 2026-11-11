@@ -26,8 +26,6 @@ jobs:
         run: python3 apply_approved_case_studies.py
       - name: Add approved Case Study 2 purchase offer
         run: python3 apply_case2_purchase.py
-      - name: Recover local stylesheets and verify case-study sales links
-        run: python3 recover_site_styling.py
       - name: Verify complete site references
         run: python3 qa/regress_site.py
       - uses: actions/configure-pages@v5
