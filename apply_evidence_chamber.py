@@ -40,10 +40,36 @@ const add=()=>{
     a.append(logo('',48));header.prepend(a);
   }
   const main=document.querySelector('main');
-  if(main&&!document.getElementById('crsis47-evidence-hero')){
-    const hero=make('div','crsis47-brand-hero');hero.id='crsis47-evidence-hero';
-    hero.append(logo('CRSIS-47 — The Evidence Chamber',300));
-    const p=make('p','crsis47-brand-hero__caption');p.textContent='WHERE EVIDENCE BECOMES JUDGMENT';hero.append(p);const first=main.firstElementChild; if(first)first.insertAdjacentElement('afterend',hero);else main.append(hero);
+  if(main&&!document.getElementById('crsis47-case-series')){
+    const section=make('section','crsis47-case-series');section.id='crsis47-case-series';
+    section.setAttribute('aria-labelledby','crsis47-series-title');
+    const title=document.createElement('h2');title.id='crsis47-series-title';title.textContent='CRSIS-47 CASE STUDY SERIES';section.append(title);
+    const cards=make('div','crsis47-case-grid');
+    const entries=[
+      ['001','Binance','Trust, control, and decision speed.','/crsis47-public-site/case-studies/index.html','Read free case study','identity'],
+      ['002','Leadership Under Uncertainty','The Russia–Ukraine false-alarm crisis.','https://payhip.com/b/kvM9I','Professional Edition · $5','uncertainty'],
+      ['003','FORTRESS America','A 90-day resilience plan under review.','https://payhip.com/b/wym8f','Professional Edition · $5','resilience'],
+      ['004','The CrowdStrike Outage','A non-malicious failure with global consequences.',null,'In development','continuity']
+    ];
+    for(const [num,name,description,href,label,art] of entries){
+      const card=make('article','crsis47-case-card');
+      const visual=make('div','crsis47-case-art crsis47-case-art--'+art);
+      visual.setAttribute('aria-hidden','true');
+      const n=make('span','crsis47-case-number');n.textContent=num;visual.append(n);
+      const motif=make('span','crsis47-case-motif');visual.append(motif);
+      card.append(visual);
+      const body=make('div','crsis47-case-body');
+      const h=document.createElement('h3');h.textContent=name;body.append(h);
+      const p=document.createElement('p');p.textContent=description;body.append(p);
+      if(href){const a=make('a','crsis47-case-action');a.href=href;a.textContent=label;if(href.startsWith('https:')){a.rel='noopener noreferrer';}body.append(a);}
+      else{const status=make('span','crsis47-case-pending');status.textContent=label;body.append(status);}
+      card.append(body);cards.append(card);
+    }
+    section.append(cards);
+    const note=make('p','crsis47-case-disclaimer');
+    note.textContent='Independent educational research. Organization names are used for identification only; no affiliation or endorsement is implied.';
+    section.append(note);
+    const first=main.firstElementChild;if(first)first.insertAdjacentElement('afterend',section);else main.append(section);
   }
   const footer=document.querySelector('footer');
   if(footer&&!document.getElementById('crsis47-evidence-footer')){
@@ -59,6 +85,6 @@ manifest_path=site/"deployment-manifest.json"
 manifest=json.loads(manifest_path.read_text(encoding="utf8"))
 for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-evidence-chamber-approved.png"]:
  manifest["files"][name]=hashlib.sha256((site/name).read_bytes()).hexdigest()
-manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["homepage hero","navigation header","footer"],"source_sha256":expected}
+manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["case study portfolio","navigation header","footer"],"source_sha256":expected}
 manifest_path.write_text(json.dumps(manifest,indent=2),encoding="utf8")
-print("PASS: owner-approved shield hash validated and homepage identity integrated")
+print("PASS: owner-approved shield hash validated and case-study portfolio integrated")
