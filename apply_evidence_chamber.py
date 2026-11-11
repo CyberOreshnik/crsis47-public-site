@@ -45,6 +45,17 @@ const add=()=>{
     const a=make('a','crsis47-brand crsis47-brand--nav');a.id='crsis47-evidence-nav';a.href=root;a.setAttribute('aria-label','CRSIS-47 home');
     a.append(logo('CRSIS-47 Evidence Chamber shield',48));header.prepend(a);
   }
+  const main=document.querySelector('main');
+  if(main&&!document.getElementById('crsis47-t47-research-panel')&&!main.querySelector('.crsis47-t47-panel')){
+    const panel=make('section','crsis47-t47-panel');panel.id='crsis47-t47-research-panel';
+    panel.setAttribute('aria-label','T plus 47 assessment protocol');
+    const dial=make('div','crsis47-t47-dial');
+    const mark=make('strong','crsis47-t47-mark');mark.textContent='T+47';
+    const caption=make('span','crsis47-t47-caption');caption.textContent='ASSESSMENT PROTOCOL';
+    dial.append(mark,caption);panel.append(dial);
+    const first=main.querySelector('section');
+    if(first)first.insertAdjacentElement('afterend',panel);else main.prepend(panel);
+  }
   const footer=document.querySelector('footer');
   if(footer&&!document.getElementById('crsis47-evidence-footer')){
     const signature=make('div','crsis47-evidence-footer-signature');
@@ -62,6 +73,6 @@ manifest_path=site/"deployment-manifest.json"
 manifest=json.loads(manifest_path.read_text(encoding="utf8"))
 for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-header-shield-approved.png","assets/brand/crsis47-closing-composition-approved.png"]:
  manifest["files"][name]=hashlib.sha256((site/name).read_bytes()).hexdigest()
-manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","footer final signature"],"source_sha256":expected}
+manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","homepage research panel","footer final signature"],"source_sha256":expected}
 manifest_path.write_text(json.dumps(manifest,indent=2),encoding="utf8")
-print("PASS: approved shield hash validated and header/footer-only placements integrated")
+print("PASS: approved assets validated; header, T+47 research panel, and closing signature integrated")
