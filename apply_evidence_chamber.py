@@ -39,7 +39,14 @@ const add=()=>{
     const a=make('a','crsis47-brand crsis47-brand--nav');a.id='crsis47-evidence-nav';a.href=root;a.setAttribute('aria-label','CRSIS-47 home');
     a.append(logo('CRSIS-47 Evidence Chamber shield',48));header.prepend(a);
   }
-
+  const footer=document.querySelector('footer');
+  if(footer&&!document.getElementById('crsis47-evidence-footer')){
+    const signature=make('div','crsis47-evidence-footer-signature');
+    signature.id='crsis47-evidence-footer';
+    const img=logo('CRSIS-47 — The Evidence Chamber',112);
+    signature.append(img);
+    footer.append(signature);
+  }
 };
 let scheduled=false;const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;add()})});observer.observe(document,{subtree:true,childList:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add,{once:true});else add();
@@ -49,6 +56,6 @@ manifest_path=site/"deployment-manifest.json"
 manifest=json.loads(manifest_path.read_text(encoding="utf8"))
 for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-evidence-chamber-approved.png"]:
  manifest["files"][name]=hashlib.sha256((site/name).read_bytes()).hexdigest()
-manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header only"],"source_sha256":expected}
+manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","footer final signature"],"source_sha256":expected}
 manifest_path.write_text(json.dumps(manifest,indent=2),encoding="utf8")
-print("PASS: owner-approved shield hash validated and case-study portfolio integrated")
+print("PASS: approved shield hash validated and header/footer-only placements integrated")
