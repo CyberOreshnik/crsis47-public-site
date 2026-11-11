@@ -52,3 +52,8 @@
 /* Home-page panel: readable and centered without disturbing original hero. */
 #crsis47-t47-research-panel{max-width:760px;margin:clamp(2rem,5vw,4rem) auto;display:flex;justify-content:center;align-items:center;min-height:320px}
 @media(max-width:520px){#crsis47-t47-research-panel{min-height:260px;margin:2rem 1rem;padding:1rem}}
+
+/* Live header correction: shield belongs inline with the existing brand link. */
+header a.crsis47-header-brand-link{display:inline-flex!important;align-items:center;gap:.55rem;vertical-align:middle}
+header a.crsis47-header-brand-link .crsis47-header-shield{display:inline-block;flex:0 0 auto;width:38px;height:38px;object-fit:contain;vertical-align:middle}
+@media(max-width:520px){header a.crsis47-header-brand-link .crsis47-header-shield{width:30px;height:30px}}

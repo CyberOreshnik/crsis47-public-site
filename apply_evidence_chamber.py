@@ -37,35 +37,43 @@ js=r'''(() => {
 const root='/crsis47-public-site/';
 const image=root+'assets/brand/crsis47-header-shield-approved.png';
 const closing=root+'assets/brand/crsis47-closing-composition-approved.png';
+const home=()=>['/crsis47-public-site/','/crsis47-public-site/index.html'].includes(location.pathname);
 const make=(tag,cls)=>{const e=document.createElement(tag);e.className=cls;return e};
-const logo=(alt,width)=>{const i=document.createElement('img');i.src=image;i.alt=alt;i.width=width;i.decoding='async';return i};
 const add=()=>{
   const header=document.querySelector('header');
-  if(header&&!document.getElementById('crsis47-evidence-nav')){
-    const a=make('a','crsis47-brand crsis47-brand--nav');a.id='crsis47-evidence-nav';a.href=root;a.setAttribute('aria-label','CRSIS-47 home');
-    a.append(logo('CRSIS-47 Evidence Chamber shield',48));header.prepend(a);
+  const old=document.getElementById('crsis47-evidence-nav');
+  if(old)old.remove();
+  if(header&&!header.querySelector('.crsis47-header-shield')){
+    const links=[...header.querySelectorAll('a')];
+    const brand=links.find(a=>{try{return new URL(a.href).pathname.replace(/index\\.html$/,'')===root}catch{return false}}) || links.find(a=>/CRSIS/.test(a.textContent||''));
+    if(brand){
+      const img=document.createElement('img');img.src=image;img.alt='CRSIS-47 Evidence Chamber shield';img.className='crsis47-header-shield';img.width=38;img.height=38;img.decoding='async';
+      brand.classList.add('crsis47-header-brand-link');brand.prepend(img);
+    }
   }
+  const panel=document.getElementById('crsis47-t47-research-panel');
+  const signature=document.getElementById('crsis47-evidence-footer');
+  if(!home()){panel?.remove();signature?.remove();return}
   const main=document.querySelector('main');
-  if(main&&!document.getElementById('crsis47-t47-research-panel')&&!main.querySelector('.crsis47-t47-panel')){
-    const panel=make('section','crsis47-t47-panel');panel.id='crsis47-t47-research-panel';
-    panel.setAttribute('aria-label','T plus 47 assessment protocol');
+  if(main&&!panel&&!main.querySelector('.crsis47-t47-panel')){
+    const section=make('section','crsis47-t47-panel');section.id='crsis47-t47-research-panel';section.setAttribute('aria-label','T plus 47 assessment protocol');
     const dial=make('div','crsis47-t47-dial');
     const mark=make('strong','crsis47-t47-mark');mark.textContent='T+47';
     const caption=make('span','crsis47-t47-caption');caption.textContent='ASSESSMENT PROTOCOL';
-    dial.append(mark,caption);panel.append(dial);
+    dial.append(mark,caption);section.append(dial);
     const first=main.querySelector('section');
-    if(first)first.insertAdjacentElement('afterend',panel);else main.prepend(panel);
+    if(first)first.insertAdjacentElement('afterend',section);else main.prepend(section);
   }
   const footer=document.querySelector('footer');
-  if(footer&&!document.getElementById('crsis47-evidence-footer')){
-    const signature=make('div','crsis47-evidence-footer-signature');
-    signature.id='crsis47-evidence-footer';
-    const img=document.createElement('img');img.src=closing;img.alt='CRSIS-47 closing composition, golden lamp and five pearls';img.decoding='async';
-    signature.append(img);
-    footer.insertAdjacentElement('afterend',signature);
+  if(footer&&!signature){
+    const wrap=make('div','crsis47-evidence-footer-signature');wrap.id='crsis47-evidence-footer';
+    const img=document.createElement('img');img.src=closing;img.alt='CRSIS-47 Evidence Chamber closing composition';img.decoding='async';img.loading='lazy';
+    wrap.append(img);footer.insertAdjacentElement('afterend',wrap);
   }
 };
-let scheduled=false;const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;add()})});observer.observe(document,{subtree:true,childList:true});
+let scheduled=false;const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;add()})});
+observer.observe(document,{subtree:true,childList:true});
+window.addEventListener('popstate',add);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add,{once:true});else add();
 })();'''
 (site/"evidence-chamber.js").write_text(js,encoding="utf8")
