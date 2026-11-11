@@ -13,5 +13,13 @@ jobs:
         run: python3 prepare_public_site.py
       - name: Verify and apply approved classroom pages
         run: python3 apply_approved_case_studies.py
+      - name: Add approved Case Study 2 purchase offer and normalize legacy links
+        run: python3 apply_case2_purchase.py
       - name: Check every site reference
+        run: python3 qa/regress_site.py
+      - name: Verify final Evidence Chamber artwork approval and checksums
+        run: python3 qa/verify_evidence_chamber_release.py
+      - name: Install approved Evidence Chamber identity
+        run: python3 apply_evidence_chamber.py
+      - name: Check complete integrated site references
         run: python3 qa/regress_site.py

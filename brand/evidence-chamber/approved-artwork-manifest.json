@@ -1,0 +1,18 @@
+{
+  "header_shield": {
+    "path": "brand/evidence-chamber/crsis47-header-shield-approved.png",
+    "sha256": "78acf019a18c9f2a3f1c1dfdddd0a1acee061abb991bfc3646fc04bc12344a76",
+    "provenance": "Owner-authorized derivative of approved Evidence Chamber composition; not legacy original"
+  },
+  "closing_composition": {
+    "path": "brand/evidence-chamber/crsis47-closing-composition-approved.png",
+    "sha256": "2778e85200c751f8c582989dd1af4bb98c82303a33dc792905eb55a8b5fcb7e9",
+    "provenance": "Owner-approved full closing composition uploaded manually to GitHub"
+  },
+  "visual_review": "owner-approved",
+  "pearl_count": 5,
+  "extra_dots": false,
+  "gold_oil_lamp": true,
+  "stemless_acorn": true,
+  "approval_note": "Owner authorized shield derivative and manually committed both files November 11, 2026. Git blob SHA cross-checked against local exact-byte sources."
+}
