@@ -38,3 +38,7 @@
 .crsis47-case-disclaimer{font-size:.78rem;line-height:1.5;color:#667268;text-align:center;margin:1.5rem 0 0}
 @media(max-width:900px){.crsis47-case-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.crsis47-case-grid{grid-template-columns:1fr}.crsis47-case-art{height:130px}.crsis47-case-series{margin:2rem auto}}
+
+/* Closing institutional signature: final footer element only. */
+.crsis47-evidence-footer-signature{display:flex;justify-content:center;align-items:center;clear:both;width:100%;padding:1.5rem 1rem .5rem;margin-top:1.25rem;border-top:1px solid rgba(170,143,73,.35);box-sizing:border-box}
+.crsis47-evidence-footer-signature img{width:112px;max-width:25vw;height:auto;object-fit:contain;display:block}
