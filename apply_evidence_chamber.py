@@ -4,16 +4,21 @@ Fail closed if the owner-approved artwork is absent. Do not change case-study or
 from pathlib import Path
 import hashlib,json,re
 site=Path("site")
-expected_hash="178737391e814ee911de2082573c8d6986f3dada748ef2f2c2050017988b8ee0"
-source=Path("brand/evidence-chamber/crsis47-evidence-chamber-approved.png")
+expected_hash=json.loads(Path("brand/evidence-chamber/approved-artwork-manifest.json").read_text())["header_shield"]["sha256"]
+source=Path("brand/evidence-chamber/crsis47-header-shield-approved.png")
 assert source.is_file(), "Approved shield source PNG missing: do not deploy placeholders"
-asset=site/"assets/brand/crsis47-evidence-chamber-approved.png"
+asset=site/"assets/brand/crsis47-header-shield-approved.png"
 asset.parent.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(source.read_bytes()).hexdigest()==expected_hash, "Source PNG checksum mismatch"
 asset.write_bytes(source.read_bytes())
 assert asset.is_file(), "Approved shield asset missing: do not deploy placeholders"
-expected="178737391e814ee911de2082573c8d6986f3dada748ef2f2c2050017988b8ee0"
+expected=expected_hash
 assert hashlib.sha256(asset.read_bytes()).hexdigest()==expected,"Shield image does not match approved original"
+closing_source=Path("brand/evidence-chamber/crsis47-closing-composition-approved.png")
+closing_expected=json.loads(Path("brand/evidence-chamber/approved-artwork-manifest.json").read_text())["closing_composition"]["sha256"]
+assert closing_source.is_file() and hashlib.sha256(closing_source.read_bytes()).hexdigest()==closing_expected, "Approved closing composition missing or mismatched"
+closing_asset=site/"assets/brand/crsis47-closing-composition-approved.png"
+closing_asset.write_bytes(closing_source.read_bytes())
 root="/crsis47-public-site/"
 css=(Path("brand/evidence-chamber/evidence-chamber.css").read_text(encoding="utf8"))
 (site/"evidence-chamber.css").write_text(css,encoding="utf8")
@@ -30,7 +35,8 @@ p.write_text(html,encoding="utf8")
 # The observer keeps existing React-controlled navigation, content, and purchase links untouched.
 js=r'''(() => {
 const root='/crsis47-public-site/';
-const image=root+'assets/brand/crsis47-evidence-chamber-approved.png';
+const image=root+'assets/brand/crsis47-header-shield-approved.png';
+const closing=root+'assets/brand/crsis47-closing-composition-approved.png';
 const make=(tag,cls)=>{const e=document.createElement(tag);e.className=cls;return e};
 const logo=(alt,width)=>{const i=document.createElement('img');i.src=image;i.alt=alt;i.width=width;i.decoding='async';return i};
 const add=()=>{
@@ -43,9 +49,9 @@ const add=()=>{
   if(footer&&!document.getElementById('crsis47-evidence-footer')){
     const signature=make('div','crsis47-evidence-footer-signature');
     signature.id='crsis47-evidence-footer';
-    const img=logo('CRSIS-47 — The Evidence Chamber',112);
+    const img=document.createElement('img');img.src=closing;img.alt='CRSIS-47 closing composition, golden lamp and five pearls';img.decoding='async';
     signature.append(img);
-    footer.append(signature);
+    footer.insertAdjacentElement('afterend',signature);
   }
 };
 let scheduled=false;const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;add()})});observer.observe(document,{subtree:true,childList:true});
@@ -54,7 +60,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (site/"evidence-chamber.js").write_text(js,encoding="utf8")
 manifest_path=site/"deployment-manifest.json"
 manifest=json.loads(manifest_path.read_text(encoding="utf8"))
-for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-evidence-chamber-approved.png"]:
+for name in ["index.html","evidence-chamber.css","evidence-chamber.js","assets/brand/crsis47-header-shield-approved.png","assets/brand/crsis47-closing-composition-approved.png"]:
  manifest["files"][name]=hashlib.sha256((site/name).read_bytes()).hexdigest()
 manifest["evidence_chamber"]={"approval_date":"2026-11-10","placements":["navigation header","footer final signature"],"source_sha256":expected}
 manifest_path.write_text(json.dumps(manifest,indent=2),encoding="utf8")
