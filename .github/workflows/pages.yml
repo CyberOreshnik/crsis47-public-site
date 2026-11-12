@@ -30,6 +30,8 @@ jobs:
         run: python3 qa/verify_evidence_chamber_release.py
       - name: Install approved Evidence Chamber identity (SHA-256 gated)
         run: python3 apply_evidence_chamber.py
+      - name: Generate scalable book and publication catalogs
+        run: python3 generate_publication_catalog.py
       - name: Verify complete site references
         run: python3 qa/regress_site.py
       - uses: actions/configure-pages@v5

@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "books": [
+    {
+      "id": "book-01",
+      "number": "01",
+      "title": "The 47-Second Question",
+      "kind": "book",
+      "status": "unpublished",
+      "description": "Part of the T+47 book collection. Publication details to be announced.",
+      "url": "https://cyberoreshnik.github.io/crsis47-author-website/books/the-47-second-question/",
+      "cover": "https://cyberoreshnik.github.io/crsis47-author-website/covers/book-1-front.png"
+    },
+    {
+      "id": "book-02",
+      "number": "02",
+      "title": "When the Evidence Changes",
+      "kind": "book",
+      "status": "unpublished",
+      "description": "Part of the T+47 book collection. Publication details to be announced.",
+      "url": "https://cyberoreshnik.github.io/crsis47-author-website/books/when-the-evidence-changes/",
+      "cover": "https://cyberoreshnik.github.io/crsis47-author-website/covers/book-2-front.jpg"
+    },
+    {
+      "id": "book-03",
+      "number": "03",
+      "title": "The Machine Has the Keys",
+      "kind": "book",
+      "status": "unpublished",
+      "description": "Part of the T+47 book collection. Publication details to be announced.",
+      "url": "https://cyberoreshnik.github.io/crsis47-author-website/books/the-machine-has-the-keys/",
+      "cover": "https://cyberoreshnik.github.io/crsis47-author-website/covers/book-3-front.jpg"
+    },
+    {
+      "id": "book-04",
+      "number": "04",
+      "title": "The Other Machine Has Keys Too",
+      "kind": "book",
+      "status": "unpublished",
+      "description": "Part of the T+47 book collection. Publication details to be announced.",
+      "url": "https://cyberoreshnik.github.io/crsis47-author-website/books/the-other-machine-has-keys-too/",
+      "cover": "https://cyberoreshnik.github.io/crsis47-author-website/covers/book-4-front.jpg"
+    },
+    {
+      "id": "book-05",
+      "number": "05",
+      "title": "The Cost of Waiting",
+      "kind": "book",
+      "status": "unpublished",
+      "description": "Part of the T+47 book collection. Publication details to be announced.",
+      "url": "https://cyberoreshnik.github.io/crsis47-author-website/books/the-cost-of-waiting/",
+      "cover": "https://cyberoreshnik.github.io/crsis47-author-website/covers/book-5-front.png"
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-001",
+      "number": "001",
+      "title": "Binance",
+      "kind": "case-study",
+      "status": "free",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": "/crsis47-public-site/case-studies/Binance_First_Case_Study_Free.html"
+    },
+    {
+      "id": "case-002",
+      "number": "002",
+      "title": "Leadership Under Uncertainty",
+      "kind": "case-study",
+      "status": "available",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": "https://payhip.com/b/kvM9I"
+    },
+    {
+      "id": "case-003",
+      "number": "003",
+      "title": "FORTRESS America",
+      "kind": "case-study",
+      "status": "available",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": "https://payhip.com/b/wym8f"
+    },
+    {
+      "id": "case-004",
+      "number": "004",
+      "title": "CrowdStrike Outage",
+      "kind": "case-study",
+      "status": "in-development",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": null
+    },
+    {
+      "id": "case-005",
+      "number": "005",
+      "title": "SolarWinds — The Trust Exploit",
+      "kind": "case-study",
+      "status": "planned",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": null
+    },
+    {
+      "id": "case-006",
+      "number": "006",
+      "title": "Change Healthcare — When the Payment System Stops",
+      "kind": "case-study",
+      "status": "planned",
+      "description": "CRSIS-47 professional case-study collection.",
+      "url": null
+    }
+  ]
+}
