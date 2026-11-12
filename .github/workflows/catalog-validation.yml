@@ -1,0 +1,45 @@
+name: Validate scalable publication catalog
+on:
+  pull_request:
+    paths:
+      - 'content/publications.json'
+      - 'generate_publication_catalog.py'
+      - '.github/workflows/pages.yml'
+      - '.github/workflows/catalog-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify and prepare audited static release
+        run: python3 prepare_public_site.py
+      - name: Apply approved multilingual case-study release
+        run: python3 apply_approved_case_studies.py
+      - name: Add approved Case Study 2 purchase offer
+        run: python3 apply_case2_purchase.py
+      - name: Verify approved Evidence Chamber checksums
+        run: python3 qa/verify_evidence_chamber_release.py
+      - name: Apply approved Evidence Chamber identity
+        run: python3 apply_evidence_chamber.py
+      - name: Generate expandable catalogs
+        run: python3 generate_publication_catalog.py
+      - name: Check catalog counts and published statuses
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('content/publications.json').read_text())
+          assert len(d['books'])==5 and len(d['cases'])==6
+          for path in ['site/books/index.html','site/collections/index.html','site/case-studies/index.html','site/index.html']:
+              assert Path(path).is_file(),path
+          for i in d['books']:
+              assert i['title'] in Path('site/books/index.html').read_text()
+          for i in d['cases']:
+              assert i['title'].replace('&','&amp;') in Path('site/collections/index.html').read_text()
+          print('PASS: catalog records and pages')
+          PY
+      - name: Run full site link regression
+        run: python3 qa/regress_site.py
