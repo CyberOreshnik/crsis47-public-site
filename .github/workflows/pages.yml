@@ -30,6 +30,10 @@ jobs:
         run: python3 qa/verify_evidence_chamber_release.py
       - name: Install approved Evidence Chamber identity (SHA-256 gated)
         run: python3 apply_evidence_chamber.py
+      - name: Publish frozen approved website without modification
+        run: python3 apply_frozen_website.py
+      - name: Verify frozen publication invariants
+        run: python3 qa/verify_frozen_website.py
       - name: Verify complete site references
         run: python3 qa/regress_site.py
       - uses: actions/configure-pages@v5

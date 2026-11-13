@@ -1,0 +1,19 @@
+{
+  "archive": "CRSIS47_APPROVED_WEBSITE_FRESH_DOWNLOAD.zip",
+  "archive_sha256": "97e3647af487e045335a5e9aa8703786fb7a44ebdc162f5e504e814e78b14b4d",
+  "files": {
+    "case001.png": "ea66e947f42c4382269292fca8e50a89fb2d4e9d28767787b094b5920a3eada7",
+    "case002.png": "a2230569e07c4879c33b7a25ead6a0025e1ab3949f2b9b6f338a1a48e8a3a385",
+    "case003.png": "e55c576069fb6137c955b0184b013fd0a4138b955fc96105527948bf90bccc6b",
+    "case004.png": "b39116d2114373ce5c8d99f054151fa4c1c57f564a81bef8b5caa542383c0b7e",
+    "cinematic.png": "94272f45a840e95369e0802a23c81b8a921efc4683963d1d21f60bf108f5f9b2",
+    "cinematic_previous_approved.png": "94272f45a840e95369e0802a23c81b8a921efc4683963d1d21f60bf108f5f9b2",
+    "founder-headshot.png": "06273e45704404c73ae46927be8a3074667e18dd4f7d02c1d34678818881c594",
+    "index.html": "be76dbddecccf6c559d5d10ba6717f94c0b3eb6dafdc3d5c818ad8cee8e8f372",
+    "research_division_01.png": "bfca497c583250cab5e44b99ec79e1feae2cf9b866bf780e7cd35315cf98abc4",
+    "research_division_02.png": "0614c7fe625a3bc605c3b9cde0ef1d15b9bb53e2ce6293717fff778e74f33129",
+    "research_division_03.png": "21aaba05898ecca883ab838d7e30851f48c413c51fad35b0d64f8ef4d41ec035",
+    "research_division_04.png": "24967461423c8ccf539d3417628d2ff10201b2052001eb48fb00762ce9d106c3",
+    "shield.png": "06c8a92821c66925a8635c62e747f7194a3dc86355dd017ac3e58d460e922763"
+  }
+}
