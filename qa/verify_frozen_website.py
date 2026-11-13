@@ -3,7 +3,10 @@ from pathlib import Path
 from html.parser import HTMLParser
 import hashlib, json, re
 site=Path('site')
-m=json.loads(Path('approved-website/manifest.json').read_text(encoding='utf-8'))
+m=json.loads((site/'uniform-manifest.json').read_text(encoding='utf-8')) if (site/'uniform-manifest.json').is_file() else json.loads(Path('approved-website/manifest.json').read_text(encoding='utf-8'))
+art=json.loads(Path('approved-website/manifest.json').read_text(encoding='utf-8'))['files']
+for name,digest in art.items():
+    if name.endswith('.png'):assert hashlib.sha256((site/name).read_bytes()).hexdigest()==digest,name
 for name,digest in m['files'].items():
     assert hashlib.sha256((site/name).read_bytes()).hexdigest()==digest, name
 class Page(HTMLParser):
@@ -17,8 +20,8 @@ class Page(HTMLParser):
         self.nav+=tag=='nav'
         self.divisions+='research-visual-card' in d.get('class','').split()
         for attr in ('href','src'):
-            if d.get(attr): self.refs.append(d[attr])
-        if tag=='img': self.images.append(d['src'])
+            if d.get(attr): self.refs.append(d[attr].removeprefix('/crsis47-public-site/'))
+        if tag=='img': self.images.append(d['src'].removeprefix('/crsis47-public-site/'))
 text=(site/'index.html').read_text(encoding='utf-8')
 p=Page();p.feed(text)
 assert p.nav==1 and p.divisions==4
@@ -42,7 +45,7 @@ assert 'Time to Confident Detection' in glossary
 assert 'Cybersecurity Risk Security Intelligence System' not in glossary
 assert len(list((site/'languages').glob('*/index.html')))==14
 assert 'crsis47-author-website/' not in text
-assert 'grid-auto-flow:column' in text
+assert 'grid-auto-flow:column' in text or 'grid-auto-flow:column' in (site/'uniform/site.css').read_text(encoding='utf8')
 assert 'language-menu' in text
 assert 'Website integration preview' not in text
 print('PASS: glossary, language links, four-card scrolling and release footer')

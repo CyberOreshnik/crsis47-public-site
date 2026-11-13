@@ -32,6 +32,10 @@ jobs:
         run: python3 apply_evidence_chamber.py
       - name: Publish frozen approved website without modification
         run: python3 apply_frozen_website.py
+      - name: Generate uniform multilingual catalog and detail pages
+        run: python3 generate_uniform_site.py
+      - name: Verify shared templates, catalog and translations
+        run: python3 qa/verify_uniform_site.py
       - name: Verify frozen publication invariants
         run: python3 qa/verify_frozen_website.py
       - name: Verify complete site references
