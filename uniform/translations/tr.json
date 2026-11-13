@@ -276,5 +276,19 @@
   "reported confidence estimate": "bildirilen güven tahmini",
   "English professional edition · Digital download · $5 USD": "İngilizce profesyonel sürüm · Dijital indirme · 5 ABD doları USD",
   "Machine-assisted translation. The English original governs technical terminology. Product language is stated separately.": "Makine destekli çeviri. İngilizce orijinali teknik terminolojiyi yönetir. Ürün dili ayrıca belirtilir.",
-  "English professional edition · Digital download": "İngilizce profesyonel baskı · Dijital indirme"
+  "English professional edition · Digital download": "İngilizce profesyonel baskı · Dijital indirme",
+  "All": "Hepsi",
+  "Filter search results": "Arama sonuçlarını filtrele",
+  "Find books, case studies, and glossary terms in the public collection.": "Halka açık koleksiyonda kitaplar, örnek olaylar ve sözlük terimleri bulun.",
+  "Loading search results…": "Arama sonuçları yükleniyor…",
+  "No matching results. Try another term or category.": "Eşleşen sonuç yok. Başka bir terim veya kategori deneyin.",
+  "Results": "Sonuçlar",
+  "Search": "Ara",
+  "Search is temporarily unavailable. Please browse the catalogs.": "Arama geçici olarak kullanılamıyor. Lütfen kataloglara göz atın.",
+  "Search requires JavaScript. You can still browse the collection using the links below.": "Arama JavaScript gerektirir. Aşağıdaki bağlantıları kullanarak koleksiyona göz atmaya devam edebilirsiniz.",
+  "Search the Evidence Chamber": "Kanıt Odasını Arayın",
+  "Search the collection": "Koleksiyonda arama yapın",
+  "Search titles, topics, or glossary terms": "Başlıkları, konuları veya sözlük terimlerini arayın",
+  "Show more results": "Daha fazla sonuç göster",
+  "Try a title, topic, or acronym": "Bir başlık, konu veya kısaltma deneyin"
 }

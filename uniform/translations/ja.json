@@ -276,5 +276,19 @@
   "trusted evidence layer": "信頼できる証拠レイヤー",
   "English professional edition · Digital download · $5 USD": "英語プロフェッショナル版 · デジタルダウンロード · $5 USD",
   "Machine-assisted translation. The English original governs technical terminology. Product language is stated separately.": "機械支援翻訳。専門用語については英語の原文が適用されます。製品言語は別途記載されています。",
-  "English professional edition · Digital download": "英語プロフェッショナル版・デジタルダウンロード"
+  "English professional edition · Digital download": "英語プロフェッショナル版・デジタルダウンロード",
+  "All": "すべて",
+  "Filter search results": "検索結果をフィルタリングする",
+  "Find books, case studies, and glossary terms in the public collection.": "パブリック コレクションで書籍、ケーススタディ、用語集を検索します。",
+  "Loading search results…": "検索結果を読み込み中…",
+  "No matching results. Try another term or category.": "一致する結果はありません。別の用語またはカテゴリを試してください。",
+  "Results": "結果",
+  "Search": "検索",
+  "Search is temporarily unavailable. Please browse the catalogs.": "検索は一時的に利用できません。カタログをご覧ください。",
+  "Search requires JavaScript. You can still browse the collection using the links below.": "検索にはJavaScriptが必要です。以下のリンクを使用してコレクションを閲覧できます。",
+  "Search the Evidence Chamber": "証拠室を捜索する",
+  "Search the collection": "コレクションを検索する",
+  "Search titles, topics, or glossary terms": "タイトル、トピック、または用語集の用語を検索する",
+  "Show more results": "さらに結果を表示",
+  "Try a title, topic, or acronym": "タイトル、トピック、または頭字語を試してください"
 }

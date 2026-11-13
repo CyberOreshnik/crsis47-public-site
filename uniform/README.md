@@ -22,3 +22,14 @@ These are not certified or independently reviewed translations. English governs 
 ## Remaining operational follow-up
 
 Payhip storefront shield and navy/gold purchase-button branding require authenticated editor access. Future content still requires normal editorial, source, translation, accessibility and product-release review.
+
+
+## Search maintenance
+
+The homepage search bar and shared navigation open the locale's search page. Search indexes are generated during deployment from the same books/cases catalog and public glossary. New approved entries are indexed automatically; no separate results page needs editing.
+
+Optional keywords arrays on catalog entries add title/topic synonyms. They are search aliases, not new public claims. Keep catalog content public; do not add private manuscripts, paid download text, credentials or unpublished research data to the index source.
+
+Search supports Books, Case Studies and Glossary filters, accent-insensitive text matching, exact-title priority and twenty results at a time. The selected query and category stay in the URL and are retained when changing languages. Results point to the selected locale; glossary results link to a stable term anchor. Renaming an English glossary term may change that anchor.
+
+The browser downloads one static same-origin index for the selected locale. No third-party search API or paid search service is used. Machine-assisted UI translations retain the existing disclosure and English terminology authority.

@@ -276,5 +276,19 @@
   "reported confidence estimate": "تقديرات الثقة المبلغ عنها",
   "English professional edition · Digital download · $5 USD": "الطبعة الإنجليزية الاحترافية · التنزيل الرقمي · 5 دولارات USD",
   "Machine-assisted translation. The English original governs technical terminology. Product language is stated separately.": "الترجمة بمساعدة الآلة. يحكم النص الإنجليزي الأصلي المصطلحات الفنية. يتم ذكر لغة المنتج بشكل منفصل.",
-  "English professional edition · Digital download": "الطبعة الإنجليزية الاحترافية · التنزيل الرقمي"
+  "English professional edition · Digital download": "الطبعة الإنجليزية الاحترافية · التنزيل الرقمي",
+  "All": "الكل",
+  "Filter search results": "تصفية نتائج البحث",
+  "Find books, case studies, and glossary terms in the public collection.": "ابحث عن الكتب ودراسات الحالة ومصطلحات المصطلحات في المجموعة العامة.",
+  "Loading search results…": "جارٍ تحميل نتائج البحث…",
+  "No matching results. Try another term or category.": "لا توجد نتائج مطابقة. جرّب مصطلحًا أو فئة أخرى.",
+  "Results": "النتائج",
+  "Search": "بحث",
+  "Search is temporarily unavailable. Please browse the catalogs.": "البحث غير متاح مؤقتا. يرجى تصفح الكتالوجات.",
+  "Search requires JavaScript. You can still browse the collection using the links below.": "البحث يتطلب جافا سكريبت. لا يزال بإمكانك تصفح المجموعة باستخدام الروابط أدناه.",
+  "Search the Evidence Chamber": "ابحث في غرفة الأدلة",
+  "Search the collection": "ابحث في المجموعة",
+  "Search titles, topics, or glossary terms": "ابحث في العناوين أو المواضيع أو مصطلحات المسرد",
+  "Show more results": "عرض المزيد من النتائج",
+  "Try a title, topic, or acronym": "جرّب عنوانًا أو موضوعًا أو اختصارًا"
 }

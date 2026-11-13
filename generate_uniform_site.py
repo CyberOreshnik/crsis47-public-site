@@ -6,6 +6,7 @@ from html.parser import HTMLParser
 from html import escape,unescape
 from urllib.parse import urlsplit
 import json,re,hashlib,sys
+from uniform.search_support import search_body,home_search,tag_glossary,make_index
 ROOT=Path(__file__).resolve().parent
 U=ROOT/'uniform';S=ROOT/'site'
 B='/crsis47-public-site/'
@@ -68,7 +69,7 @@ def localize(text,lang,route):
  p=Localize(lang,route);p.feed(text);return ''.join(p.out)
 def preserved(text):return '<div data-preserved>'+text+'</div>'
 def nav(lang,route):
- labels=[('Case Studies','case-studies/'),('Books','books/'),('Research & Laboratories','research/'),('Glossary','glossary.html'),('About','about/'),('Contact','contact/')]
+ labels=[('Case Studies','case-studies/'),('Books','books/'),('Research & Laboratories','research/'),('Glossary','glossary.html'),('About','about/'),('Contact','contact/'),('Search','search/')]
  links=''.join('<a href="'+loc(lang,r)+'"'+(' aria-current="page"' if r==route else '')+'>'+escape(T(n,lang))+'</a>' for n,r in labels)
  languages=''.join('<a lang="'+c+'" hreflang="'+c+'" href="'+loc(c,route)+'"'+(' aria-current="page"' if c==lang else '')+'>'+n+'</a>' for c,n in LANGS)
  return '<header><nav class="nav" aria-label="'+escape(T('Main navigation',lang))+'"><a class="brand" href="'+loc(lang)+'"><img src="'+asset('shield.png')+'" width="57" height="62" alt="CRSIS-47 Evidence Chamber shield"><span>CRSIS-47</span></a><div class="links">'+links+'<details class="language-menu"><summary>'+dict(LANGS)[lang]+'</summary><div class="language-panel"><strong>'+escape(T('Choose your language',lang))+'</strong>'+languages+'</div></details></div></nav></header>'
@@ -117,14 +118,15 @@ def standalone(name,lang):
  return localize(raw,lang,name+'/')
 def page_body(route,lang):
  if not route:
-  return localize(CONTENT['sections']['hero'],lang,route)+collection('case-studies',lang,True)+collection('books',lang,True)+localize(CONTENT['sections']['research'],lang,route)+localize(CONTENT['sections']['about'],lang,route)+localize(CONTENT['sections']['contact'],lang,route)+localize(CONTENT['sections']['closing'],lang,route)
+  return localize(CONTENT['sections']['hero'],lang,route)+home_search(lang,T,loc)+collection('case-studies',lang,True)+collection('books',lang,True)+localize(CONTENT['sections']['research'],lang,route)+localize(CONTENT['sections']['about'],lang,route)+localize(CONTENT['sections']['contact'],lang,route)+localize(CONTENT['sections']['closing'],lang,route)
+ if route=='search/':return search_body(lang,T,loc)
  if route=='books/':return collection('books',lang)
  if route=='case-studies/':return collection('case-studies',lang)
  if route in ['research/','about/','contact/']:return standalone(route[:-1],lang)
  if route=='updates/':return '<section class="wrap detail-page"><h1>'+escape(T('Publications & Updates',lang))+'</h1><p>'+escape(T('Explore the current books, case studies and research pages. Availability and research status are stated with each item.',lang))+'</p><div class="actions"><a class="button" href="'+loc(lang,'books/')+'">'+escape(T('Books',lang))+'</a><a class="button secondary" href="'+loc(lang,'case-studies/')+'">'+escape(T('Case Studies',lang))+'</a></div></section>'
  if route=='glossary.html':
   raw=(U/'glossary_body.html').read_text(encoding='utf8')
-  return localize(raw,lang,route)
+  return localize(tag_glossary(raw),lang,route)
  for b in CAT['books']:
   if route=='books/'+b['slug']+'/':return detail_book(b,lang)
  for c in CAT['cases']:
@@ -136,14 +138,14 @@ def title_for(route,lang):
   if route=='books/'+b['slug']+'/':return b.get('copy',{}).get(lang,b.get('copy',{}).get('en',{})).get('title',b['title'])+' | CRSIS-47'
  for c in CAT['cases']:
   if route=='case-studies/'+c['slug']+'/':return T(c['title'],lang)+' | CRSIS-47'
- return T({'books/':'Books','case-studies/':'Case Studies','research/':'Research & Laboratories','about/':'About','contact/':'Contact','updates/':'Publications & Updates','glossary.html':'Research Glossary'}[route],lang)+' | CRSIS-47'
+ return T({'books/':'Books','case-studies/':'Case Studies','research/':'Research & Laboratories','about/':'About','contact/':'Contact','updates/':'Publications & Updates','glossary.html':'Research Glossary','search/':'Search'}[route],lang)+' | CRSIS-47'
 def page(route,lang):
  body=page_body(route,lang);rtl=lang in ['ar','fa','he']
  note='' if lang=='en' else '<div class="translation-note">'+escape(T('Machine-assisted translation. The English original governs technical terminology. Product language is stated separately.',lang))+' <a href="'+loc('en',route)+'" lang="en">English</a></div>'
  alternates=''.join('<link rel="alternate" hreflang="'+c+'" href="https://cyberoreshnik.github.io'+loc(c,route)+'">' for c,_ in LANGS)
  footer='<footer class="footer"><a href="'+loc(lang)+'">CRSIS-47 · The Evidence Chamber</a><p>'+escape(T('Where Evidence Becomes Judgment',lang))+'</p><a href="#top">'+escape(T('Return to top',lang))+' ↑</a></footer>'
  return '<!doctype html><html lang="'+lang+'" dir="'+('rtl' if rtl else 'ltr')+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escape(title_for(route,lang))+'</title><link rel="canonical" href="https://cyberoreshnik.github.io'+loc(lang,route)+'">'+alternates+'<link rel="icon" type="image/png" href="'+asset('shield.png')+'"><link rel="stylesheet" href="'+asset('uniform/site.css')+'"><script src="'+asset('uniform/site.js')+'" defer></script></head><body id="top"><a class="skip-link" href="#main">'+escape(T('Skip to content',lang))+'</a>'+nav(lang,route)+note+'<main id="main">'+body+'</main>'+footer+'</body></html>'
-def routes():return ['', 'books/','case-studies/','research/','about/','contact/','updates/','glossary.html']+['books/'+b['slug']+'/' for b in CAT['books']]+['case-studies/'+c['slug']+'/' for c in CAT['cases']]
+def routes():return ['', 'books/','case-studies/','research/','about/','contact/','updates/','glossary.html','search/']+['books/'+b['slug']+'/' for b in CAT['books']]+['case-studies/'+c['slug']+'/' for c in CAT['cases']]
 def target(lang,route):
  prefix='' if lang=='en' else lang+'/'
  return S/prefix/(route if route.endswith('.html') else route+'index.html')
@@ -170,6 +172,10 @@ def main():
   for route in routes():
    path=target(lang,route);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(page(route,lang),encoding='utf8')
    output[path.relative_to(S).as_posix()]=hashlib.sha256(path.read_bytes()).hexdigest()
+  search_index=make_index(CAT,lang,T,loc,localize,(U/'glossary_body.html').read_text(encoding='utf8'))
+  index_path=S/('' if lang=='en' else lang)/'search-index.json'
+  index_path.write_text(json.dumps(search_index,ensure_ascii=False,separators=(',',':')),encoding='utf8')
+  output[index_path.relative_to(S).as_posix()]=hashlib.sha256(index_path.read_bytes()).hexdigest()
   redirect(S/'languages'/lang/'index.html',loc(lang,'case-studies/001-binance/'))
   if lang!='en':
    redirect(S/'case-studies'/lang/'index.html',loc(lang,'case-studies/001-binance/'))

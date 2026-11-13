@@ -16,3 +16,16 @@ Scope: approved Evidence Chamber branding across all public catalogs, book detai
 - Payhip URLs and product prices are unchanged. No purchase or payment-setting change was made.
 
 Payhip storefront branding remains the operational follow-up. Normal editorial, source, translation, accessibility and release review still applies to future content.
+
+
+## Search release verification
+
+- Generated search pages and indexes for English plus all thirteen existing translated locales.
+- Indexed the current five books, six case studies and sixty public glossary entries: seventy-one unique results per locale.
+- Exact TTCD and full-expansion queries rank and link to the glossary definition.
+- Book/case/glossary filters, empty results, twenty-result pagination and glossary-anchor clearance passed browser checks.
+- Native-term search and mobile overflow checks passed for all fourteen locales.
+- Homepage form submission and search-query/category retention through language changes passed.
+- Query text is rendered as text; a markup/event-handler input produced no injected element or execution.
+- An unavailable index displays the localized fallback message.
+- Catalog fixture checks confirm future additions are indexed with their generated detail routes.

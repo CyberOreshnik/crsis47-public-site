@@ -276,5 +276,19 @@
   "trusted evidence layer": "可信证据层",
   "English professional edition · Digital download · $5 USD": "英文专业版 · 数字下载 · $5 USD",
   "Machine-assisted translation. The English original governs technical terminology. Product language is stated separately.": "机器辅助翻译。技术术语以英文原件为准。产品语言单独说明。",
-  "English professional edition · Digital download": "英文专业版·数字下载"
+  "English professional edition · Digital download": "英文专业版·数字下载",
+  "All": "全部",
+  "Filter search results": "过滤搜索结果",
+  "Find books, case studies, and glossary terms in the public collection.": "在公共收藏中查找书籍、案例研究和术语表。",
+  "Loading search results…": "正在加载搜索结果...",
+  "No matching results. Try another term or category.": "没有匹配结果。尝试其他术语或类别。",
+  "Results": "结果",
+  "Search": "搜索",
+  "Search is temporarily unavailable. Please browse the catalogs.": "暂时无法搜索。请浏览目录。",
+  "Search requires JavaScript. You can still browse the collection using the links below.": "搜索需要 JavaScript。您仍然可以使用下面的链接浏览该集合。",
+  "Search the Evidence Chamber": "搜查证物室",
+  "Search the collection": "搜索集合",
+  "Search titles, topics, or glossary terms": "搜索标题、主题或术语表",
+  "Show more results": "显示更多结果",
+  "Try a title, topic, or acronym": "尝试使用标题、主题或缩写词"
 }
