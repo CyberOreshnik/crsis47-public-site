@@ -24,7 +24,10 @@ p=Page();p.feed(text)
 assert p.nav==1 and p.divisions==4
 for ref in p.refs:
     if ref.startswith('#'): assert ref[1:] in p.ids, ref
-    elif not re.match(r'^[a-z]+:',ref): assert (site/ref).is_file(), ref
+    elif not re.match(r'^[a-z]+:',ref):
+        target=site/ref
+        if target.is_dir():target=target/'index.html'
+        assert target.is_file(),ref
 assert {'top','books','case-studies','research','about','contact','closing'}<=p.ids
 assert {'shield.png','founder-headshot.png','cinematic.png','case001.png','case002.png','case003.png','case004.png'}<=set(p.images)
 assert 'https://payhip.com/b/kvM9I' in p.refs and 'https://payhip.com/b/wym8f' in p.refs
@@ -32,3 +35,14 @@ assert 'crsis47-public-site./' not in text
 assert 'mailto:cjean-pierre@captechu.edu' in p.refs
 assert 'MutationObserver' not in text
 print('PASS: frozen checksums, assets, navigation, divisions and purchase links')
+
+glossary=(site/'glossary.html').read_text(encoding='utf-8')
+assert 'Cyber Risk Security Intelligence System' in glossary
+assert 'Time to Confident Detection' in glossary
+assert 'Cybersecurity Risk Security Intelligence System' not in glossary
+assert len(list((site/'languages').glob('*/index.html')))==14
+assert 'crsis47-author-website/' not in text
+assert 'grid-auto-flow:column' in text
+assert 'language-menu' in text
+assert 'Website integration preview' not in text
+print('PASS: glossary, language links, four-card scrolling and release footer')
