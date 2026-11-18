@@ -88,7 +88,7 @@ def casecard(c,lang):
  else:action='<a href="'+loc(lang,route)+'">'+escape(T('View case details',lang))+'</a>'
  return '<article class="file book-file case-file"><div><span class="tag">'+escape(T(c['status'],lang))+'</span>'+cover+'<h3><a href="'+loc(lang,route)+'">'+escape(T(c['title'],lang))+'</a></h3><p>'+escape(T(c['description'],lang))+'</p></div>'+action+'</article>'
 def faa_card():
- return ('<article class="file book-file case-file faa-featured" aria-label="FAA Editor\'s Special Edition"><div><span class="tag">EDITOR\'S SPECIAL EDITION · UNNUMBERED</span><div class="case-cover-frame case-cover-pending faa-featured-panel"><span>FAA / EDITOR\'S SPECIAL EDITION</span><strong>The Modernization Accountability Gap</strong><small>FAA Terminal Flight Data Manager</small></div><h3>FAA — The Modernization Accountability Gap</h3><p>An evidence-based investigation of FAA Terminal Flight Data Manager modernization through People, Governance, Data, and Technology (PGDT). Includes a 23-page case study, four progressive instructional packets, and a government-records disclosure. Five PDFs; 37 pages total.</p></div><a class="collection-action" href="https://payhip.com/b/hq10s" rel="noopener noreferrer">Purchase professional edition — $5.00</a></article>')
+ return ('<article class="file book-file case-file faa-featured" aria-label="FAA Editor\'s Special Edition"><div><span class="tag">EDITOR\'S SPECIAL EDITION · UNNUMBERED</span><div class="case-cover-frame faa-featured-panel"><img src="'+asset('uniform/faa-premium-cover.png')+'" width="765" height="990" loading="lazy" alt="The Modernization Accountability Gap, FAA Terminal Flight Data Manager, Editor\'s Special Edition, unnumbered"></div><h3>FAA — The Modernization Accountability Gap</h3><p>An evidence-based investigation of FAA Terminal Flight Data Manager modernization through People, Governance, Data, and Technology (PGDT). Includes a 23-page case study, four progressive instructional packets, and a government-records disclosure. Five PDFs; 37 pages total.</p></div><a class="collection-action" href="https://payhip.com/b/hq10s" rel="noopener noreferrer">Purchase professional edition — $5.00</a></article>')
 def cabinet(kind,lang,shelf=True):
  items=CAT['books' if kind=='books' else 'cases'];name='Books' if kind=='books' else 'Case Studies'
  cards=''
@@ -192,7 +192,7 @@ def main():
    redirect(S/prefix/old,loc(lang))
  redirect(S/'404.html',loc('en'))
  public= S/'uniform';public.mkdir(exist_ok=True)
- for name in ['site.css','site.js']:
+ for name in ['site.css','site.js','faa-premium-cover.png']:
   (public/name).write_bytes((U/name).read_bytes());output['uniform/'+name]=hashlib.sha256((public/name).read_bytes()).hexdigest()
  manifest={'version':'uniform-catalog-1','languages':[c for c,_ in LANGS],'books':len(CAT['books']),'cases':len(CAT['cases']),'files':output}
  (S/'uniform-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf8')
