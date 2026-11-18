@@ -87,17 +87,20 @@ def casecard(c,lang):
  elif c.get('article'):action='<a href="'+loc(lang,route)+'">'+escape(T('Read the free edition',lang))+'</a>'
  else:action='<a href="'+loc(lang,route)+'">'+escape(T('View case details',lang))+'</a>'
  return '<article class="file book-file case-file"><div><span class="tag">'+escape(T(c['status'],lang))+'</span>'+cover+'<h3><a href="'+loc(lang,route)+'">'+escape(T(c['title'],lang))+'</a></h3><p>'+escape(T(c['description'],lang))+'</p></div>'+action+'</article>'
+def faa_card():
+ return ('<article class="file book-file case-file" aria-label="FAA Editor\'s Special Edition"><div><span class="tag">EDITOR\'S SPECIAL EDITION · UNNUMBERED</span><div class="case-cover-frame case-cover-pending"><span>FAA / SPECIAL EDITION</span><strong>The Modernization Accountability Gap</strong><small>Approved premium cover available on Payhip</small></div><h3>FAA — The Modernization Accountability Gap</h3><p>An evidence-based investigation of FAA Terminal Flight Data Manager modernization through People, Governance, Data, and Technology (PGDT). Includes a 23-page case study, four progressive instructional packets, and a government-records disclosure. Five PDFs; 37 pages total.</p></div><a class="collection-action" href="https://payhip.com/b/hq10s" rel="noopener noreferrer">Purchase professional edition — $5.00</a></article>')
 def cabinet(kind,lang,shelf=True):
  items=CAT['books' if kind=='books' else 'cases'];name='Books' if kind=='books' else 'Case Studies'
- cards=''.join(bookcard(i,lang) if kind=='books' else casecard(i,lang) for i in items)
- return '<div class="cabinet"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
+ cards=''
+ for i,item in enumerate(items):
+  cards+=bookcard(item,lang) if kind=='books' else casecard(item,lang)
+  if kind=='cases' and str(item['id']).zfill(3)=='004':
+   cards+=faa_card()
+ return '<div class="cabinet"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items)+(1 if kind=='cases' else 0))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
 def collection(kind,lang,home=False):
  title='Books File Cabinet' if kind=='books' else 'Case Study File Cabinet'
  intro='A growing collection on cybersecurity, leadership, uncertainty, and the human cost of decisions.' if kind=='books' else 'Investigations in the CRSIS-47 case-study progression. Availability is stated for each edition.'
- special=''
- if kind=='cases':
-  special=('<div class="cabinet" aria-label="FAA Editor\'s Special Edition"><div class="cabinet-top"><strong>EDITOR\'S SPECIAL EDITION / UNNUMBERED</strong></div><div class="catalog-grid"><article class="file book-file case-file"><div><span class="tag">Available now · $5.00 USD</span><h3>FAA — The Modernization Accountability Gap</h3><p>An evidence-based investigation of FAA Terminal Flight Data Manager modernization through People, Governance, Data, and Technology (PGDT). Includes a 23-page case study, four progressive instructional packets, and a government-records disclosure. Five PDFs; 37 pages total.</p><p>Separate Editor\'s Special Edition; not part of the numbered case-study sequence.</p></div><a class="collection-action" href="https://payhip.com/b/hq10s" rel="noopener noreferrer">Purchase FAA Editor\'s Special Edition — $5.00</a></article></div></div>')
- return '<section class="wrap" id="'+kind+'"><div class="eyebrow">'+escape(T('The Author Collection' if kind=='books' else 'The Professional Collection',lang))+'</div><'+('h2' if home else 'h1')+' class="section-title">'+escape(T(title,lang))+'</'+('h2' if home else 'h1')+'><p class="intro">'+escape(T(intro,lang))+'</p>'+special+cabinet(kind,lang,home)+'</section>'
+ return '<section class="wrap" id="'+kind+'"><div class="eyebrow">'+escape(T('The Author Collection' if kind=='books' else 'The Professional Collection',lang))+'</div><'+('h2' if home else 'h1')+' class="section-title">'+escape(T(title,lang))+'</'+('h2' if home else 'h1')+'><p class="intro">'+escape(T(intro,lang))+'</p>'+cabinet(kind,lang,home)+'</section>'
 def detail_book(b,lang):
  copy=b.get('copy',{}).get(lang,b.get('copy',{}).get('en',{}))
  title=copy.get('title',b['title'])
