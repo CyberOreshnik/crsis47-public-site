@@ -94,9 +94,9 @@ def cabinet(kind,lang,shelf=True):
  cards=''
  for i,item in enumerate(items):
   cards+=bookcard(item,lang) if kind=='books' else casecard(item,lang)
-  if kind=='cases' and str(item['id']).zfill(3)=='004':
+  if kind=='case-studies' and str(item['id']).zfill(3)=='004':
    cards+=faa_card()
- return '<div class="cabinet"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items)+(1 if kind=='cases' else 0))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
+ return '<div class="cabinet"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items)+(1 if kind=='case-studies' else 0))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
 def collection(kind,lang,home=False):
  title='Books File Cabinet' if kind=='books' else 'Case Study File Cabinet'
  intro='A growing collection on cybersecurity, leadership, uncertainty, and the human cost of decisions.' if kind=='books' else 'Investigations in the CRSIS-47 case-study progression. Availability is stated for each edition.'
