@@ -2058,10 +2058,10 @@
       "title": "CrowdStrike Outage",
       "description": "The July 2024 Falcon content-update incident, operational disruption, recovery, and the difference between benign intent and harmless outcomes.",
       "cover": "case004.png",
-      "status": "In editorial review",
-      "purchase_url": null,
-      "price_usd": null,
-      "available": false
+      "status": "Professional edition",
+      "purchase_url": "https://payhip.com/b/V1Rc2",
+      "price_usd": 5,
+      "available": true
     },
     {
       "id": "005",
