@@ -12,12 +12,12 @@ LAB_INTRO = (
     '<div class="research-lab-intro">'
     '<img src="' + BASE + 'shield.png" alt="CRSIS-47 Evidence Chamber shield" width="72" '
     'style="display:block;height:auto;margin:1rem 0">'
-    '<h3>SolarWinds 005 Decision Lab</h3>'
-    '<p>Try a short exercise inspired by the SolarWinds case. You’ll decide how a team '
-    'should respond to a software update as new information comes in.</p>'
+    '<h3>CRSIS-47 TIMEPIECE</h3>'
+    '<p>Practice making decisions as new evidence comes in. In this exercise, decide how a team '
+    'should respond to a software update.</p>'
     '<p>Read the evidence, choose what to do, and explain your decision. '
     'You’ll see what happens before moving to the next round.</p>'
-    '<p><a class="button" href="' + BASE + MODULES[1] + '/">Start the SolarWinds lab</a></p>'
+    '<p><a class="button" href="' + BASE + MODULES[1] + '/">Launch TIMEPIECE</a></p>'
     '</div>'
 )
 SOURCE_HUB = (
