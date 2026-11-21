@@ -38,6 +38,8 @@ jobs:
           python3 qa/verify_uniform_site.py
           python3 qa/verify_frozen_website.py
           python3 qa/regress_site.py
+      - name: Gate 2 verify generated collection routes and registry
+        run: python3 tests/verify_generated_module_routes.py
       - name: Install browser test dependencies without changing project manifests
         run: |
           npm install --no-save --no-package-lock playwright
