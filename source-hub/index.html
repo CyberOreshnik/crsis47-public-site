@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Source Hub | CRSIS-47 — The Evidence Chamber</title>
+<style>
+:root{color-scheme:dark;--navy:#091a2c;--panel:#10283e;--gold:#d5ae68;--ivory:#f4ead8;--muted:#c2cbd5}
+*{box-sizing:border-box}body{margin:0;background:var(--navy);color:var(--ivory);font:16px/1.6 system-ui,Arial,sans-serif}
+header,main,footer{max-width:1120px;margin:auto;padding:24px}header{border-bottom:1px solid #80673f}
+a{color:#efd29b}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.brand{font:700 1.15rem Georgia,serif;letter-spacing:.05em;color:var(--gold)}h1{font:normal clamp(2.2rem,5vw,3.6rem) Georgia,serif;color:var(--gold);margin:.3em 0}h2{font:normal 1.5rem Georgia,serif;color:var(--gold)}
+.lead{max-width:800px;color:var(--muted)}.tools{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0}
+input,select{background:#152d43;border:1px solid #9e865d;color:white;padding:12px;font:inherit;border-radius:3px}
+input{flex:2;min-width:230px}select{flex:1;min-width:180px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:18px}
+article{background:var(--panel);border:1px solid #6b604c;border-top:3px solid var(--gold);padding:22px}
+article h2{margin:0 0 8px}.meta{font-size:.84rem;color:#e1bd7c;letter-spacing:.04em;text-transform:uppercase}
+small,.note{color:var(--muted)}.tag{display:inline-block;border:1px solid #826d49;padding:2px 8px;margin:4px 5px 0 0;font-size:.8rem}
+footer{border-top:1px solid #80673f;margin-top:40px;color:var(--muted)}#count{margin-bottom:12px}
+</style></head>
+<body><header><div class="brand">CRSIS-47 | THE EVIDENCE CHAMBER</div><nav aria-label="Site navigation"><a href="../approved-website/index.html#research">Return to website</a></nav></header>
+<main><p class="meta">Research &amp; Laboratories / Scholarly infrastructure</p><h1>Source Hub</h1>
+<p class="lead">A governed discovery index for scholarly journals and investigative evidence. Listing a publication venue does not endorse every article it publishes. Individual research claims require independent source evaluation.</p>
+<section aria-labelledby="browse"><h2 id="browse">Explore sources</h2><div class="tools">
+<input id="search" type="search" aria-label="Search sources" placeholder="Search title, topic, or relevance">
+<select id="type" aria-label="Filter by source type"><option value="">All source types</option><option value="Journal">Academic journals</option><option value="Primary evidence">Primary evidence</option></select>
+<select id="lens" aria-label="Filter by PGDT lens"><option value="">All PGDT lenses</option><option>People</option><option>Governance</option><option>Data</option><option>Technology</option></select>
+</div><p id="count" role="status" aria-live="polite"></p><div class="cards" id="results"></div></section>
+<section aria-labelledby="policy"><h2 id="policy">Evidence governance</h2><p>Records distinguish <strong>publication venues</strong> from <strong>individual articles</strong>, primary evidence, and CRSIS-47 analysis. Entries are discovery candidates until a specific work is reviewed for provenance, methodology, relevance, limitations, and citation accuracy. Public records must not expose confidential doctoral or controlled research material.</p><p class="note">Version 0.1 — initial journal discovery. No experimental validation or publication endorsement is implied.</p></section></main>
+<footer>CRSIS-47 — Cyber Risk Security Intelligence System · Where Evidence Becomes Judgment.</footer>
+<script>
+const records=[
+{title:"Discover Data",type:"Journal",url:"https://link.springer.com/journal/44248",description:"Data-centered research and reproducible discovery. Candidate venue for evidence provenance, structured incident datasets, and research data practices.",lenses:["Data","Technology"],status:"Venue identified; articles pending review"},
+{title:"Journal of Statistical Theory and Practice",type:"Journal",url:"https://link.springer.com/journal/42519",description:"Statistical methodology and practical inference. Candidate venue for repeated-measures outcomes, calibration, uncertainty estimation, and performance evaluation.",lenses:["Data","Governance"],status:"Venue identified; articles pending review"},
+{title:"Journal of Statistical Theory and Applications",type:"Journal",url:"https://link.springer.com/journal/44199",description:"Statistical theory and applications. Candidate venue for probabilistic assessment and formal uncertainty methods.",lenses:["Data","Technology"],status:"Venue identified; articles pending review"},
+{title:"Computational Statistics",type:"Journal",url:"https://link.springer.com/journal/180",description:"Computational statistical methods. Candidate venue for reproducible simulation, model comparison, and algorithmic evaluation.",lenses:["Data","Technology"],status:"Venue identified; articles pending review"}
+];
+const $=id=>document.getElementById(id);
+function render(){const q=$("search").value.trim().toLowerCase(),t=$("type").value,l=$("lens").value;const shown=records.filter(r=>(!t||r.type===t)&&(!l||r.lenses.includes(l))&&(!q||[r.title,r.description,r.status,...r.lenses].join(" ").toLowerCase().includes(q)));$("count").textContent=shown.length+" of "+records.length+" sources shown";$("results").replaceChildren();for(const r of shown){const a=document.createElement("article");const h=document.createElement("h2");h.textContent=r.title;const p=document.createElement("p");p.textContent=r.description;const m=document.createElement("p");m.className="meta";m.textContent=r.type+" · "+r.status;const tags=document.createElement("div");for(const lens of r.lenses){const s=document.createElement("span");s.className="tag";s.textContent=lens;tags.append(s)}const link=document.createElement("a");link.href=r.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Visit publisher journal page";a.append(h,m,p,tags,document.createElement("p"),link);$("results").append(a)}if(!shown.length){const p=document.createElement("p");p.textContent="No sources match these filters."; $("results").append(p)}}
+for(const id of ["search","type","lens"])$(id).addEventListener(id==="search"?"input":"change",render);render();
+</script></body></html>
