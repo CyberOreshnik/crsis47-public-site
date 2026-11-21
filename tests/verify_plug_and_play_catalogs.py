@@ -24,3 +24,24 @@ with tempfile.TemporaryDirectory() as d:
  assert any(x["id"]=="book-008" for x in json.loads((root/"collections/generated/books-0002.json").read_text())["items"])
  assert not (root/"approved-website").exists()
  print("PASS: adding one published item requires content-only edit; pagination and private/draft exclusion verified")
+
+# Independently verify case-study growth and privacy boundaries.
+with tempfile.TemporaryDirectory() as d:
+ root=Path(d)
+ (root/"collections/content").mkdir(parents=True)
+ (root/"collections/registry.json").write_text((ROOT/"collections/registry.json").read_text())
+ def case(i,status="published",visibility="public"):
+  return {"id":f"case-{i:03d}","title":f"Case Study {i}","slug":f"case-{i}","language":"en","version":"1.0","publication_status":status,"visibility":visibility}
+ path=root/"collections/content/case-studies.json"
+ path.write_text(json.dumps([case(i) for i in range(1,5)]+[case(5,"draft"),case(6,"published","private")]))
+ before=mod.build(root)
+ assert before["case-studies"]["count"]==4
+ assert len(before["case-studies"]["pages"])==1
+ path.write_text(json.dumps([case(i) for i in range(1,5)]+[case(5,"draft"),case(6,"published","private"),case(7)]))
+ after=mod.build(root)
+ assert after["case-studies"]["count"]==5
+ assert len(after["case-studies"]["pages"])==2
+ second=json.loads((root/"collections/generated/case-studies-0002.json").read_text())
+ assert [item["id"] for item in second["items"]]==["case-007"]
+ assert not (root/"approved-website").exists()
+ print("PASS: case study content-only addition creates second four-item page without publishing drafts or private records")
