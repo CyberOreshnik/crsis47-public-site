@@ -1,0 +1,23 @@
+name: Verify independent collection contracts
+on:
+  push:
+    branches:
+      - feature/source-hub-free-api
+  pull_request:
+    paths:
+      - 'source-hub/**'
+      - 'source-hub-api/**'
+      - 'tests/verify_collection_integration.py'
+      - 'docs/architecture/**'
+      - '.github/workflows/collection-integration.yml'
+  workflow_dispatch:
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source hub and shared architecture contracts
+        run: python tests/verify_collection_integration.py
