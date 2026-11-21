@@ -5,6 +5,7 @@ const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
 const fs=require('node:fs');
 const path=require('node:path');
+const os=require('node:os');
 const PORT=8768;
 const ROOT=path.resolve('site');
 const routes=[
@@ -17,10 +18,12 @@ const routes=[
 ];
 (async()=>{
  assert.ok(fs.existsSync(ROOT),'Build site/ first; cannot claim browser coverage without a built website');
- const server=spawn('python3',['-m','http.server',String(PORT),'--bind','127.0.0.1','--directory',ROOT],{stdio:'ignore'});
+ const mount=fs.mkdtempSync(path.join(os.tmpdir(),'crsis-browser-'));
+ fs.symlinkSync(ROOT,path.join(mount,'crsis47-public-site'),'dir');
+ const server=spawn('python3',['-m','http.server',String(PORT),'--bind','127.0.0.1','--directory',mount],{stdio:'ignore'});
  let browser;
  try{
-  for(let i=0;i<50;i++){try{const r=await fetch('http://127.0.0.1:'+PORT+'/');if(r.ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
+  for(let i=0;i<50;i++){try{const r=await fetch('http://127.0.0.1:'+PORT+'/crsis47-public-site/');if(r.ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
   browser=await chromium.launch({headless:true});
   const findings=[];
   for(const route of routes){
@@ -29,16 +32,17 @@ const routes=[
    const failures=[];
    page.on('request',r=>{const u=new URL(r.url());if(/\.(json|ndjson|csv|sqlite|db)(?:$|\?)/i.test(u.pathname)||u.pathname.includes('/api/'))data.push(u.pathname);});
    page.on('requestfailed',r=>failures.push(r.url()));
-   const response=await page.goto('http://127.0.0.1:'+PORT+route.path,{waitUntil:'networkidle',timeout:30000});
+   const response=await page.goto('http://127.0.0.1:'+PORT+'/crsis47-public-site'+route.path,{waitUntil:'networkidle',timeout:30000});
    assert.equal(response.status(),200,route.name+' missing route');
    const foreign=data.filter(p=>{
     const collection=route.name.toLowerCase().replace(/ /g,'-');
     return ['source-hub','labs','glossary','research','books','case-studies'].some(k=>p.includes('/'+k+'/')&&k!==collection);
    });
    assert.deepEqual(foreign,[],route.name+' loaded another collection dataset');
+   assert.deepEqual(failures,[],route.name+' had failed network requests');
    findings.push({collection:route.name,requests:data,failedRequests:failures});
    await page.close();
   }
   console.log(JSON.stringify({status:'PASS',scope:'browser network request isolation for built routes',findings},null,2));
- }finally{if(browser)await browser.close();server.kill();}
+ }finally{if(browser)await browser.close();server.kill();fs.rmSync(mount,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});
