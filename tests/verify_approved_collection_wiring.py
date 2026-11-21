@@ -24,3 +24,12 @@ assert "\\n    registry =" not in research
 assert "\\n    labs = public_labs()" not in research
 assert re.search(r"^    labs = public_labs\(\)$",research,re.M)
 print("PASS: research build initialization is executable Python, not an escaped comment")
+
+# Gate 2: each module is explicitly registered with the approved public route.
+for cid,route in (("timepiece","/labs/"),("glossary","/glossary.html"),("research","/research/"),("source-hub","/source-hub/")):
+ assert collections[cid]["route"]==route
+ assert collections[cid]["page_size"]==25
+assert collections["timepiece"]["manifest"]=="labs/catalog.json"
+assert 'for cid, expected in (("glossary", "/glossary.html"), ("research", "/research/"), ("source-hub", "/source-hub/")):' in research
+assert 'write_page(registry_path, REGISTRY.read_text' in research
+print("PASS: Gate 2 approved module routes and manifest contracts checked at publication")
