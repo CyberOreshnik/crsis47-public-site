@@ -8,7 +8,15 @@ from urllib.parse import urlsplit
 
 SITE = Path("site")
 BASE = "/crsis47-public-site/"
-CATALOG = Path("labs/catalog.json")
+REGISTRY = Path("collections/registry.json")
+
+def registered_collection(collection_id):
+    registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    matches = [entry for entry in registry["collections"] if entry["id"] == collection_id]
+    if len(matches) != 1:
+        raise ValueError(f"Missing or duplicate registered collection: {collection_id}")
+    return matches[0]
+
 OLD_BACK_LINK = "../approved-website/index.html#research"
 def lab_intro(labs):
     cards = []
@@ -33,7 +41,8 @@ def lab_intro(labs):
 
 
 def public_labs():
-    entries = json.loads(CATALOG.read_text(encoding="utf-8"))
+    catalog_path = Path(registered_collection("timepiece")["manifest"])
+    entries = json.loads(catalog_path.read_text(encoding="utf-8"))
     if not isinstance(entries, list):
         raise ValueError("Lab catalog must be a list")
     seen = set()
@@ -90,6 +99,9 @@ def main():
     uniform = json.loads(uniform_path.read_text(encoding="utf-8"))
     deployment = json.loads(deployment_path.read_text(encoding="utf-8"))
     hashes = {}
+    # Publish registry metadata for on-demand readers; preserve existing site layout.
+    registry_path = "collections/registry.json"
+    write_page(registry_path, REGISTRY.read_text(encoding="utf-8"), hashes)
     labs = public_labs()
     intro = lab_intro(labs)
     local_modules = ["source-hub", *(lab["local_path"] for lab in labs if lab["local_path"])]
