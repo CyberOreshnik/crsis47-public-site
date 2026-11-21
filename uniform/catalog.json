@@ -2067,7 +2067,7 @@
       "id": "005",
       "slug": "005-solarwinds-the-trust-exploit",
       "title": "SolarWinds — The Trust Exploit",
-      "description": "Compromised software trust, supply-chain exposure, and decisions made under evolving evidence.",
+      "description": "The SolarWinds Orion supply-chain compromise: manipulated build integrity, signed software updates, customer exposure, and decisions under uncertain evidence of downstream compromise.",
       "cover": null,
       "status": "In development",
       "purchase_url": null,
