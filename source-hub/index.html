@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><meta name="source-hub-api" content=""><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Source Hub | CRSIS-47 — The Evidence Chamber</title>
 <style>
 :root{color-scheme:dark;--navy:#091a2c;--panel:#10283e;--gold:#d5ae68;--ivory:#f4ead8;--muted:#c2cbd5}
@@ -18,14 +18,16 @@ footer{border-top:1px solid #80673f;margin-top:40px;color:var(--muted)}#count{ma
 <body><header><div class="brand">CRSIS-47 | THE EVIDENCE CHAMBER</div><nav aria-label="Site navigation"><a href="../approved-website/index.html#research">Return to website</a></nav></header>
 <main><p class="meta">Research &amp; Laboratories / Scholarly infrastructure</p><h1>Source Hub</h1>
 <p class="lead">A governed discovery index for scholarly journals and investigative evidence. Listing a publication venue does not endorse every article it publishes. Individual research claims require independent source evaluation.</p>
-<section aria-labelledby="browse"><h2 id="browse">Explore sources</h2><div class="tools">
+<section aria-labelledby="browse"><h2 id="browse">Explore sources</h2><form class="tools" id="filters">
 <input id="search" type="search" aria-label="Search sources" placeholder="Search title, topic, or relevance">
-<select id="type" aria-label="Filter by source type"><option value="">All source types</option><option value="Journal">Academic journals</option><option value="Primary evidence">Primary evidence</option></select>
+<select id="type" aria-label="Filter by source type"><option value="">All source types</option><option value="Journal">Academic journals</option><option value="Article">Articles</option><option value="Primary evidence">Primary evidence</option></select>
 <select id="lens" aria-label="Filter by PGDT lens"><option value="">All PGDT lenses</option><option>People</option><option>Governance</option><option>Data</option><option>Technology</option></select>
-</div><p id="count" role="status" aria-live="polite"></p><div class="cards" id="results"></div></section>
+<button type="submit">Search</button>
+</form><p id="count" role="status" aria-live="polite"></p><div class="cards" id="results"></div><nav aria-label="Source result pages"><button type="button" id="first" hidden>First page</button> <button type="button" id="next" hidden>Next page</button></nav></section>
 <section aria-labelledby="policy"><h2 id="policy">Evidence governance</h2><p>Records distinguish <strong>publication venues</strong> from <strong>individual articles</strong>, primary evidence, and CRSIS-47 analysis. Entries are discovery candidates until a specific work is reviewed for provenance, methodology, relevance, limitations, and citation accuracy. Public records must not expose confidential doctoral or controlled research material.</p><p class="note">Version 0.1 — initial journal discovery. No experimental validation or publication endorsement is implied.</p></section></main>
 <footer>CRSIS-47 — Cyber Risk Security Intelligence System · Where Evidence Becomes Judgment.</footer>
 <script>
+const apiBase = document.querySelector('meta[name="source-hub-api"]').content;
 const records=[
 {title:"Discover Data",type:"Journal",url:"https://link.springer.com/journal/44248",description:"Data-centered research and reproducible discovery. Candidate venue for evidence provenance, structured incident datasets, and research data practices.",lenses:["Data","Technology"],status:"Venue identified; articles pending review"},
 {title:"Journal of Statistical Theory and Practice",type:"Journal",url:"https://link.springer.com/journal/42519",description:"Statistical methodology and practical inference. Candidate venue for repeated-measures outcomes, calibration, uncertainty estimation, and performance evaluation.",lenses:["Data","Governance"],status:"Venue identified; articles pending review"},
@@ -33,6 +35,114 @@ const records=[
 {title:"Computational Statistics",type:"Journal",url:"https://link.springer.com/journal/180",description:"Computational statistical methods. Candidate venue for reproducible simulation, model comparison, and algorithmic evaluation.",lenses:["Data","Technology"],status:"Venue identified; articles pending review"}
 ];
 const $=id=>document.getElementById(id);
-function render(){const q=$("search").value.trim().toLowerCase(),t=$("type").value,l=$("lens").value;const shown=records.filter(r=>(!t||r.type===t)&&(!l||r.lenses.includes(l))&&(!q||[r.title,r.description,r.status,...r.lenses].join(" ").toLowerCase().includes(q)));$("count").textContent=shown.length+" of "+records.length+" sources shown";$("results").replaceChildren();for(const r of shown){const a=document.createElement("article");const h=document.createElement("h2");h.textContent=r.title;const p=document.createElement("p");p.textContent=r.description;const m=document.createElement("p");m.className="meta";m.textContent=r.type+" · "+r.status;const tags=document.createElement("div");for(const lens of r.lenses){const s=document.createElement("span");s.className="tag";s.textContent=lens;tags.append(s)}const link=document.createElement("a");link.href=r.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Visit publisher journal page";a.append(h,m,p,tags,document.createElement("p"),link);$("results").append(a)}if(!shown.length){const p=document.createElement("p");p.textContent="No sources match these filters."; $("results").append(p)}}
-for(const id of ["search","type","lens"])$(id).addEventListener(id==="search"?"input":"change",render);render();
+const filters = {search:"q", type:"type", lens:"lens"};
+let request;
+let nextCursor;
+function show(items) {
+  $("results").replaceChildren();
+  for (const record of items) {
+    const card = document.createElement("article");
+    const title = document.createElement("h2");
+    title.textContent = record.title;
+    const description = document.createElement("p");
+    description.textContent = record.description;
+    const meta = document.createElement("p");
+    meta.className = "meta";
+    meta.textContent = [record.source_type || record.type, record.review_status || record.status, record.publication_date].filter(Boolean).join(" · ");
+    card.append(title, meta, description);
+    for (const lens of record.lenses || [record.pgdt_lens]) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = lens;
+      card.append(tag);
+    }
+    try {
+      const url = new URL(record.url);
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        const link = document.createElement("a");
+        link.href = url.href;
+        link.textContent = "View source";
+        const line = document.createElement("p");
+        line.append(link);
+        card.append(line);
+      }
+    } catch {}
+    $("results").append(card);
+  }
+  $("count").textContent = items.length ? items.length + " sources on this page" : "No sources match these filters.";
+}
+async function render() {
+  request?.abort();
+  const current = request = new AbortController();
+  const params = new URLSearchParams(location.search);
+  for (const [id, key] of Object.entries(filters)) $(id).value = params.get(key) || "";
+  $("first").hidden = !params.has("cursor");
+  $("next").hidden = true;
+  nextCursor = null;
+  $("results").replaceChildren();
+  try {
+    if (!apiBase) {
+      const q = $("search").value.trim().toLowerCase();
+      show(records.filter(record =>
+        (!$("type").value || record.type === $("type").value) &&
+        (!$("lens").value || record.lenses.includes($("lens").value)) &&
+        [record.title, record.description, record.status, ...record.lenses].join(" ").toLowerCase().includes(q)));
+      return;
+    }
+    if ($("search").value.trim().length && $("search").value.trim().length < 3) {
+      $("count").textContent = "Enter at least three characters.";
+      return;
+    }
+    $("count").textContent = "Loading sources…";
+    const endpoint = new URL("api/sources", apiBase);
+    for (const key of ["q", "type", "lens", "from", "to", "status", "cursor"]) {
+      if (params.has(key)) endpoint.searchParams.set(key, params.get(key));
+    }
+    endpoint.searchParams.set("limit", "25");
+    const response = await fetch(endpoint, {signal: current.signal});
+    if (current !== request) return;
+    if (response.status === 409) {
+      $("count").textContent = "Sources have changed. Choose First page to restart.";
+      return;
+    }
+    if (!response.ok) throw new Error("Search unavailable");
+    const page = await response.json();
+    if (current !== request) return;
+    show(page.items);
+    nextCursor = page.nextCursor;
+    $("next").hidden = !nextCursor;
+  } catch (error) {
+    if (current === request && error.name !== "AbortError") $("count").textContent = "Search is unavailable. Try again.";
+  }
+}
+function navigate(params) {
+  const url = new URL(location.href);
+  url.search = params.toString();
+  if (url.href !== location.href) history.pushState(null, "", url);
+  render();
+}
+$("filters").addEventListener("submit", event => {
+  event.preventDefault();
+  const params = new URLSearchParams(location.search);
+  params.delete("cursor");
+  for (const [id, key] of Object.entries(filters)) {
+    const value = $(id).value.trim();
+    if (value) params.set(key, value);
+    else params.delete(key);
+  }
+  navigate(params);
+});
+$("first").addEventListener("click", () => {
+  const params = new URLSearchParams(location.search);
+  params.delete("cursor");
+  navigate(params);
+});
+$("next").addEventListener("click", () => {
+  if (!nextCursor) return;
+  const params = new URLSearchParams(location.search);
+  params.set("cursor", nextCursor);
+  navigate(params);
+});
+window.addEventListener("popstate", render);
+render();
 </script></body></html>
