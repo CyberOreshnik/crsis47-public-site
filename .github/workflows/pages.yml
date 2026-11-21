@@ -34,12 +34,12 @@ jobs:
         run: python3 apply_frozen_website.py
       - name: Generate uniform multilingual catalog and detail pages
         run: python3 generate_uniform_site.py
+      - name: Install Research & Laboratories modules into published site
+        run: python3 publish_research_modules.py
       - name: Verify shared templates, catalog and translations
         run: python3 qa/verify_uniform_site.py
       - name: Verify frozen publication invariants
         run: python3 qa/verify_frozen_website.py
-      - name: Install Research & Laboratories modules into published site
-        run: python3 publish_research_modules.py
       - name: Verify complete site references
         run: python3 qa/regress_site.py
       - uses: actions/configure-pages@v5
