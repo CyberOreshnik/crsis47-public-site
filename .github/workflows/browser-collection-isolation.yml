@@ -1,0 +1,46 @@
+name: Browser collection isolation
+on:
+  push:
+    branches: [feature/source-hub-free-api]
+  pull_request:
+    paths:
+      - 'tests/browser_collection_isolation.cjs'
+      - '.github/workflows/browser-collection-isolation.yml'
+      - 'source-hub/**'
+      - 'labs/**'
+      - 'research/**'
+      - 'approved-website/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assemble existing approved static website
+        run: |
+          python3 prepare_public_site.py
+          python3 apply_approved_case_studies.py
+          python3 apply_case2_purchase.py
+          python3 qa/verify_evidence_chamber_release.py
+          python3 apply_evidence_chamber.py
+          python3 apply_frozen_website.py
+          python3 generate_uniform_site.py
+          python3 publish_research_modules.py
+          python3 qa/verify_uniform_site.py
+          python3 qa/verify_frozen_website.py
+          python3 qa/regress_site.py
+      - name: Install browser test dependencies without changing project manifests
+        run: |
+          npm install --no-save --no-package-lock playwright
+          npx playwright install --with-deps chromium
+      - name: Test collection network isolation in Chromium
+        run: node tests/browser_collection_isolation.cjs
