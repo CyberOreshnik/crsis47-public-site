@@ -102,7 +102,7 @@ def main():
     # Publish registry metadata for on-demand readers; preserve existing site layout.
     registry_path = "collections/registry.json"
     write_page(registry_path, REGISTRY.read_text(encoding="utf-8"), hashes)
-    labs = public_labs()
+    # Export approved, validated collection metadata to the deployed site.\n    registry = json.loads(REGISTRY.read_text(encoding="utf-8"))\n    by_id = {item["id"]: item for item in registry["collections"]}\n    for cid, expected in (("glossary", "/glossary.html"), ("research", "/research/"), ("source-hub", "/source-hub/")):\n        if cid not in by_id or by_id[cid]["route"] != expected:\n            raise ValueError(f"{cid}: approved route does not match registry")\n    labs = public_labs()
     intro = lab_intro(labs)
     local_modules = ["source-hub", *(lab["local_path"] for lab in labs if lab["local_path"])]
     for module in local_modules:
