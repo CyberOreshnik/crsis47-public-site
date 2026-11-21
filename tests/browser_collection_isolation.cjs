@@ -42,6 +42,13 @@ const routes=[
    });
    assert.deepEqual(foreign,[],route.name+' loaded another collection dataset');
    assert.deepEqual(failures,[],route.name+' had failed network requests');
+   if(route.name==='Books'||route.name==='Case Studies'){
+    const kind=route.name==='Books'?'books':'case-studies';
+    const cabinet=page.locator('[data-collection="'+kind+'"][data-page-size="4"]');
+    assert.ok(await cabinet.count()>0,route.name+' missing approved four-item cabinet contract');
+    const cards=await cabinet.locator('article').count();
+    assert.ok(cards>0,route.name+' rendered no catalog cards');
+   }
    findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
