@@ -29,3 +29,4 @@ jobs:
         run: |
           python tests/verify_collection_registry.py
           python tests/verify_plug_and_play_catalogs.py
+          python tests/verify_approved_collection_wiring.py
