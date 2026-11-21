@@ -30,6 +30,8 @@ const routes=[
    const page=await browser.newPage();
    const data=[];
    const failures=[];
+   const transfers=[];
+   page.on('response',async response=>{try{const req=response.request();const type=req.resourceType();const body=await response.body();transfers.push({type,bytes:body.length,status:response.status(),path:new URL(response.url()).pathname});}catch{}});
    page.on('request',r=>{const u=new URL(r.url());if(/\.(json|ndjson|csv|sqlite|db)(?:$|\?)/i.test(u.pathname)||u.pathname.includes('/api/'))data.push(u.pathname);});
    page.on('requestfailed',r=>failures.push(r.url()));
    const response=await page.goto('http://127.0.0.1:'+PORT+'/crsis47-public-site'+route.path,{waitUntil:'networkidle',timeout:30000});
@@ -40,7 +42,7 @@ const routes=[
    });
    assert.deepEqual(foreign,[],route.name+' loaded another collection dataset');
    assert.deepEqual(failures,[],route.name+' had failed network requests');
-   findings.push({collection:route.name,requests:data,failedRequests:failures});
+   findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
   console.log(JSON.stringify({status:'PASS',scope:'browser network request isolation for built routes',findings},null,2));
