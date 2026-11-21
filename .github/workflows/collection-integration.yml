@@ -9,6 +9,9 @@ on:
       - 'source-hub-api/**'
       - 'tests/verify_collection_integration.py'
       - 'docs/architecture/**'
+      - 'collections/**'
+      - 'tests/verify_collection_registry.py'
+      - 'tests/verify_plug_and_play_catalogs.py'
       - '.github/workflows/collection-integration.yml'
   workflow_dispatch:
 jobs:
@@ -21,3 +24,8 @@ jobs:
           python-version: '3.12'
       - name: Validate source hub and shared architecture contracts
         run: python tests/verify_collection_integration.py
+
+      - name: Validate registry and content-only catalog growth
+        run: |
+          python tests/verify_collection_registry.py
+          python tests/verify_plug_and_play_catalogs.py
