@@ -3,9 +3,10 @@
 Synthetic records are injected into an in-memory copy of the approved catalog.
 No production content, approved artwork, or website template is modified.
 """
-import copy,hashlib,importlib.util,tempfile
+import copy,hashlib,importlib.util,tempfile,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 spec=importlib.util.spec_from_file_location("uniform_generator",ROOT/"generate_uniform_site.py")
 mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 baseline=copy.deepcopy(mod.CAT)
