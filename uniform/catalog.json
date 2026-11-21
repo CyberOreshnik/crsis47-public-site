@@ -2068,11 +2068,11 @@
       "slug": "005-solarwinds-the-trust-exploit",
       "title": "SolarWinds — The Trust Exploit",
       "description": "Compromised software trust, supply-chain exposure, and decisions made under evolving evidence.",
-      "cover": null,
-      "status": "In development",
-      "purchase_url": null,
-      "price_usd": null,
-      "available": false
+      "cover": "uniform/case005.jpg",
+      "status": "Professional edition",
+      "purchase_url": "https://payhip.com/b/AnwVg",
+      "price_usd": 5,
+      "available": true
     },
     {
       "id": "006",

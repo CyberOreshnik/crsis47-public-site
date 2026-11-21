@@ -192,7 +192,7 @@ def main():
    redirect(S/prefix/old,loc(lang))
  redirect(S/'404.html',loc('en'))
  public= S/'uniform';public.mkdir(exist_ok=True)
- for name in ['site.css','site.js','faa-premium-cover.png']:
+ for name in ['site.css','site.js','faa-premium-cover.png','case005.jpg']:
   (public/name).write_bytes((U/name).read_bytes());output['uniform/'+name]=hashlib.sha256((public/name).read_bytes()).hexdigest()
  manifest={'version':'uniform-catalog-1','languages':[c for c,_ in LANGS],'books':len(CAT['books']),'cases':len(CAT['cases']),'files':output}
  (S/'uniform-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf8')
