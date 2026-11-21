@@ -8,9 +8,17 @@ SITE = Path("site")
 BASE = "/crsis47-public-site/"
 MODULES = ("source-hub", "labs/solarwinds-005")
 OLD_BACK_LINK = "../approved-website/index.html#research"
-LAB_LINK = (
-    '<p><a href="' + BASE + MODULES[1] + '/">'
-    'Launch TIMEPIECE — SolarWinds 005 interactive lab →</a></p>'
+LAB_INTRO = (
+    '<div class="research-lab-intro">'
+    '<img src="' + BASE + 'shield.png" alt="CRSIS-47 Evidence Chamber shield" width="72" '
+    'style="display:block;height:auto;margin:1rem 0">'
+    '<h3>SolarWinds 005 Decision Lab</h3>'
+    '<p>Try a short exercise inspired by the SolarWinds case. You’ll decide how a team '
+    'should respond to a software update as new information comes in.</p>'
+    '<p>Read the evidence, choose what to do, and explain your decision. '
+    'You’ll see what happens before moving to the next round.</p>'
+    '<p><a class="button" href="' + BASE + MODULES[1] + '/">Start the SolarWinds lab</a></p>'
+    '</div>'
 )
 SOURCE_HUB = (
     '<details id="source-hub-resource"><summary>Source Hub</summary>'
@@ -45,17 +53,19 @@ def main():
         html = Path(path).read_text(encoding="utf-8")
         if html.count(OLD_BACK_LINK) != 1:
             raise ValueError(f"{path}: expected one research return link")
-        html = html.replace(OLD_BACK_LINK, BASE + "research/")
-        if module.startswith("labs/"):
-            html = html.replace("Private review preview · Fictional", "Public educational demo · Fictional")
+        return_path = "research/#division-detail-03" if module.startswith("labs/") else "research/"
+        html = html.replace(OLD_BACK_LINK, BASE + return_path)
         write_page(path, html, hashes)
 
     for page in ("index.html", "research/index.html"):
         html = (SITE / page).read_text(encoding="utf-8")
-        html = insert_after(
-            html, r'<details id="division-detail-03">\s*<summary>[^<]*</summary>',
-            LAB_LINK, page,
+        html, matches = re.subn(
+            r'(<details id="division-detail-03">\s*<summary>[^<]*</summary>)[\s\S]*?</details>',
+            lambda match: match[1] + LAB_INTRO + '</details>',
+            html,
         )
+        if matches != 1:
+            raise ValueError(f"{page}: expected one Division 03, found {matches}")
         html = insert_after(
             html, r'<details id="division-detail-04">(?:(?!</details>)[\s\S])*</details>',
             SOURCE_HUB, page,
