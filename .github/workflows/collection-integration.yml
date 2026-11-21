@@ -12,6 +12,7 @@ on:
       - 'collections/**'
       - 'tests/verify_collection_registry.py'
       - 'tests/verify_plug_and_play_catalogs.py'
+      - 'tests/verify_real_collection_expansion.py'
       - '.github/workflows/collection-integration.yml'
   workflow_dispatch:
 jobs:
@@ -30,3 +31,4 @@ jobs:
           python tests/verify_collection_registry.py
           python tests/verify_plug_and_play_catalogs.py
           python tests/verify_approved_collection_wiring.py
+          python tests/verify_real_collection_expansion.py
