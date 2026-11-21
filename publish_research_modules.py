@@ -1,28 +1,70 @@
 """Install the reviewed public research modules into generated Pages output."""
+from html import escape
 import hashlib
 import json
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 SITE = Path("site")
 BASE = "/crsis47-public-site/"
-MODULES = ("source-hub", "labs/solarwinds-005")
+CATALOG = Path("labs/catalog.json")
 OLD_BACK_LINK = "../approved-website/index.html#research"
-LAB_INTRO = (
-    '<div class="research-lab-intro">'
-    '<img src="' + BASE + 'shield.png" alt="CRSIS-47 Evidence Chamber shield" width="72" '
-    'style="display:block;height:auto;margin:1rem 0">'
-    '<h3>CRSIS-47 TIMEPIECE</h3>'
-    '<p>Practice making decisions as new evidence comes in. In this exercise, decide how a team '
-    'should respond to a software update.</p>'
-    '<p>Read the evidence, choose what to do, and explain your decision. '
-    'You’ll see what happens before moving to the next round.</p>'
-    '<p><a class="button" href="' + BASE + MODULES[1] + '/">Launch TIMEPIECE</a></p>'
-    '</div>'
-)
+def lab_intro(labs):
+    cards = []
+    for lab in labs:
+        title = escape(lab["title"])
+        description = escape(lab["description"])
+        url = escape(lab["launch_url"], quote=True)
+        cards.append(
+            f'<li><h4>{title}</h4><p>{description}</p>'
+            f'<p><a class="button" href="{url}" aria-label="Launch {title} in TIMEPIECE">'
+            'Launch TIMEPIECE</a></p></li>'
+        )
+    return (
+        '<div class="research-lab-intro">'
+        '<img src="' + BASE + 'shield.png" alt="CRSIS-47 Evidence Chamber shield" width="72" '
+        'style="display:block;height:auto;margin:1rem 0">'
+        '<h3>CRSIS-47 TIMEPIECE</h3>'
+        '<p>Choose an exercise. Read the evidence, decide what to do, and explain why.</p>'
+        + ('<ul>' + ''.join(cards) + '</ul>' if cards else '<p>No public exercises are available yet.</p>')
+        + '</div>'
+    )
+
+
+def public_labs():
+    entries = json.loads(CATALOG.read_text(encoding="utf-8"))
+    if not isinstance(entries, list):
+        raise ValueError("Lab catalog must be a list")
+    seen = set()
+    labs = []
+    for entry in entries:
+        slug = entry.get("slug", "")
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or slug in seen:
+            raise ValueError(f"Invalid or duplicate lab slug: {slug!r}")
+        seen.add(slug)
+        if entry.get("status") not in ("draft", "published"):
+            raise ValueError(f"{slug}: expected draft or published status")
+        if entry["status"] == "draft":
+            continue
+        for field in ("title", "description"):
+            if not isinstance(entry.get(field), str) or not entry[field].strip():
+                raise ValueError(f"{slug}: missing {field}")
+        local_path = f"labs/{slug}" if "hosted_url" not in entry else None
+        if local_path:
+            url = BASE + local_path + "/"
+        else:
+            url = entry["hosted_url"]
+            target = urlsplit(url)
+            if target.scheme != "https" or not target.hostname or target.username is not None:
+                raise ValueError(f"{slug}: hosted lab must have an HTTPS launch URL")
+        labs.append(dict(entry, launch_url=url, local_path=local_path))
+    return labs
+
+
 SOURCE_HUB = (
     '<details id="source-hub-resource"><summary>Source Hub</summary>'
-    '<p><a href="' + BASE + MODULES[0] + '/">'
+    '<p><a href="' + BASE + "source-hub" + '/">'
     'Open the Source Hub →</a></p></details>'
 )
 
@@ -48,11 +90,14 @@ def main():
     uniform = json.loads(uniform_path.read_text(encoding="utf-8"))
     deployment = json.loads(deployment_path.read_text(encoding="utf-8"))
     hashes = {}
-    for module in MODULES:
+    labs = public_labs()
+    intro = lab_intro(labs)
+    local_modules = ["source-hub", *(lab["local_path"] for lab in labs if lab["local_path"])]
+    for module in local_modules:
         path = module + "/index.html"
         html = Path(path).read_text(encoding="utf-8")
-        if html.count(OLD_BACK_LINK) != 1:
-            raise ValueError(f"{path}: expected one research return link")
+        if html.count(OLD_BACK_LINK) > 1:
+            raise ValueError(f"{path}: duplicate research return link")
         return_path = "research/#division-detail-03" if module.startswith("labs/") else "research/"
         html = html.replace(OLD_BACK_LINK, BASE + return_path)
         write_page(path, html, hashes)
@@ -61,7 +106,7 @@ def main():
         html = (SITE / page).read_text(encoding="utf-8")
         html, matches = re.subn(
             r'(<details id="division-detail-03">\s*<summary>[^<]*</summary>)[\s\S]*?</details>',
-            lambda match: match[1] + LAB_INTRO + '</details>',
+            lambda match: match[1] + intro + '</details>',
             html,
         )
         if matches != 1:
