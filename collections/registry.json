@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "collections": [
+    {
+      "id": "books",
+      "label": "Books",
+      "route": "/books/",
+      "kind": "publication",
+      "page_size": 4,
+      "data_strategy": "paged-manifest",
+      "status": "planned"
+    },
+    {
+      "id": "case-studies",
+      "label": "Case Studies",
+      "route": "/case-studies/",
+      "kind": "publication",
+      "page_size": 4,
+      "data_strategy": "paged-manifest",
+      "status": "planned"
+    },
+    {
+      "id": "timepiece",
+      "label": "TIMEPIECE",
+      "route": "/labs/",
+      "kind": "interactive-lab",
+      "page_size": 25,
+      "data_strategy": "manifest-then-on-demand-lab",
+      "status": "existing",
+      "manifest": "labs/catalog.json"
+    },
+    {
+      "id": "glossary",
+      "label": "Glossary",
+      "route": "/glossary.html",
+      "kind": "reference",
+      "page_size": 25,
+      "data_strategy": "paged-manifest",
+      "status": "planned"
+    },
+    {
+      "id": "source-hub",
+      "label": "Source Hub",
+      "route": "/source-hub/",
+      "kind": "evidence",
+      "page_size": 25,
+      "data_strategy": "indexed-api",
+      "status": "prototype"
+    },
+    {
+      "id": "research",
+      "label": "Research & Laboratories",
+      "route": "/research/",
+      "kind": "research",
+      "page_size": 25,
+      "data_strategy": "paged-manifest",
+      "status": "planned"
+    }
+  ]
+}
