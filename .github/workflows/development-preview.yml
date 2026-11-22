@@ -26,9 +26,11 @@ jobs:
           python3 qa/verify_frozen_website.py
           python3 qa/regress_site.py
           python3 tests/verify_generated_module_routes.py
+      - name: Build independent offline-friendly review copy
+        run: python3 tests/build_offline_preview.py
       - name: Package browsable website
         run: |
-          cd site
+          cd offline-preview
           zip -qr ../CRSIS47_DEVELOPMENT_PREVIEW.zip .
       - name: Upload reviewable preview artifact (no production deployment)
         uses: actions/upload-artifact@v4
