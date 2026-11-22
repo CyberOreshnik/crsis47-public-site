@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "workflow": "codex-gate3-public",
+  "collections": {
+    "Case Studies": [
+      "case_study"
+    ],
+    "Books": [
+      "book"
+    ],
+    "PGDT Investigations": [
+      "pgdt_scenario"
+    ],
+    "Research & Laboratories": [
+      "laboratory",
+      "historical_evidence",
+      "public_research_guidance"
+    ],
+    "Scholarly Research": [
+      "scholarly_article"
+    ],
+    "Engineering & Governance": [
+      "public_technical_guidance",
+      "public_governance_guidance"
+    ]
+  },
+  "sources": [
+    {
+      "id": "G3-IANA-EXAMPLES",
+      "url": "https://www.iana.org/help/example-domains",
+      "title": "Example Domains",
+      "publisher": "Internet Assigned Numbers Authority",
+      "doi": null,
+      "authors": [],
+      "publication_date": null,
+      "evidence_type": "public_research_guidance",
+      "use": "IANA maintains example.org for documentation and advises against depending on its web service in production.",
+      "identity": [
+        "example domains",
+        "maintained for documentation purposes",
+        "not designed to support production applications"
+      ],
+      "relationships": {
+        "CRSIS47-GATE3": [
+          "DOC-DOMAINS"
+        ],
+        "CRSIS47-GATE3-BOOK-DEMO": [
+          "DOC-AVAILABILITY"
+        ]
+      }
+    },
+    {
+      "id": "G3-RFC2606",
+      "url": "https://www.rfc-editor.org/rfc/rfc2606.html",
+      "title": "Reserved Top Level DNS Names",
+      "publisher": "RFC Editor",
+      "doi": "10.17487/rfc2606",
+      "authors": [
+        "D. Eastlake",
+        "A. Panitz"
+      ],
+      "publication_date": "1999-06",
+      "evidence_type": "public_technical_guidance",
+      "use": "RFC 2606 Section 3 lists example.org among the reserved second-level example domains.",
+      "identity": [
+        "reserved top level dns names",
+        "reserved example second level domain names",
+        "example.org",
+        "june 1999"
+      ],
+      "relationships": {
+        "CRSIS47-GATE3": [
+          "DOC-DOMAINS"
+        ],
+        "CRSIS47-GATE3-BOOK-DEMO": [
+          "DOC-DOMAINS"
+        ]
+      }
+    },
+    {
+      "id": "G3-RFC6761",
+      "url": "https://www.rfc-editor.org/rfc/rfc6761.html",
+      "title": "Special-Use Domain Names",
+      "publisher": "RFC Editor",
+      "doi": "10.17487/rfc6761",
+      "authors": [
+        "S. Cheshire",
+        "M. Krochmal"
+      ],
+      "publication_date": "2013-02",
+      "evidence_type": "public_technical_guidance",
+      "use": "RFC 6761 Section 6.5 says example names are reserved for documentation and applications should handle them normally.",
+      "identity": [
+        "special-use domain names",
+        "example names are reserved for use in documentation",
+        "application software should not recognize example names",
+        "february 2013"
+      ],
+      "relationships": {
+        "CRSIS47-GATE3": [
+          "DOC-DNS"
+        ],
+        "CRSIS47-GATE3-BOOK-DEMO": [
+          "DOC-DNS"
+        ]
+      }
+    }
+  ]
+}

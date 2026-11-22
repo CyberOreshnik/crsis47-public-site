@@ -14,6 +14,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - run: python3 source-hub-api/test_ingest.py
       - run: python3 source-hub-api/test_research_adapter.py
+      - run: python3 source-hub-api/test_source_policy.py
       - run: python3 source-hub-api/test_codex_capture_e2e.py
       - run: python3 source-hub-api/load_test.py
       - run: node source-hub-api/navigation_test.js
@@ -38,4 +39,14 @@ jobs:
         with:
           name: source-hub-gate2-receipt
           path: ${{ runner.temp }}/gate2-receipt.json
+          if-no-files-found: error
+      - name: Run controlled Gate 3 multi-source research and verify filing
+        run: |
+          set -o pipefail
+          python3 source-hub-api/codex_research_gate3.py | tee "$RUNNER_TEMP/gate3-receipts.json"
+      - name: Retain sanitized Gate 3 filing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hub-gate3-receipts
+          path: ${{ runner.temp }}/gate3-receipts.json
           if-no-files-found: error

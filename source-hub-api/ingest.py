@@ -51,6 +51,9 @@ COLLECTIONS = {
     "validator_record": "validation", "governance_record": "governance",
     "case_study": "case-studies", "book": "books", "laboratory": "laboratories",
     "historical_evidence": "historical-archives",
+    "public_research_guidance": "research-laboratories",
+    "public_technical_guidance": "engineering-governance",
+    "public_governance_guidance": "engineering-governance",
 }
 REQUIRED = {
     "event_type", "source_url", "doi", "title", "authors", "publisher",
@@ -108,6 +111,11 @@ def validate(event):
     if stamp.tzinfo is None:
         raise ValueError("timezone_required")
     result["used_at"] = stamp.astimezone(timezone.utc).isoformat()
+    if result["originating_workflow"] == "codex-gate3-public":
+        if os.getenv("SOURCE_HUB_GATE3_PUBLIC") != "1":
+            raise ValueError("gate3_source_not_authorized")
+        from source_policy import validate_event
+        return validate_event(result)
     if result["publication_date"] and date.fromisoformat(result["publication_date"]).isoformat() != result["publication_date"]:
         raise ValueError("invalid_publication_date")
     if result["source_url"] == GATE2_URL:

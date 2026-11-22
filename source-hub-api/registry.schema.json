@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Source Hub intake and registry",
-  "description": "Reference schemas. Runtime validation additionally canonicalizes synthetic URLs and DOIs. The exact Gate 2 IANA URL additionally requires local opt-in and workflow/project authorization.",
+  "description": "Reference schemas. Runtime validation additionally canonicalizes synthetic URLs and DOIs. The exact Gate 2 IANA URL additionally requires local opt-in and workflow/project authorization. Gate 3 admission requires a reviewed exact entry and explicit opt-in.",
   "$ref": "#/$defs/source_used",
   "$defs": {
     "id": {
@@ -42,6 +42,12 @@
             },
             {
               "const": "https://www.iana.org/help/example-domains"
+            },
+            {
+              "const": "https://www.rfc-editor.org/rfc/rfc2606.html"
+            },
+            {
+              "const": "https://www.rfc-editor.org/rfc/rfc6761.html"
             }
           ]
         },
@@ -90,7 +96,10 @@
             "case_study",
             "book",
             "laboratory",
-            "historical_evidence"
+            "historical_evidence",
+            "public_research_guidance",
+            "public_technical_guidance",
+            "public_governance_guidance"
           ]
         },
         "pgdt_lens": {
@@ -106,11 +115,19 @@
           "type": "boolean"
         },
         "publication_date": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "format": "date"
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+            }
+          ]
         },
         "doi": {
           "type": [
