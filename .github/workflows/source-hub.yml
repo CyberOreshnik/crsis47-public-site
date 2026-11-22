@@ -60,3 +60,34 @@ jobs:
           name: source-hub-gate4-evidence
           path: ${{ runner.temp }}/gate4-evidence.jsonl
           if-no-files-found: error
+  windows-private:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python prepare_public_site.py
+      - run: python apply_approved_case_studies.py
+      - run: python apply_case2_purchase.py
+      - run: python qa/verify_evidence_chamber_release.py
+      - run: python apply_evidence_chamber.py
+      - run: python apply_frozen_website.py
+      - run: python generate_uniform_site.py
+      - run: python publish_research_modules.py
+      - run: python qa/verify_uniform_site.py
+      - run: python qa/verify_frozen_website.py
+      - run: python qa/regress_site.py
+      - run: python source-hub-api/check_public_build.py
+      - name: Verify native Windows private storage and research intake
+        shell: pwsh
+        run: |
+          python source-hub-api/test_gate5_windows.py | Tee-Object -FilePath (Join-Path $env:RUNNER_TEMP 'gate5-evidence.jsonl')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain sanitized Windows evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hub-gate5-windows-evidence
+          path: ${{ runner.temp }}/gate5-evidence.jsonl
+          if-no-files-found: error

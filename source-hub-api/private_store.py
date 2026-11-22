@@ -1,4 +1,4 @@
-"""Private SQLite operations for Gate 4. Managed paths require POSIX permissions."""
+"""Private SQLite operations for Gate 4. Managed paths verify POSIX permissions or Windows ACLs."""
 import argparse
 from contextlib import closing
 import hashlib
@@ -29,14 +29,23 @@ def migrate(db):
         db.executescript("BEGIN IMMEDIATE;" + MIGRATION + "PRAGMA user_version=1; COMMIT;")
 
 def private_path(value, create=False):
-    if os.name != "posix":
-        raise ValueError("managed private storage requires verified POSIX permissions")
+    if os.name not in {"posix", "nt"}:
+        raise ValueError("unsupported private storage platform")
     from server import DB
     raw = Path(value).expanduser().absolute()
+    if os.name == "nt":
+        import windows_security
+        windows_security.reject_reparse(raw)
     path = raw.resolve()
     checkout = Path(__file__).resolve().parents[1]
     if raw != path or path.is_relative_to(checkout) or path == Path(DB).resolve():
         raise ValueError("private file must be outside checkout and distinct from public storage")
+    if os.name == "nt":
+        windows_security.directory(path.parent, create)
+        for item in (path, *(Path(str(path) + suffix) for suffix in ("-wal", "-shm", "-journal"))):
+            if item.exists():
+                windows_security.file(item)
+        return path
     if create:
         path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     parent = path.parent.stat()

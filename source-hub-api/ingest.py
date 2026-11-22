@@ -326,10 +326,16 @@ def main():
     args = parser.parse_args()
     if not args.private_db:
         parser.error('set --private-db or SOURCE_HUB_PRIVATE_DB')
-    path = private_store.provision(args.private_db) if os.getenv('SOURCE_HUB_PERSISTENT') == '1' else args.private_db
+    managed = os.getenv("SOURCE_HUB_PERSISTENT") == "1" or os.name == "nt"
+    path = private_store.provision(args.private_db) if managed else args.private_db
     initialize(path)
     if args.command == "serve":
-        with http_service(path, os.getenv("SOURCE_HUB_INTAKE_TOKEN"), args.port) as service:
+        from windows_security import configured_token
+        try:
+            token = configured_token()
+        except (ValueError, OSError):
+            parser.exit(1, "Intake credential is unavailable or invalid.\n")
+        with http_service(path, token, args.port) as service:
             stop = threading.Event()
             worker = threading.Thread(target=run_worker, args=(path, stop), daemon=True)
             worker.start()

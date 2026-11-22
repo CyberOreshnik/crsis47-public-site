@@ -92,11 +92,11 @@ ingest.process_one(sys.argv[1], interrupt)
     return {"migration": "0 to 1 with existing queued event", "process_exit": terminated,
             "queued_transaction_recovered": True, "synthetic_restore": expected}
 
-def run(root):
+def run(root, token=None):
     os.environ["SOURCE_HUB_GATE3_PUBLIC"] = "1"
     server.DB = str(root / "public.db")
     server.initialize()
-    token = secrets.token_hex(32)
+    token = token or secrets.token_hex(32)
     path = private_store.provision(root / "private" / "registry.db")
     with service(path, token) as endpoint:
         filed = list(codex_research_gate4.run(endpoint, token))

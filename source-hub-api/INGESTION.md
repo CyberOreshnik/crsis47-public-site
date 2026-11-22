@@ -101,3 +101,22 @@ The version-controlled exact-document register remains the approval boundary. Am
 ### Acceptance scope
 
 CI uses three authorized public documents for filing, restart, replay and non-destructive restore verification. The forced process exit and migration/restore exercises use a distinct synthetic database. The verification checks public search, projection denial and the generated site's file and content boundary. Gate 1–3 regression checks remain in CI. This is local private SQLite with a shared operator credential; it does not establish production hardening, immutable audit storage, or general ChatGPT, Zotero, browser or third-party capture.
+
+## Gate 5 — native Windows development operations
+
+Gate 4 acceptance remains recorded at `9ddce964b5c0ab8b53a2f966965b6115822b2703` with its original CI evidence. Windows uses local NTFS, a protected directory ACL accessible to the current user and SYSTEM, and file ACL validation for databases, sidecars, backups and the credential file. The path must be outside the checkout and all served directories. Existing directories with unexpected inheritance or access grants are rejected. Provision a fresh private directory instead of weakening or rewriting an existing directory ACL. Use a parent that already exists. The NTFS boundary does not protect against a compromised account, privileged administrators taking ownership, or compromised hosts.
+
+In PowerShell, set the following values in each authorized terminal. Use the same Windows account that creates the credential.
+
+```powershell
+$env:SOURCE_HUB_PRIVATE_DB = Join-Path $env:LOCALAPPDATA 'CRSIS47-Private\registry.db'
+$env:SOURCE_HUB_TOKEN_FILE = Join-Path $env:LOCALAPPDATA 'CRSIS47-Private\intake.dpapi'
+$env:SOURCE_HUB_GATE3_PUBLIC = '1'
+python source-hub-api/windows_security.py rotate $env:SOURCE_HUB_TOKEN_FILE
+python source-hub-api/private_store.py migrate
+python source-hub-api/ingest.py serve
+```
+
+In the second terminal with the credential file configured, run `python source-hub-api/codex_research_gate4.py`. The Windows CLI manages private paths by default. Rotation uses a generated 256-bit token, replaces the current-user DPAPI credential file and takes effect on service restart. Stop intake before rotating, then restart and reload the client credential. There is no time-based expiry. The DPAPI file protects the token at rest for the Windows user. SQLite databases and backups are ACL-protected and are not encrypted by this feature.
+
+Use the same backup, restore, verify and rollback commands described above, supplying fresh destinations under separate validated private directories. Do not copy a live SQLite file directly. A rejected or interrupted restore must not be promoted. Verify a separate known-good backup before recovering from corruption. The Windows CI job creates only disposable files, checks unsafe inherited directories and broad grants, exercises credential rotation and uses the existing real-source allowlist. No research archive, production service, or Windows user registry is migrated by CI.

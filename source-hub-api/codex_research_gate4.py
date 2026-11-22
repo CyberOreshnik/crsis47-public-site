@@ -25,7 +25,8 @@ if __name__ == "__main__":
     parser.add_argument("--project", default=PRIMARY)
     args = parser.parse_args()
     try:
-        token = os.environ["SOURCE_HUB_INTAKE_TOKEN"]
+        from windows_security import configured_token
+        token = configured_token()
         os.environ["SOURCE_HUB_GATE3_PUBLIC"] = "1"
         for _ in run(args.endpoint, token, args.project):
             pass
