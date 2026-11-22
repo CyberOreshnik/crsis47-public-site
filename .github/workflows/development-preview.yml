@@ -1,0 +1,38 @@
+name: Build approved development website preview
+on:
+  push:
+    branches: [feature/source-hub-free-api]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare approved website
+        run: |
+          python3 prepare_public_site.py
+          python3 apply_approved_case_studies.py
+          python3 apply_case2_purchase.py
+          python3 qa/verify_evidence_chamber_release.py
+          python3 apply_evidence_chamber.py
+          python3 apply_frozen_website.py
+          python3 generate_uniform_site.py
+          python3 publish_research_modules.py
+      - name: Validate preview before delivery
+        run: |
+          python3 qa/verify_uniform_site.py
+          python3 qa/verify_frozen_website.py
+          python3 qa/regress_site.py
+          python3 tests/verify_generated_module_routes.py
+      - name: Package browsable website
+        run: |
+          cd site
+          zip -qr ../CRSIS47_DEVELOPMENT_PREVIEW.zip .
+      - name: Upload reviewable preview artifact (no production deployment)
+        uses: actions/upload-artifact@v4
+        with:
+          name: CRSIS47-DEVELOPMENT-PREVIEW
+          path: CRSIS47_DEVELOPMENT_PREVIEW.zip
+          retention-days: 14
