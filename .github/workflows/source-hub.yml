@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - run: python3 source-hub-api/test_ingest.py
+      - run: python3 source-hub-api/test_research_adapter.py
       - run: python3 source-hub-api/load_test.py
       - run: node source-hub-api/navigation_test.js
       - run: python3 prepare_public_site.py
