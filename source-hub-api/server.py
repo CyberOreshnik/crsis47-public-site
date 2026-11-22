@@ -30,6 +30,14 @@ CREATE INDEX IF NOT EXISTS source_type_order ON sources(visibility,source_type,i
 CREATE INDEX IF NOT EXISTS source_lens_order ON sources(visibility,pgdt_lens,id);
 CREATE INDEX IF NOT EXISTS source_date_order ON sources(visibility,publication_date,id);
 CREATE INDEX IF NOT EXISTS source_public_approved ON sources(visibility,review_status,id);
+CREATE TABLE IF NOT EXISTS public_provenance(
+ source_row INTEGER PRIMARY KEY REFERENCES sources(id) ON DELETE CASCADE,
+ source_id TEXT NOT NULL UNIQUE, collection TEXT NOT NULL, verification TEXT NOT NULL,
+ citation_json TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS public_collection ON public_provenance(collection,verification,source_row);
+CREATE TABLE IF NOT EXISTS public_projects(
+ source_row INTEGER NOT NULL REFERENCES sources(id) ON DELETE CASCADE, project TEXT NOT NULL,
+ PRIMARY KEY(project,source_row));
 CREATE TABLE IF NOT EXISTS revision(id INTEGER PRIMARY KEY CHECK(id=1), version INTEGER NOT NULL, epoch TEXT NOT NULL);
 INSERT OR IGNORE INTO revision VALUES(1,0,lower(hex(randomblob(16))));
 CREATE VIRTUAL TABLE IF NOT EXISTS source_text USING fts5(title,description,content='sources',content_rowid='id',tokenize='trigram');
@@ -72,13 +80,13 @@ def untoken(value, fingerprint):
   return payload["last"],payload["revision"],payload["epoch"]
  except (ValueError, TypeError, KeyError): raise ValueError("Invalid cursor") from None
 def search(params):
- allowed={"q","type","lens","from","to","status","limit","cursor"}
+ allowed={"q","type","lens","from","to","status","limit","cursor","collection","project","verification"}
  if set(params)-allowed or any(len(v)!=1 for v in params.values()): raise ValueError("Invalid parameters")
  get=lambda k:params.get(k,[""])[0].strip()
  if any(len(get(k))>(512 if k=="cursor" else 128) for k in allowed): raise ValueError("Parameter too long")
  limit=int(get("limit") or "25")
  if limit<1 or limit>25: raise ValueError("Limit must be 1..25")
- filters={k:get(k) for k in ("q","type","lens","from","to","status")}
+ filters={k:get(k) for k in ("q","type","lens","from","to","status","collection","project","verification")}
  fingerprint=hashlib.sha256(json.dumps(filters,sort_keys=True).encode()).hexdigest()
  for key in ("from","to"):
   value=filters[key]
@@ -89,6 +97,13 @@ def search(params):
  clauses=["visibility='public'","review_status='approved'","id>?"];args=[cursor[0] if cursor else 0]
  for key,col in (("type","source_type"),("lens","pgdt_lens"),("status","review_status")):
   if filters[key]:clauses.append(col+"=?");args.append(filters[key])
+ for key in ("collection", "verification"):
+  if filters[key]:
+   clauses.append("EXISTS (SELECT 1 FROM public_provenance WHERE source_row=sources.id AND "+key+"=?)")
+   args.append(filters[key])
+ if filters["project"]:
+  clauses.append("EXISTS (SELECT 1 FROM public_projects WHERE project=? AND source_row=sources.id)")
+  args.append(filters["project"])
  if filters["from"]:clauses.append("publication_date>=?");args.append(filters["from"])
  if filters["to"]:clauses.append("publication_date<=?");args.append(filters["to"])
  if filters["q"]:
@@ -101,8 +116,12 @@ def search(params):
   db.execute("BEGIN")
   revision,epoch=db.execute("SELECT version,epoch FROM revision WHERE id=1").fetchone()
   if cursor and cursor[1:]!=(revision,epoch): raise StaleCursor("Collection changed. Restart at the first page.")
-  rows=db.execute("SELECT id,substr(title,1,256) AS title,substr(description,1,1024) AS description,substr(source_type,1,64) AS source_type,substr(pgdt_lens,1,64) AS pgdt_lens,substr(publication_date,1,10) AS publication_date,review_status,CASE WHEN length(url)<=2048 THEN url END AS url FROM sources WHERE "+" AND ".join(clauses)+" ORDER BY id LIMIT ?",args+[limit+1]).fetchall()
+  rows=db.execute("SELECT id,substr(title,1,256) AS title,substr(description,1,1024) AS description,substr(source_type,1,64) AS source_type,substr(pgdt_lens,1,64) AS pgdt_lens,substr(publication_date,1,10) AS publication_date,review_status,CASE WHEN length(url)<=2048 THEN url END AS url,(SELECT citation_json FROM public_provenance WHERE source_row=sources.id) AS citation_json FROM sources WHERE "+" AND ".join(clauses)+" ORDER BY id LIMIT ?",args+[limit+1]).fetchall()
  more=len(rows)>limit;items=[dict(x) for x in rows[:limit]]
+ for item in items:
+  citation = item.pop("citation_json")
+  if citation:
+   item["citation"] = json.loads(citation)
  return {"items":items,"nextCursor":token(items[-1]["id"],fingerprint,revision,epoch) if more else None}
 class Handler(BaseHTTPRequestHandler):
  def log_message(self, format, *args):
@@ -115,7 +134,7 @@ class Handler(BaseHTTPRequestHandler):
    parsed=urlsplit(self.path)
    if parsed.path!="/api/sources":
     self.respond(404,{"error":"Endpoint not found"});return
-   self.respond(200,search(parse_qs(parsed.query,keep_blank_values=True,max_num_fields=8,errors="strict")))
+   self.respond(200,search(parse_qs(parsed.query,keep_blank_values=True,max_num_fields=11,errors="strict")))
   except StaleCursor as exc:
    self.respond(409,{"error":str(exc)})
   except ValueError:

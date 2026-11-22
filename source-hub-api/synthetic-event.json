@@ -1,0 +1,25 @@
+{
+  "event_type": "SOURCE_USED",
+  "schema_version": 1,
+  "source_url": "https://example.org/synthetic/demo",
+  "doi": "10.5555/synthetic-demo",
+  "title": "Synthetic case evidence",
+  "authors": [
+    "Synthetic Author"
+  ],
+  "publisher": null,
+  "publication_date": null,
+  "used_at": "2026-11-22T17:00:00Z",
+  "project_ids": [
+    "CASE-001",
+    "CASE-002"
+  ],
+  "claim_ids": [
+    "C001"
+  ],
+  "evidence_type": "case_study",
+  "classification": "REVIEW_REQUIRED",
+  "originating_workflow": "synthetic-demo",
+  "capture_method": "authorized_api",
+  "pgdt_lens": "Governance"
+}
