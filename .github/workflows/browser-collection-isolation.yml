@@ -46,3 +46,11 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Test collection network isolation in Chromium
         run: node tests/browser_collection_isolation.cjs
+      - name: Upload visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CRSIS47-VISUAL-REVIEW
+          path: preview-screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 14
