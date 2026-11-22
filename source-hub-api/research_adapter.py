@@ -22,6 +22,8 @@ def make_event(record):
     event = {key: record[key] for key in FIELDS if key in record}
     event["event_type"] = "SOURCE_USED"
     event["schema_version"] = 1
+    if record.get("classification", "REVIEW_REQUIRED") != "REVIEW_REQUIRED":
+        raise ValueError("restricted classification cannot be downgraded")
     event["classification"] = "REVIEW_REQUIRED"
     event["capture_method"] = "authorized_api"
     event.setdefault("originating_workflow", "explicit-research-adapter")
