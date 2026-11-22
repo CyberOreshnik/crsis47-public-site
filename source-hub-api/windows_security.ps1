@@ -24,7 +24,14 @@ try {
             ($isDirectory -ne ($Action -eq 'directory'))) { throw 'unsafe object' }
         if ($isDirectory) { $acl = [IO.Directory]::GetAccessControl($Path) }
         else { $acl = [IO.File]::GetAccessControl($Path) }
-        if ($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -notin $trusted) { throw 'owner' }
+        $ownerSid = $acl.GetOwner([Security.Principal.SecurityIdentifier]).Value
+        $administrator = [Security.Principal.WindowsPrincipal]::new(
+            [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+                [Security.Principal.WindowsBuiltInRole]::Administrator)
+        # Windows can assign Administrators as the default owner for files created by an elevated token.
+        # It receives no data-access ACE. Private directories still require an explicitly trusted owner.
+        if ($ownerSid -notin $trusted -and
+            !(!$isDirectory -and $administrator -and $ownerSid -eq 'S-1-5-32-544')) { throw 'owner' }
         if ($isDirectory -and !$acl.AreAccessRulesProtected) { throw 'inherited directory' }
         $rules = $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])
         foreach ($rule in $rules) {
