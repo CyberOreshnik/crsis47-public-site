@@ -71,6 +71,11 @@ const routes=[
    });
    assert.deepEqual(nav.unsafe,[],route.name+' contains unsafe JavaScript links');
    assert.deepEqual(nav.empty,[],route.name+' has links without accessible names');
+   // Gate 4: check a narrow mobile viewport for horizontal document overflow.
+   await page.setViewportSize({width:390,height:844});
+   const mobile=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+   assert.ok(mobile.scroll<=mobile.viewport+2,route.name+' has horizontal overflow at 390px');
+   await page.setViewportSize({width:1280,height:800});
    findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
