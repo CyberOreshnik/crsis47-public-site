@@ -28,6 +28,8 @@ jobs:
           python3 tests/verify_generated_module_routes.py
       - name: Build independent offline-friendly review copy
         run: python3 tests/build_offline_preview.py
+      - name: Add one-click Windows local preview launcher
+        run: cp preview/START_CRSIS47_PREVIEW.ps1 preview/OPEN_CRSIS47_WEBSITE.cmd offline-preview/
       - name: Package browsable website
         run: |
           cd offline-preview
