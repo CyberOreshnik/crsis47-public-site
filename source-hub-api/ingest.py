@@ -17,6 +17,7 @@ from urllib.parse import unquote, urlsplit, urlunsplit
 import uuid
 
 import server
+import private_store
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS intake_events(
@@ -153,6 +154,7 @@ def initialize(path):
     with closing(connect(path)) as db:
         db.execute("PRAGMA journal_mode=WAL")
         db.executescript(SCHEMA)
+        private_store.migrate(db)
 
 def enqueue(path, key, raw):
     if not isinstance(key, str) or not ID.fullmatch(key):
@@ -167,6 +169,8 @@ def enqueue(path, key, raw):
             if previous["digest"] != digest:
                 raise Conflict("idempotency_key_reused")
             return previous["receipt"]
+        if private_store.blocked(db, event['source_url']):
+            raise ValueError('source_authorization_inactive')
         receipt = uuid.uuid4().hex
         db.execute("INSERT INTO intake_events(key,receipt,digest,payload,available) VALUES(?,?,?,?,?)",
                    (key, receipt, digest, payload, time.time()))
@@ -174,6 +178,14 @@ def enqueue(path, key, raw):
 
 def file_source(db, row):
     event = json.loads(row["payload"])
+    if private_store.blocked(db, event['source_url']):
+        raise Conflict('source_authorization_inactive')
+    if event["originating_workflow"] == "codex-gate3-public":
+        from source_policy import validate_event
+        try:
+            validate_event(event)
+        except ValueError as exc:
+            raise Conflict("source_policy_changed") from exc
     identities = [("url", event["source_url"])]
     if event["doi"]:
         identities.append(("doi", event["doi"]))
@@ -308,11 +320,13 @@ def run_worker(path, stop):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--private-db", required=True)
+    parser.add_argument("--private-db", default=os.getenv("SOURCE_HUB_PRIVATE_DB"))
     parser.add_argument("--port", type=int, default=8766)
     parser.add_argument("command", choices=("serve", "drain", "failures"))
     args = parser.parse_args()
-    path = args.private_db
+    if not args.private_db:
+        parser.error('set --private-db or SOURCE_HUB_PRIVATE_DB')
+    path = private_store.provision(args.private_db) if os.getenv('SOURCE_HUB_PERSISTENT') == '1' else args.private_db
     initialize(path)
     if args.command == "serve":
         with http_service(path, os.getenv("SOURCE_HUB_INTAKE_TOKEN"), args.port) as service:

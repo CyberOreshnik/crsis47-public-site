@@ -50,3 +50,13 @@ jobs:
           name: source-hub-gate3-receipts
           path: ${{ runner.temp }}/gate3-receipts.json
           if-no-files-found: error
+      - name: Verify persistent Gate 4 registry, crash recovery and policy lifecycle
+        run: |
+          set -o pipefail
+          python3 source-hub-api/test_gate4.py | tee "$RUNNER_TEMP/gate4-evidence.jsonl"
+      - name: Retain sanitized Gate 4 verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hub-gate4-evidence
+          path: ${{ runner.temp }}/gate4-evidence.jsonl
+          if-no-files-found: error

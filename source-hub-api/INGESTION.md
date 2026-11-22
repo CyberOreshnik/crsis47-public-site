@@ -64,3 +64,40 @@ Gate 2 accepted baseline: `b969dd30020c9100389cf8f299936bfdb169dd4b`. [Accepted 
 Run `python3 source-hub-api/codex_research_gate3.py` from the checkout after its normal website build. One command retrieves and uses the three documents to answer the documented question and automatically files each source. It verifies the database rows, two project relationships per source, and exact replay through authenticated intake. It tests HTTP rejection of an unlisted document on an approved host, restricted classification, and mismatched DOI. A separate disposable public database and a generated-site check establish the test boundary. Any validation or filing failure exits nonzero. Temporary databases live outside the checkout and are removed at the end. Only the sanitized receipt and evidence metadata persist in CI. The hash fingerprints the HTTP response read in the demonstration and is not a custody assertion.
 
 One private registry holds all evidence. Logical collections group the existing evidence types; a second project uses the same source ID and adds a project/claim edge, regardless of its collection. Unknown publication dates stay null; a known year-month uses YYYY-MM without fabricating a day. Gate 3 uses its own explicit process-local opt-in and validates metadata and provenance fields both at the client and intake. Registry publication stays UNAPPROVED; real entries are ineligible for the synthetic public projector. Ordinary ChatGPT, Zotero, browsers and other Codex workflows remain disconnected.
+
+## Gate 4 — persistent private registry (controlled development)
+
+Use a POSIX host with an operator-owned directory mode 0700 outside the checkout and every served directory. Gate 4 validates local ownership and modes 0700/0600, rejects symlinks and shared database links, and separates private from public database paths. It does not implement encryption or verify Windows ACLs. Run these commands with the credential provisioned through a private environment or secret store. Do not put it in shell history or Git.
+
+```sh
+export SOURCE_HUB_PRIVATE_DB=/absolute/private-directory/registry.db
+export SOURCE_HUB_PERSISTENT=1
+export SOURCE_HUB_GATE3_PUBLIC=1
+python3 source-hub-api/private_store.py migrate
+python3 source-hub-api/ingest.py serve
+# In a second terminal with the same credential:
+python3 source-hub-api/codex_research_gate4.py
+```
+
+The separate service survives a research client exiting, and the database survives a service restart. Every filed event remains available by receipt through the authenticated intake endpoint. A later legitimate use files another event against the same canonical source. Transport and validation failures exit nonzero, and already filed receipts are written immediately.
+
+### Backup and rollback
+
+Before migration, take a verified version-0 backup with the Gate 4 operator tool. Migration creates only two additive control tables and sets SQLite user_version to 1 in one transaction. Unknown schema versions fail closed. Gates 1–3 use the same data model. Stop writers for rollback, restore the pre-migration backup into a new private directory, verify it and point the old reviewed binary at that recovered database. Preserve the superseded database and reconcile any receipts accepted after the backup before cutover. Do not overwrite a running database or copy a live SQLite file directly.
+
+```sh
+python3 source-hub-api/private_store.py verify
+python3 source-hub-api/private_store.py backup /absolute/private-backup/registry.db
+python3 source-hub-api/private_store.py --db /absolute/private-backup/registry.db restore /absolute/private-restore/registry.db
+python3 source-hub-api/private_store.py --db /absolute/private-restore/registry.db verify
+```
+
+Use SQLite online backup with an explicit source snapshot. Verify SQLite integrity, foreign keys, filed-receipt references, row counts and a logical digest. Require a fresh destination in a separate private directory. On failure the command exits nonzero. After interruption, treat any destination without successful verification as incomplete. Keep development test backups only for the test; CI keeps a sanitized report. For an authorized durable registry, retain the latest verified backup and a pre-migration recovery point until a replacement is tested and its retention is approved. Use controlled deletion for expired copies, including sidecars and backups. File deletion is not verified secure erasure on SSDs or copy-on-write storage.
+
+### Policy and correction
+
+The version-controlled exact-document register remains the approval boundary. Amend the reviewed register through its approval process and restart the service to load the new policy. An operator can record approval, suspension or revocation using `private_store.py policy ACTION EXACT_URL --reason REASON`. An override cannot admit a URL absent from the register. Suspension and revocation block new events and block already queued events at processing. Replays of existing receipts and authenticated historical reads preserve audit evidence. Title and publisher corrections must match the reviewed register and retain before/after metadata in a control audit. Identity changes require separately reviewed reconciliation. Existing DOI conflicts fail closed and other conflicts retain the existing filing and log what differed. Classification stays review-required. Filing provides source-use traceability. Rights approval, custody and claims review are separate and original bytes are excluded.
+
+### Acceptance scope
+
+CI uses three authorized public documents for filing, restart, replay and non-destructive restore verification. The forced process exit and migration/restore exercises use a distinct synthetic database. The verification checks public search, projection denial and the generated site's file and content boundary. Gate 1–3 regression checks remain in CI. This is local private SQLite with a shared operator credential; it does not establish production hardening, immutable audit storage, or general ChatGPT, Zotero, browser or third-party capture.
