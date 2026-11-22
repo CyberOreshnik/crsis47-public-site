@@ -1,6 +1,6 @@
 # Source Hub ingestion on the development branch
 
-This is a no-cost synthetic-only implementation. Use Python with SQLite FTS5 trigram support. GitHub Pages remains the static public frontend. The existing page retains its small journal fallback by default. The intake server and its database never serve the public query endpoint. No hosted service is configured.
+This is a no-cost development implementation. Intake defaults to synthetic fixtures; Gate 2 permits one explicitly enabled public source. Use Python with SQLite FTS5 trigram support. GitHub Pages remains the static public frontend. The existing page retains its small journal fallback by default. The intake server and its database never serve the public query endpoint. No hosted service is configured.
 
 ## Local demonstration
 
@@ -34,7 +34,7 @@ This mapping follows v0.1's evidence and claim separation. No controlled archive
 | Integration | Actual connection |
 |---|---|
 | Loopback HTTP client and SQLite | Implemented for synthetic inputs |
-| ChatGPT and Codex | No automatic source-use event transmission connected |
+| Controlled Codex task | Automatic filing within the named Gate 2 command only; no global capture hook |
 | Zotero and GitHub research workflows | No automatic transmission connected |
 | Public Pages and hosted read service | Static fallback only; hosted service unset |
 | Original-byte storage and content hashes | No byte worker or licensed storage. Link reporting accepts external observations; automated checking remains disconnected |
@@ -48,3 +48,9 @@ Before real data intake, require a private host and verified storage boundary, s
 ## Validation
 
 Run python source-hub-api/test_ingest.py and node source-hub-api/navigation_test.js. The synthetic scale test measures local SQLite search and pagination, plus seeding time. It is not a hosted latency or concurrency result. CI runs the real loopback HTTP test, existing public search test and website build guards. A local sandbox that explicitly blocks sockets can set SOURCE_HUB_SKIP_SOCKET_TEST=1 for local-only checks. Keep it unset in CI.
+
+## Gate 2 controlled Codex research task
+
+After the normal website build, run `python3 source-hub-api/codex_research.py`. This one command answers a narrow documentation question from IANA's live Example Domains page, files the selected source automatically, polls the authenticated loopback intake, and verifies the actual private SQLite record and public isolation. It retries the exact event once and submits another use to demonstrate both event replay and source deduplication. A failed run exits nonzero. The run emits receipt evidence and destroys its disposable test databases after verification. The response digest fingerprints content read for the task; original bytes are not preserved.
+
+Gate 2 admission is disabled by default. The controlled runner enables an exact IANA URL, workflow and project combination in its own process. Real sources cannot be projected through the synthetic public approval path. No global Codex, ordinary ChatGPT, Zotero or unrelated workflow hook exists.

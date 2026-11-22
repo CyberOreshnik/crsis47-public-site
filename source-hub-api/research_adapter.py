@@ -8,7 +8,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from urllib.request import Request, urlopen
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 FIELDS = ("event_type", "schema_version", "source_url", "doi", "title", "authors",
           "publisher", "publication_date", "used_at", "project_ids", "claim_ids",
@@ -39,9 +40,23 @@ def stable_key(event):
     raw = json.dumps(event, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return "research-" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:40]
 
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+def intake_origin(endpoint):
+    url = urlsplit(endpoint)
+    if (url.scheme != "http" or url.hostname not in {"127.0.0.1", "localhost"}
+        or url.username is not None or url.password is not None or url.port is None
+        or url.path not in {"", "/"} or url.query or url.fragment):
+        raise ValueError("only a local loopback intake origin is authorized")
+    return f"http://{url.hostname}:{url.port}"
+
+def open_intake(request, timeout):
+    return build_opener(ProxyHandler({}), NoRedirect()).open(request, timeout=timeout)
+
 def submit(event, endpoint, token, timeout=10):
-    if not endpoint.startswith("http://127.0.0.1:") and not endpoint.startswith("http://localhost:"):
-        raise ValueError("only local loopback intake is authorized")
+    endpoint = intake_origin(endpoint)
     if not token or len(token) < 32:
         raise ValueError("SOURCE_HUB_INTAKE_TOKEN is required")
     body = json.dumps(event, sort_keys=True).encode("utf-8")
@@ -50,7 +65,7 @@ def submit(event, endpoint, token, timeout=10):
         "Authorization": "Bearer " + token,
         "Idempotency-Key": stable_key(event),
     }, method="POST")
-    with urlopen(request, timeout=timeout) as response:
+    with open_intake(request, timeout) as response:
         return json.load(response)
 
 def main():

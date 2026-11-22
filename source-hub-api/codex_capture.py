@@ -8,17 +8,19 @@ import json
 import os
 from pathlib import Path
 import time
-from urllib.request import Request, urlopen
-from urllib.parse import urlsplit
+from urllib.request import Request
+import re
 
 import research_adapter
 
 def wait_for_receipt(endpoint, token, receipt, timeout=15):
-    target = endpoint.rstrip("/") + "/api/source-events/" + receipt
+    if not re.fullmatch(r"[a-f0-9]{32}", receipt):
+        raise ValueError("invalid filing receipt")
+    target = research_adapter.intake_origin(endpoint) + "/api/source-events/" + receipt
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         request = Request(target, headers={"Authorization": "Bearer " + token})
-        with urlopen(request, timeout=5) as response:
+        with research_adapter.open_intake(request, timeout=5) as response:
             status = json.load(response)
         if status["status"] == "filed":
             return status
@@ -27,12 +29,15 @@ def wait_for_receipt(endpoint, token, receipt, timeout=15):
         time.sleep(0.1)
     raise TimeoutError("Source Hub receipt still pending: " + receipt)
 
-def capture(record_path, endpoint, token):
-    event = research_adapter.make_event(json.loads(Path(record_path).read_text(encoding="utf-8")))
+def capture_event(record, endpoint, token):
+    event = research_adapter.make_event(record)
     result = research_adapter.submit(event, endpoint, token)
     if not isinstance(result.get("receipt"), str):
         raise RuntimeError("Intake did not return a filing receipt")
     return wait_for_receipt(endpoint, token, result["receipt"])
+
+def capture(record_path, endpoint, token):
+    return capture_event(json.loads(Path(record_path).read_text(encoding="utf-8")), endpoint, token)
 
 def main():
     parser = argparse.ArgumentParser(description="File a synthetic Codex research source in local Source Hub")

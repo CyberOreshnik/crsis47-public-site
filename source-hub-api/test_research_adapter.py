@@ -33,8 +33,18 @@ class ResearchAdapterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             research_adapter.submit(event, "https://api.example.org", "x" * 40)
 
+    def test_loopback_authority_is_parsed(self):
+        for endpoint in ("http://127.0.0.1:8766@remote.example",
+                         "http://localhost:8766/other", "http://localhost"):
+            with self.subTest(endpoint=endpoint), self.assertRaises(ValueError):
+                research_adapter.intake_origin(endpoint)
+        self.assertEqual(research_adapter.intake_origin("http://127.0.0.1:8766/"),
+                         "http://127.0.0.1:8766")
+        self.assertIsNone(research_adapter.NoRedirect().redirect_request(
+            None, None, 302, "redirect", {}, "https://remote.example/"))
+
     def test_no_implicit_network(self):
-        with patch.object(research_adapter, "urlopen", side_effect=AssertionError("network invoked")):
+        with patch.object(research_adapter, "open_intake", side_effect=AssertionError("network invoked")):
             event = research_adapter.make_event(self.record)
             self.assertTrue(research_adapter.stable_key(event).startswith("research-"))
 

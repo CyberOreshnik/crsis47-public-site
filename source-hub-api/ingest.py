@@ -58,6 +58,8 @@ REQUIRED = {
     "classification", "originating_workflow", "capture_method",
 }
 OPTIONAL = {"schema_version", "pgdt_lens", "external_ids", "preservation_requested"}
+GATE2_URL = "https://www.iana.org/help/example-domains"
+GATE2_WORKFLOW = "codex-gate2-iana"
 PRIVATE_TYPES = {"validator_record", "engineering_archive", "governance_record", "citation_register"}
 ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}")
 LENSES = {"People", "Governance", "Data", "Technology"}
@@ -108,6 +110,16 @@ def validate(event):
     result["used_at"] = stamp.astimezone(timezone.utc).isoformat()
     if result["publication_date"] and date.fromisoformat(result["publication_date"]).isoformat() != result["publication_date"]:
         raise ValueError("invalid_publication_date")
+    if result["source_url"] == GATE2_URL:
+        if (os.getenv("SOURCE_HUB_GATE2_IANA") != "1"
+            or result["originating_workflow"] != GATE2_WORKFLOW
+            or result["capture_method"] != "authorized_api"
+            or result["project_ids"] != ["CRSIS47-GATE2"]
+            or result["evidence_type"] != "historical_evidence"
+            or result["claim_ids"] or result["external_ids"] or result["doi"]
+            or result.get("preservation_requested")):
+            raise ValueError("gate2_source_not_authorized")
+        return result
     url = urlsplit(result["source_url"])
     if (url.scheme != "https" or url.netloc.lower() != "example.org" or url.query
         or not re.fullmatch(r"/synthetic/[a-zA-Z0-9/_-]+", url.path)):

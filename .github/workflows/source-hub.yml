@@ -29,3 +29,13 @@ jobs:
       - run: python3 qa/verify_frozen_website.py
       - run: python3 qa/regress_site.py
       - run: python3 source-hub-api/check_public_build.py
+      - name: Run controlled Codex research task and verify automatic filing
+        run: |
+          set -o pipefail
+          python3 source-hub-api/codex_research.py | tee "$RUNNER_TEMP/gate2-receipt.json"
+      - name: Retain sanitized filing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hub-gate2-receipt
+          path: ${{ runner.temp }}/gate2-receipt.json
+          if-no-files-found: error
