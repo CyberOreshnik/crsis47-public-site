@@ -85,6 +85,9 @@ jobs:
       - run: python qa/verify_frozen_website.py
       - run: python qa/regress_site.py
       - run: python source-hub-api/check_public_build.py
+      - run: python source-hub-api/test_gate6_scan.py
+      - name: Scan clean generated Windows website for Gate 6
+        run: python source-hub-api/gate6_close.py --ci-scan
       - name: Verify native Windows private storage and research intake
         shell: pwsh
         run: |
