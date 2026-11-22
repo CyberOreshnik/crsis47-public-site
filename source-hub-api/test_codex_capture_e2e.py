@@ -11,6 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ingest
+import codex_capture
 import project
 import research_adapter
 import server
@@ -36,9 +37,10 @@ class CodexEndToEnd(unittest.TestCase):
                     server_thread.start()
                     try:
                         endpoint = f"http://127.0.0.1:{service.server_port}"
-                        first = research_adapter.submit(event, endpoint, token)
-                        again = research_adapter.submit(event, endpoint, token)
+                        first = codex_capture.capture(str(Path(__file__).parent / "synthetic-event.json"), endpoint, token)
+                        again = codex_capture.capture(str(Path(__file__).parent / "synthetic-event.json"), endpoint, token)
                         self.assertEqual(first["receipt"], again["receipt"])
+                        self.assertEqual(first["status"], "filed")
                         for _ in range(100):
                             status = ingest.receipt(private, first["receipt"])
                             if status["status"] == "filed":
