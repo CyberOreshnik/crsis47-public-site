@@ -49,6 +49,19 @@ const routes=[
     const markup=await cabinet.innerHTML();
     assert.ok(markup.length>100,route.name+' rendered an empty catalog cabinet');
    }
+   // Gate 4: accessibility and asset integrity for every approved collection route.
+   const gate4=await page.evaluate(()=>{
+    const images=[...document.images];
+    const broken=images.filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.getAttribute('src'));
+    const unnamed=[...document.querySelectorAll('button')].filter(b=>!((b.innerText||'').trim()||b.getAttribute('aria-label')||b.getAttribute('title')));
+    const unlabelledImages=images.filter(i=>!i.hasAttribute('alt')).map(i=>i.getAttribute('src'));
+    const htmlLang=document.documentElement.getAttribute('lang');
+    return {broken,unnamedButtons:unnamed.length,unlabelledImages,htmlLang};
+   });
+   assert.deepEqual(gate4.broken,[],route.name+' has broken images');
+   assert.ok(gate4.htmlLang,route.name+' missing HTML language declaration');
+   assert.deepEqual(gate4.unlabelledImages,[],route.name+' images missing alt attribute');
+   assert.equal(gate4.unnamedButtons,0,route.name+' contains unnamed buttons');
    findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
