@@ -16,7 +16,7 @@ SOURCE_USED v1 accepts one event per JSON request. An integration submits only a
 
 A transaction claims, files and marks an event complete. A savepoint reverts partial writes. Failed processing retries after 2 and 4 seconds, then moves to failed. Conflicting DOI/URL mappings fail closed. Other metadata disagreements retain the first populated value and record a conflict with the original incoming event retained. URL and DOI aliases deduplicate metadata. Content hashes apply only when an authorized byte-preservation worker exists. Preservation requests record blocked status in the audit, without network retrieval. Capture starts at CAPTURED. Metadata verification and evidence review require separate decisions; no ingestion code advances those states. Null means unavailable. Public approval is separate and limited to a manually selected synthetic projection. Later private intake has no effect on an already approved snapshot until reprojected or withdrawn.
 
-Search retains the existing 25-result keyset and stale-cursor behavior. The public-only SQLite projection adds citation export fields and project, collection and verification filters. Its searchable description indexes author names, DOI and persistent ID. Search by project with the dedicated filter. Use the original stable ID for joins. The local JSON projection round-trips through the trusted offline importer. That importer is an internal interface for explicitly approved synthetic snapshots, not an HTTP endpoint or an untrusted file importer. The public API returns no claim IDs, originating workflows, private audit events or receipt data.
+Search retains the existing 25-result keyset and stale-cursor behavior. The public-only SQLite projection adds citation export fields and project, collection and verification filters. Its searchable description indexes author names, DOI and persistent ID. Search by project with the dedicated filter. Use the original stable ID for joins. The local JSON projection round-trips through the trusted offline importer. That importer is an internal interface for explicitly approved synthetic snapshots, not an HTTP endpoint or an untrusted file importer. The public API returns no claim IDs, originating workflows, private audit events or receipt data. A snapshot is bounded to 64 project relationships; the private relationship set can grow beyond it. The local operator can report observed public-link HTTP status via python source-hub-api/link_report.py SOURCE_ID STATUS. A 404 or 410 is marked BROKEN and is returned in citation metadata. There is no automatic network probing.
 
 ## Record-family adapter contract
 
@@ -29,7 +29,7 @@ Search retains the existing 25-result keyset and stale-cursor behavior. The publ
 | Governance | external_ids preserves G-01–G-18; approvals remain outside intake-controlled decisions | Restricted route disabled |
 | Case studies, books, laboratories, historical evidence | project_ids and evidence_type map to stable collections without a fixed count | Synthetic contract only |
 
-This mapping follows v0.1's evidence and claim separation. No controlled archive or research records were imported. File-level crosswalks for traceability v0.2–v0.4 need validation against current authoritative register versions before real connectors are enabled.
+This mapping follows v0.1's evidence and claim separation. No controlled archive or research records were imported. The v0.2 mapping preserves the existing claim row ID and distinguishes support status from proposal status. The v0.3 crosswalk treats namespaces as adapter keys and leaves original source identifiers untouched. In v0.4, preprinted validator IDs remain template rows, engineering reports are distinct from executed archive manifests, and governance decisions require authoritative sign-off. The adapter keeps these fields out of automatic verification and never interprets external IDs as completed decisions. The internal packages were consulted as design references only.
 
 | Integration | Actual connection |
 |---|---|
@@ -37,7 +37,7 @@ This mapping follows v0.1's evidence and claim separation. No controlled archive
 | ChatGPT and Codex | No automatic source-use event transmission connected |
 | Zotero and GitHub research workflows | No automatic transmission connected |
 | Public Pages and hosted read service | Static fallback only; hosted service unset |
-| Original-byte storage, content hashes and link health | No worker or licensed storage; link checking and reporting remain open |
+| Original-byte storage and content hashes | No byte worker or licensed storage. Link reporting accepts external observations; automated checking remains disconnected |
 
 ## Migration, rollback and boundary
 

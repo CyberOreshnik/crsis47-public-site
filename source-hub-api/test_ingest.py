@@ -13,6 +13,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 import ingest
+import link_report
 import project
 import server
 
@@ -143,6 +144,10 @@ class IntakeTest(unittest.TestCase):
         self.assertNotIn("C001", json.dumps(page))
         self.assertNotIn("originating_workflow", json.dumps(page))
         self.assertNotIn("idempotency", json.dumps(page))
+        self.assertEqual(link_report.report(source, 404)["state"], "BROKEN")
+        self.assertEqual(server.search({})["items"][0]["citation"]["link_report"]["status"], 404)
+        with self.assertRaises(ValueError):
+            link_report.report("SRC-private", 404)
 
     def test_search_scale(self):
         first = self.file("seed", fixture())

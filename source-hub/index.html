@@ -66,6 +66,11 @@ function show(items) {
     meta.className = "meta";
     meta.textContent = [record.source_type || record.type, record.review_status || record.status, record.publication_date].filter(Boolean).join(" · ");
     card.append(title, meta, description);
+    if (record.citation?.link_report?.state === "BROKEN") {
+      const linkNotice = document.createElement("p");
+      linkNotice.textContent = "Source link reported broken.";
+      card.append(linkNotice);
+    }
     for (const lens of record.lenses || [record.pgdt_lens]) {
       const tag = document.createElement("span");
       tag.className = "tag";

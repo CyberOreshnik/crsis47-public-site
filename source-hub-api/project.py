@@ -18,6 +18,8 @@ def approve_snapshot(path, source_id):
             raise ValueError("source_not_eligible")
         projects = [r[0] for r in db.execute(
             "SELECT DISTINCT project FROM relationships WHERE source_id=? ORDER BY project", (source_id,))]
+        if len(projects) > 64:
+            raise ValueError("projection_project_limit")
         snapshot = dict(item, source_id=source_id, project_ids=projects, collection=row["collection"],
                         verification=row["verification"], schema_version=1)
         db.execute("INSERT INTO audit(source_id,receipt,action,detail,at) VALUES(?,?,?,?,?)",
@@ -29,6 +31,8 @@ def import_snapshot(db, snapshot):
     if (snapshot["schema_version"] != 1 or snapshot["evidence_type"] in ingest.PRIVATE_TYPES
         or not snapshot["source_url"].startswith("https://example.org/synthetic/")):
         raise ValueError("unsupported_projection")
+    if len(snapshot["project_ids"]) > 64:
+        raise ValueError("projection_project_limit")
     item = db.execute("SELECT source_row FROM public_provenance WHERE source_id=?", (snapshot["source_id"],)).fetchone()
     description = " · ".join(filter(None, [
         ", ".join(snapshot["authors"]), snapshot["publisher"], snapshot["doi"], snapshot["source_id"]
