@@ -47,6 +47,13 @@ try {
         }
     }
 } catch {
-    [Console]::Error.WriteLine('Windows private security operation failed.')
+    $reason = $_.Exception.Message
+    if ($Action -in @('create','directory','file')) {
+        if ($reason -in @('local NTFS required','unsafe object','owner','inherited directory','unexpected rule','missing access rules')) {
+            [Console]::Error.WriteLine($reason)
+        } else {
+            [Console]::Error.WriteLine($_.Exception.GetType().Name)
+        }
+    }
     exit 1
 }

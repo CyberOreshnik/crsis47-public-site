@@ -146,6 +146,8 @@ def connect(path):
     db = sqlite3.connect(path, timeout=10)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys=ON")
+    if os.name == "nt":
+        db.execute("PRAGMA temp_store=MEMORY")
     return db
 
 def initialize(path):

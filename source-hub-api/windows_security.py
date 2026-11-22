@@ -19,7 +19,8 @@ def native(action, path, data=""):
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise ValueError("Windows private security helper unavailable") from exc
     if reply.returncode:
-        raise ValueError(f"Windows private security verification failed ({action})")
+        detail = reply.stderr.strip() if action in {"create", "directory", "file"} else ""
+        raise ValueError(f"Windows private security verification failed ({action}) {detail}".rstrip())
     return reply.stdout
 
 def reject_reparse(path):

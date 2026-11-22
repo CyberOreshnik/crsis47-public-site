@@ -78,5 +78,5 @@ def run(root):
 
 if __name__ == "__main__":
     assert os.name == "nt", "Run on native Windows"
-    with tempfile.TemporaryDirectory(prefix="crsis47-gate5-") as directory:
+    with tempfile.TemporaryDirectory(prefix="crsis47-gate5-", dir=os.environ["LOCALAPPDATA"]) as directory:
         print(json.dumps(run(Path(directory).resolve()), indent=2))
