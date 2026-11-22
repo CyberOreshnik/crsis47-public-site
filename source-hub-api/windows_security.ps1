@@ -18,32 +18,39 @@ try {
         $Action = 'directory'
     }
     if ($Action -in @('directory','file')) {
-        $item = Get-Item -LiteralPath $Path -Force
-        if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
-            ($item.PSIsContainer -ne ($Action -eq 'directory'))) { throw 'unsafe object' }
-        $acl = Get-Acl -LiteralPath $Path
+        $attrs = [IO.File]::GetAttributes($Path)
+        $isDirectory = [bool]($attrs -band [IO.FileAttributes]::Directory)
+        if (($attrs -band [IO.FileAttributes]::ReparsePoint) -or
+            ($isDirectory -ne ($Action -eq 'directory'))) { throw 'unsafe object' }
+        if ($isDirectory) { $acl = [IO.Directory]::GetAccessControl($Path) }
+        else { $acl = [IO.File]::GetAccessControl($Path) }
         if ($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -notin $trusted) { throw 'owner' }
-        if ($Action -eq 'directory' -and !$acl.AreAccessRulesProtected) { throw 'inherited directory' }
-        $rules = @($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
+        if ($isDirectory -and !$acl.AreAccessRulesProtected) { throw 'inherited directory' }
+        $rules = $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])
         foreach ($rule in $rules) {
             if ($rule.IdentityReference.Value -notin $trusted -or $rule.AccessControlType -ne 'Allow' -or
                 $rule.FileSystemRights -ne 'FullControl' -or
-                ($Action -eq 'directory' -and ($rule.IsInherited -or
+                ($isDirectory -and ($rule.IsInherited -or
                  $rule.InheritanceFlags -ne 'ContainerInherit,ObjectInherit' -or
                  $rule.PropagationFlags -ne 'None'))) { throw 'unexpected rule' }
         }
-        if ($rules.Count -ne 2 -or @($rules | ForEach-Object {$_.IdentityReference.Value} |
-                Select-Object -Unique).Count -ne 2) { throw 'missing access rules' }
-    } elseif ($Action -eq 'protect') {
-        $secure = ConvertTo-SecureString ([Console]::In.ReadToEnd()) -AsPlainText -Force
-        try { [Console]::Out.Write((ConvertFrom-SecureString $secure)) } finally {$secure.Dispose()}
-    } elseif ($Action -eq 'unprotect') {
-        $secure = ConvertTo-SecureString ([Console]::In.ReadToEnd())
-        $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-        try { [Console]::Out.Write([Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)) }
-        finally {
-            [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
-            $secure.Dispose()
+        if ($rules.Count -ne 2 -or $rules[0].IdentityReference.Value -eq $rules[1].IdentityReference.Value) {
+            throw 'missing access rules'
+        }
+    } elseif ($Action -in @('protect','unprotect')) {
+        [void][Reflection.Assembly]::Load('System.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
+        $scope = [Security.Cryptography.DataProtectionScope]::CurrentUser
+        if ($Action -eq 'protect') {
+            $bytes = [Text.Encoding]::ASCII.GetBytes([Console]::In.ReadToEnd())
+            try {
+                $encrypted = [Security.Cryptography.ProtectedData]::Protect($bytes,$null,$scope)
+                [Console]::Out.Write([Convert]::ToBase64String($encrypted))
+            } finally { [Array]::Clear($bytes,0,$bytes.Length) }
+        } else {
+            $encrypted = [Convert]::FromBase64String([Console]::In.ReadToEnd())
+            $bytes = [Security.Cryptography.ProtectedData]::Unprotect($encrypted,$null,$scope)
+            try { [Console]::Out.Write([Text.Encoding]::ASCII.GetString($bytes)) }
+            finally { [Array]::Clear($bytes,0,$bytes.Length) }
         }
     }
 } catch {
