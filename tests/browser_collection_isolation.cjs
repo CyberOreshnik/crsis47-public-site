@@ -26,6 +26,8 @@ const routes=[
   for(let i=0;i<50;i++){try{const r=await fetch('http://127.0.0.1:'+PORT+'/crsis47-public-site/');if(r.ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
   browser=await chromium.launch({headless:true});
   const findings=[];
+  const screenshotDir=path.resolve('preview-screenshots');
+  fs.mkdirSync(screenshotDir,{recursive:true});
   for(const route of routes){
    const page=await browser.newPage();
    const data=[];
@@ -76,6 +78,7 @@ const routes=[
    const mobile=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
    assert.ok(mobile.scroll<=mobile.viewport+2,route.name+' has horizontal overflow at 390px');
    await page.setViewportSize({width:1280,height:800});
+   await page.screenshot({path:path.join(screenshotDir,route.name.toLowerCase().replace(/[^a-z]+/g,'-')+'-desktop.png'),fullPage:true});
    findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
