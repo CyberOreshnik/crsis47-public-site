@@ -62,6 +62,15 @@ const routes=[
    assert.ok(gate4.htmlLang,route.name+' missing HTML language declaration');
    assert.deepEqual(gate4.unlabelledImages,[],route.name+' images missing alt attribute');
    assert.equal(gate4.unnamedButtons,0,route.name+' contains unnamed buttons');
+   // Gate 4: inspect real navigation targets without following external links.
+   const nav=await page.evaluate(()=>{
+    const anchors=[...document.querySelectorAll('a[href]')];
+    const unsafe=anchors.filter(a=>/^javascript:/i.test(a.getAttribute('href')||'')).map(a=>a.outerHTML.slice(0,160));
+    const empty=anchors.filter(a=>!(a.textContent||'').trim()&&!a.getAttribute('aria-label')&&!a.querySelector('img[alt]')).map(a=>a.outerHTML.slice(0,160));
+    return {unsafe,empty};
+   });
+   assert.deepEqual(nav.unsafe,[],route.name+' contains unsafe JavaScript links');
+   assert.deepEqual(nav.empty,[],route.name+' has links without accessible names');
    findings.push({collection:route.name,requests:data,failedRequests:failures,totalResponseBytes:transfers.reduce((n,x)=>n+x.bytes,0),dataResponseBytes:transfers.filter(x=>/\.(json|ndjson|csv|sqlite|db)$/.test(x.path)||x.path.includes('/api/')).reduce((n,x)=>n+x.bytes,0),responseCount:transfers.length});
    await page.close();
   }
