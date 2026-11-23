@@ -1,0 +1,29 @@
+[
+  {
+    "title": "The index of prediction accuracy: an intuitive measure useful for evaluating risk prediction models",
+    "url": "https://link.springer.com/article/10.1186/s41512-018-0029-2",
+    "doi": "10.1186/s41512-018-0029-2",
+    "authors": [
+      "Michael W. Kattan",
+      "Thomas A. Gerds"
+    ],
+    "publisher": "Diagnostic and Prognostic Research",
+    "publication_date": "2018-05-04",
+    "access": "open_access"
+  },
+  {
+    "title": "Calibration: the Achilles heel of predictive analytics",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6912996/",
+    "doi": "10.1186/s12916-019-1466-7",
+    "authors": [
+      "Ben Van Calster",
+      "David J. McLernon",
+      "Maarten van Smeden",
+      "Laure Wynants",
+      "Ewout W. Steyerberg"
+    ],
+    "publisher": "BMC Medicine",
+    "publication_date": "2019-12-16",
+    "access": "open_access"
+  }
+]
