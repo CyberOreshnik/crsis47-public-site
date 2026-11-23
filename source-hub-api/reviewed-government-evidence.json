@@ -1,0 +1,35 @@
+[
+  {
+    "title": "GAO-22-104746 — Federal Response to SolarWinds and Microsoft Exchange Incidents",
+    "url": "https://www.gao.gov/assets/gao-22-104746.pdf",
+    "description": "Case Study 005 · U.S. Government Accountability Office. Reviews the federal response to two incidents. Use the SolarWinds-specific findings when tracing this case.",
+    "status": "Public GAO report",
+    "publication_date": "2022-01",
+    "lenses": [
+      "Governance",
+      "Data"
+    ]
+  },
+  {
+    "title": "CISA Emergency Directive 21-01 — Mitigate SolarWinds Orion Code Compromise",
+    "url": "https://www.cisa.gov/news-events/directives/emergency-directive-21-01",
+    "description": "Case Study 005 · CISA’s directive set required federal mitigations. Direct access could not be verified in this audit. The GAO report in this collection corroborates issuance and summarizes the directive.",
+    "status": "Direct link access unverified",
+    "publication_date": "2020-12-13",
+    "lenses": [
+      "Governance",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Department of Justice Statement on SolarWinds Update",
+    "url": "https://www.justice.gov/archives/opa/pr/department-justice-statement-solarwinds-update",
+    "description": "Case Study 005 · DOJ reported that about 3% of its Microsoft 365 mailboxes may have been accessed. This figure describes potential access. The statement gives no confirmed extraction count.",
+    "status": "Public DOJ statement",
+    "publication_date": "2021-01-06",
+    "lenses": [
+      "People",
+      "Data"
+    ]
+  }
+]
