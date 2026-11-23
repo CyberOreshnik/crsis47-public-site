@@ -157,3 +157,20 @@ jobs:
                   http.shutdown()
                   worker.join()
           PY
+      - name: Verify reviewed journal manifest through public search
+        run: |
+          export SOURCE_HUB_DB="$RUNNER_TEMP/reviewed-journals.db"
+          export PYTHONPATH="$GITHUB_WORKSPACE/source-hub-api"
+          manifest=source-hub-api/reviewed-journals.json
+          python3 source-hub-api/project.py --reviewed-journal-manifest "$manifest"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import server
+
+          articles = json.loads(Path("source-hub-api/reviewed-journals.json").read_text(encoding="utf-8"))
+          assert articles
+          for article in articles:
+              results = server.search({"type": ["Journal article"], "q": [article["doi"]]})["items"]
+              assert [item["url"] for item in results] == [article["url"]], article["doi"]
+          PY
