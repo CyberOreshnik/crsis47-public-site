@@ -1,6 +1,7 @@
 """Fail closed on changed artwork, source bytes, links or page structure."""
 from pathlib import Path
 from html.parser import HTMLParser
+from urllib.parse import urlsplit
 import hashlib, json, re
 site=Path('site')
 m=json.loads((site/'uniform-manifest.json').read_text(encoding='utf-8')) if (site/'uniform-manifest.json').is_file() else json.loads(Path('approved-website/manifest.json').read_text(encoding='utf-8'))
@@ -28,7 +29,7 @@ assert p.nav==1 and p.divisions==4
 for ref in p.refs:
     if ref.startswith('#'): assert ref[1:] in p.ids, ref
     elif not re.match(r'^[a-z]+:',ref):
-        target=site/ref
+        target=site/urlsplit(ref).path
         if target.is_dir():target=target/'index.html'
         assert target.is_file(),ref
 assert {'top','books','case-studies','research','about','contact','closing'}<=p.ids
