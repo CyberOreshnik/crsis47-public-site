@@ -120,3 +120,11 @@ python source-hub-api/ingest.py serve
 In the second terminal with the credential file configured, run `python source-hub-api/codex_research_gate4.py`. The Windows CLI manages private paths by default. Rotation uses a generated 256-bit token, replaces the current-user DPAPI credential file and takes effect on service restart. Stop intake before rotating, then restart and reload the client credential. There is no time-based expiry. The DPAPI file protects the token at rest for the Windows user. SQLite databases and backups are ACL-protected and are not encrypted by this feature.
 
 Use the same backup, restore, verify and rollback commands described above, supplying fresh destinations under separate validated private directories. Do not copy a live SQLite file directly. A rejected or interrupted restore must not be promoted. Verify a separate known-good backup before recovering from corruption. The Windows CI job creates only disposable files, checks unsafe inherited directories and broad grants, exercises credential rotation and uses the existing real-source allowlist. No research archive, production service, or Windows user registry is migrated by CI.
+
+## GitHub journal intake design
+
+Use GitHub as the journal-article intake queue. A reviewed change on the designated queue branch is the filing trigger. Keep journal articles separate from journal venue records. Queue records contain public citation metadata and a stable DOI or canonical article URL. Keep private notes, credentials, attachments and the database on the Windows host.
+
+A local importer should read reviewed queue revisions and submit approved articles to the existing authenticated loopback intake. Reuse the registry's source identifiers, DOI and URL deduplication, and filing receipts. Advance the local import checkpoint only after receipt verification. Send invalid or unapproved items to review. Retain the existing exact-source approval and public projection controls. GitHub Actions can validate queue changes and test the importer against disposable registries. The live registry stays on loopback.
+
+This section records the design. The GitHub-to-Windows importer and trigger still require implementation and replay, rejection, and public-isolation verification.
