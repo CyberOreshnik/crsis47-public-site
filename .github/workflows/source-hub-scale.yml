@@ -1,0 +1,33 @@
+name: Source Hub 500k Scale Validation
+on:
+  push:
+    branches:
+      - feature/source-hub-free-api
+  pull_request:
+    paths:
+      - 'source-hub-api/**'
+      - '.github/workflows/source-hub-scale.yml'
+  workflow_dispatch:
+jobs:
+  scale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python compile check
+        run: python -m compileall -q source-hub-api
+      - name: 500k synthetic indexed search and pagination test
+        env:
+          SOURCE_HUB_TEST_RECORDS: '500000'
+        run: |
+          python -u source-hub-api/load_test.py | tee source-hub-scale-results.txt
+      - name: Upload measurement log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hub-scale-results
+          path: source-hub-scale-results.txt
+          if-no-files-found: ignore

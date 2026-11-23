@@ -12,6 +12,11 @@ U=ROOT/'uniform';S=ROOT/'site'
 B='/crsis47-public-site/'
 CONTENT=json.loads((U/'content.json').read_text(encoding='utf8'))
 CAT=json.loads((U/'catalog.json').read_text(encoding='utf8'))
+REGISTRY=json.loads((ROOT/'collections/registry.json').read_text(encoding='utf8'))
+COLLECTIONS={entry['id']:entry for entry in REGISTRY['collections']}
+for _kind in ('books','case-studies'):
+ assert _kind in COLLECTIONS and COLLECTIONS[_kind]['route']=='/'+_kind+'/', ('Registry route mismatch',_kind)
+ assert COLLECTIONS[_kind]['page_size']==4, ('Approved four-at-a-time presentation changed',_kind)
 LANGS=[('en','English'),('fr','Français'),('ht','Kreyòl ayisyen'),('es','Español'),('pt-BR','Português brasileiro'),('pt-PT','Português europeu'),('ru','Русский'),('ar','العربية'),('zh-Hans','简体中文'),('zh-Hant','繁體中文'),('ja','日本語'),('fa','فارسی'),('he','עברית'),('tr','Türkçe')]
 STRINGS=set();MAP={}
 VOID={'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
@@ -96,7 +101,7 @@ def cabinet(kind,lang,shelf=True):
   cards+=bookcard(item,lang) if kind=='books' else casecard(item,lang)
   if kind=='case-studies' and str(item['id']).zfill(3)=='004':
    cards+=faa_card()
- return '<div class="cabinet"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items)+(1 if kind=='case-studies' else 0))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
+ return '<div class="cabinet" data-collection="'+kind+'" data-page-size="'+str(COLLECTIONS[kind]['page_size'])+'"><div class="cabinet-top"><strong>'+escape(T(name,lang))+' / '+str(len(items)+(1 if kind=='case-studies' else 0))+'</strong>'+ (controls(lang) if shelf else '')+'</div><div class="'+('shelf' if shelf else 'catalog-grid')+'">'+cards+'</div>'+('<p class="cabinet-hint">'+escape(T('Scroll to browse the complete collection',lang))+'</p>' if shelf else '')+'</div>'
 def collection(kind,lang,home=False):
  title='Books File Cabinet' if kind=='books' else 'Case Study File Cabinet'
  intro='A growing collection on cybersecurity, leadership, uncertainty, and the human cost of decisions.' if kind=='books' else 'Investigations in the CRSIS-47 case-study progression. Availability is stated for each edition.'

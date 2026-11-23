@@ -1,0 +1,34 @@
+name: Verify independent collection contracts
+on:
+  push:
+    branches:
+      - feature/source-hub-free-api
+  pull_request:
+    paths:
+      - 'source-hub/**'
+      - 'source-hub-api/**'
+      - 'tests/verify_collection_integration.py'
+      - 'docs/architecture/**'
+      - 'collections/**'
+      - 'tests/verify_collection_registry.py'
+      - 'tests/verify_plug_and_play_catalogs.py'
+      - 'tests/verify_real_collection_expansion.py'
+      - '.github/workflows/collection-integration.yml'
+  workflow_dispatch:
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source hub and shared architecture contracts
+        run: python tests/verify_collection_integration.py
+
+      - name: Validate registry and content-only catalog growth
+        run: |
+          python tests/verify_collection_registry.py
+          python tests/verify_plug_and_play_catalogs.py
+          python tests/verify_approved_collection_wiring.py
+          python tests/verify_real_collection_expansion.py

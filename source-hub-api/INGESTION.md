@@ -1,0 +1,132 @@
+# Source Hub ingestion on the development branch
+
+This is a no-cost development implementation. Intake defaults to synthetic fixtures; Gate 2 and Gate 3 permit explicitly enabled public sources for their controlled research commands. Use Python with SQLite FTS5 trigram support. GitHub Pages remains the static public frontend. The existing page retains its small journal fallback by default. The intake server and its database never serve the public query endpoint. No hosted service is configured.
+
+## Local demonstration
+
+1. Set SOURCE_HUB_DB to an absolute path for a disposable public SQLite database outside the checkout. Set SOURCE_HUB_INTAKE_TOKEN to a locally generated random value of at least 32 characters. Keep the token out of source files, fixture payloads and shell history.
+2. Open a terminal and run python source-hub-api/ingest.py --private-db PATH serve with a different absolute private database path outside the checkout. It binds to loopback port 8766 and starts a queue worker.
+3. Send POST http://127.0.0.1:8766/api/source-events with the contents of synthetic-event.json, Content-Type application/json, Authorization Bearer TOKEN and Idempotency-Key demo-01. Poll GET /api/source-events/RECEIPT with the same authorization until filed. Use the returned source_id for the next step.
+4. For a local preview, explicitly approve the synthetic snapshot with python source-hub-api/project.py --private-db PATH SOURCE_ID --approve-synthetic. This exports citation JSON and populates a separate public database. No worker path publishes automatically.
+5. Serve the public database with python source-hub-api/server.py. Verify GET http://127.0.0.1:8765/api/sources?project=CASE-001. For browser verification, copy the Source Hub page to a temporary static directory, set its API meta value to http://127.0.0.1:8765/, and serve that copy on port 8000 using python -m http.server 8000 --bind 127.0.0.1. Set SOURCE_HUB_ALLOWED_ORIGIN=http://127.0.0.1:8000 for the API. The tracked page retains its empty API config.
+
+## Contract and operation
+
+SOURCE_USED v1 accepts one event per JSON request. An integration submits only after it selects a source for authorized use. Treat Idempotency-Key as a stable event ID across retries. A replay of the same normalized event returns the same receipt; different content with the same key receives 409. Retry transient transport errors and HTTP 503 with bounded backoff. Do not retry validation or authentication failures without fixing the request. Poll until filed or failed. The terminal review CLI is python source-hub-api/ingest.py --private-db PATH failures. Logs contain receipt IDs, attempts and error codes, not payloads. Resubmit corrected input with a new event key and record the old receipt in the workflow's review record.
+
+A transaction claims, files and marks an event complete. A savepoint reverts partial writes. Failed processing retries after 2 and 4 seconds, then moves to failed. Conflicting DOI/URL mappings fail closed. Other metadata disagreements retain the first populated value and record a conflict with the original incoming event retained. URL and DOI aliases deduplicate metadata. Content hashes apply only when an authorized byte-preservation worker exists. Preservation requests record blocked status in the audit, without network retrieval. Capture starts at CAPTURED. Metadata verification and evidence review require separate decisions; no ingestion code advances those states. Null means unavailable. Public approval is separate and limited to a manually selected synthetic projection. Later private intake has no effect on an already approved snapshot until reprojected or withdrawn.
+
+Search retains the existing 25-result keyset and stale-cursor behavior. The public-only SQLite projection adds citation export fields and project, collection and verification filters. Its searchable description indexes author names, DOI and persistent ID. Search by project with the dedicated filter. Use the original stable ID for joins. The local JSON projection round-trips through the trusted offline importer. That importer is an internal interface for explicitly approved synthetic snapshots, not an HTTP endpoint or an untrusted file importer. The public API returns no claim IDs, originating workflows, private audit events or receipt data. A snapshot is bounded to 64 project relationships; the private relationship set can grow beyond it. The local operator can report observed public-link HTTP status via python source-hub-api/link_report.py SOURCE_ID STATUS. A 404 or 410 is marked BROKEN and is returned in citation metadata. There is no automatic network probing.
+
+## Record-family adapter contract
+
+| Family | Adapter mapping | Status |
+|---|---|---|
+| Citation register and scholarly sources | claim_ids carries C-identifiers; DOI and publication metadata stay nullable | Scholarly synthetic flow tested; protected citation-register events denied |
+| PGDT | external_ids carries scenario identifiers; pgdt_lens carries People, Governance, Data or Technology | Synthetic contract; real register not connected |
+| Engineering | external_ids carries stable version/manifest references; checksum belongs in separately approved byte-preservation records | Restricted route disabled |
+| Validator | external_ids preserves S001–S100 values without transformation | Restricted route disabled |
+| Governance | external_ids preserves G-01–G-18; approvals remain outside intake-controlled decisions | Restricted route disabled |
+| Case studies, books, laboratories, historical evidence | project_ids and evidence_type map to stable collections without a fixed count | Synthetic contract only |
+
+This mapping follows v0.1's evidence and claim separation. No controlled archive or research records were imported. The v0.2 mapping preserves the existing claim row ID and distinguishes support status from proposal status. The v0.3 crosswalk treats namespaces as adapter keys and leaves original source identifiers untouched. In v0.4, preprinted validator IDs remain template rows, engineering reports are distinct from executed archive manifests, and governance decisions require authoritative sign-off. The adapter keeps these fields out of automatic verification and never interprets external IDs as completed decisions. The internal packages were consulted as design references only.
+
+| Integration | Actual connection |
+|---|---|
+| Loopback HTTP client and SQLite | Implemented for synthetic inputs |
+| Controlled Codex task | Automatic filing within the named Gate 2 command only; no global capture hook |
+| Zotero and GitHub research workflows | No automatic transmission connected |
+| Public Pages and hosted read service | Static fallback only; hosted service unset |
+| Original-byte storage and content hashes | No byte worker or licensed storage. Link reporting accepts external observations; automated checking remains disconnected |
+
+## Migration, rollback and boundary
+
+The development projection adds tables to existing public search storage. Existing search rows retain their original keys and ordering. Before migrating, stop writers and create consistent SQLite backups using the online backup API or a quiesced checkpointed copy. Keep the private database, WAL and backups outside the checkout and web root. Keep the old server/frontend together when rolling back. Restore both databases from a paired backup if reversing a data migration, then rotate cursor configuration. To withdraw a projected source, delete its public sources row in a transaction with foreign_keys=ON. This removes its projection and search entries. Keep the private registry and audit. Files in the public build are assembled through the existing allowlisted site build, with CI checking for ingestion files, databases and fixture markers.
+
+Before real data intake, require a private host and verified storage boundary, scoped identities and credential rotation, retention/withdrawal controls, rights review, and authorized adapters. A local bearer credential and separate SQLite files demonstrate API behavior; they are not production access isolation. Do not expose these stdlib loopback servers over a network. No public release, protected-data ingestion or doctoral experimental execution is authorized.
+
+## Validation
+
+Run python source-hub-api/test_ingest.py and node source-hub-api/navigation_test.js. The synthetic scale test measures local SQLite search and pagination, plus seeding time. It is not a hosted latency or concurrency result. CI runs the real loopback HTTP test, existing public search test and website build guards. A local sandbox that explicitly blocks sockets can set SOURCE_HUB_SKIP_SOCKET_TEST=1 for local-only checks. Keep it unset in CI.
+
+## Gate 2 controlled Codex research task
+
+After the normal website build, run `python3 source-hub-api/codex_research.py`. This one command answers a narrow documentation question from IANA's live Example Domains page, files the selected source automatically, polls the authenticated loopback intake, and verifies the actual private SQLite record and public isolation. It retries the exact event once and submits another use to demonstrate both event replay and source deduplication. A failed run exits nonzero. The run emits receipt evidence and destroys its disposable test databases after verification. The response digest fingerprints content read for the task; original bytes are not preserved.
+
+Gate 2 admission is disabled by default. The controlled runner enables an exact IANA URL, workflow and project combination in its own process. Real sources cannot be projected through the synthetic public approval path. No global Codex, ordinary ChatGPT, Zotero or unrelated workflow hook exists.
+
+## Gate 3 — controlled real-source policy
+
+Gate 2 accepted baseline: `b969dd30020c9100389cf8f299936bfdb169dd4b`. [Accepted CI](https://github.com/CyberOreshnik/crsis47-public-site/actions/runs/45061795701) and [sanitized receipt](https://github.com/CyberOreshnik/crsis47-public-site/actions/runs/45061795701/artifacts/14769637576). Source `SRC-2f79cfefbf304f4680efa59fb96285bc`, initial/replay receipt `5b1d448cff464ff58a9fc57b29552586`. Gate 2's command and checks remain in CI.
+
+`approved_sources.json` is a reviewed development policy register. It starts with IANA's Example Domains and RFC Editor's RFC 2606 and 6761. Each entry approves one canonical HTTPS URL, source identity, source-use statement, citation and project/claim mapping. A host or DOI prefix does not grant permission. Additions require an explicitly authorized register edit and evidence locators. This policy can represent public reports, scholarly DOI or canonical URL records, technical guidance, primary incident material, and case study, book and PGDT source relationships, subject to per-document review and accessible HTML identity evidence. It does not enable unrestricted URL entry, automated discovery, restricted records, PDF retrieval or original-byte preservation.
+
+Run `python3 source-hub-api/codex_research_gate3.py` from the checkout after its normal website build. One command retrieves and uses the three documents to answer the documented question and automatically files each source. It verifies the database rows, two project relationships per source, and exact replay through authenticated intake. It tests HTTP rejection of an unlisted document on an approved host, restricted classification, and mismatched DOI. A separate disposable public database and a generated-site check establish the test boundary. Any validation or filing failure exits nonzero. Temporary databases live outside the checkout and are removed at the end. Only the sanitized receipt and evidence metadata persist in CI. The hash fingerprints the HTTP response read in the demonstration and is not a custody assertion.
+
+One private registry holds all evidence. Logical collections group the existing evidence types; a second project uses the same source ID and adds a project/claim edge, regardless of its collection. Unknown publication dates stay null; a known year-month uses YYYY-MM without fabricating a day. Gate 3 uses its own explicit process-local opt-in and validates metadata and provenance fields both at the client and intake. Registry publication stays UNAPPROVED; real entries are ineligible for the synthetic public projector. Ordinary ChatGPT, Zotero, browsers and other Codex workflows remain disconnected.
+
+## Gate 4 — persistent private registry (controlled development)
+
+Use a POSIX host with an operator-owned directory mode 0700 outside the checkout and every served directory. Gate 4 validates local ownership and modes 0700/0600, rejects symlinks and shared database links, and separates private from public database paths. It does not implement encryption or verify Windows ACLs. Run these commands with the credential provisioned through a private environment or secret store. Do not put it in shell history or Git.
+
+```sh
+export SOURCE_HUB_PRIVATE_DB=/absolute/private-directory/registry.db
+export SOURCE_HUB_PERSISTENT=1
+export SOURCE_HUB_GATE3_PUBLIC=1
+python3 source-hub-api/private_store.py migrate
+python3 source-hub-api/ingest.py serve
+# In a second terminal with the same credential:
+python3 source-hub-api/codex_research_gate4.py
+```
+
+The separate service survives a research client exiting, and the database survives a service restart. Every filed event remains available by receipt through the authenticated intake endpoint. A later legitimate use files another event against the same canonical source. Transport and validation failures exit nonzero, and already filed receipts are written immediately.
+
+### Backup and rollback
+
+Before migration, take a verified version-0 backup with the Gate 4 operator tool. Migration creates only two additive control tables and sets SQLite user_version to 1 in one transaction. Unknown schema versions fail closed. Gates 1–3 use the same data model. Stop writers for rollback, restore the pre-migration backup into a new private directory, verify it and point the old reviewed binary at that recovered database. Preserve the superseded database and reconcile any receipts accepted after the backup before cutover. Do not overwrite a running database or copy a live SQLite file directly.
+
+```sh
+python3 source-hub-api/private_store.py verify
+python3 source-hub-api/private_store.py backup /absolute/private-backup/registry.db
+python3 source-hub-api/private_store.py --db /absolute/private-backup/registry.db restore /absolute/private-restore/registry.db
+python3 source-hub-api/private_store.py --db /absolute/private-restore/registry.db verify
+```
+
+Use SQLite online backup with an explicit source snapshot. Verify SQLite integrity, foreign keys, filed-receipt references, row counts and a logical digest. Require a fresh destination in a separate private directory. On failure the command exits nonzero. After interruption, treat any destination without successful verification as incomplete. Keep development test backups only for the test; CI keeps a sanitized report. For an authorized durable registry, retain the latest verified backup and a pre-migration recovery point until a replacement is tested and its retention is approved. Use controlled deletion for expired copies, including sidecars and backups. File deletion is not verified secure erasure on SSDs or copy-on-write storage.
+
+### Policy and correction
+
+The version-controlled exact-document register remains the approval boundary. Amend the reviewed register through its approval process and restart the service to load the new policy. An operator can record approval, suspension or revocation using `private_store.py policy ACTION EXACT_URL --reason REASON`. An override cannot admit a URL absent from the register. Suspension and revocation block new events and block already queued events at processing. Replays of existing receipts and authenticated historical reads preserve audit evidence. Title and publisher corrections must match the reviewed register and retain before/after metadata in a control audit. Identity changes require separately reviewed reconciliation. Existing DOI conflicts fail closed and other conflicts retain the existing filing and log what differed. Classification stays review-required. Filing provides source-use traceability. Rights approval, custody and claims review are separate and original bytes are excluded.
+
+### Acceptance scope
+
+CI uses three authorized public documents for filing, restart, replay and non-destructive restore verification. The forced process exit and migration/restore exercises use a distinct synthetic database. The verification checks public search, projection denial and the generated site's file and content boundary. Gate 1–3 regression checks remain in CI. This is local private SQLite with a shared operator credential; it does not establish production hardening, immutable audit storage, or general ChatGPT, Zotero, browser or third-party capture.
+
+## Gate 5 — native Windows development operations
+
+Gate 4 acceptance remains recorded at `9ddce964b5c0ab8b53a2f966965b6115822b2703` with its original CI evidence. Windows uses local NTFS, a protected directory ACL accessible to the current user and SYSTEM, and file ACL validation for databases, sidecars, backups and the credential file. The path must be outside the checkout and all served directories. Existing directories with unexpected inheritance or access grants are rejected. Provision a fresh private directory instead of weakening or rewriting an existing directory ACL. Use a parent that already exists. An elevated operator may see Windows assign the built-in Administrators group as a file owner. The verifier permits this for files created or operated by an elevated account, with no Administrators data-access rule. Directory ownership remains restricted. The NTFS boundary does not protect against a compromised account, privileged administrators taking ownership, or compromised hosts.
+
+In PowerShell, set the following values in each authorized terminal. Use the same Windows account that creates the credential.
+
+```powershell
+$env:SOURCE_HUB_PRIVATE_DB = Join-Path $env:LOCALAPPDATA 'CRSIS47-Private\registry.db'
+$env:SOURCE_HUB_TOKEN_FILE = Join-Path $env:LOCALAPPDATA 'CRSIS47-Private\intake.dpapi'
+$env:SOURCE_HUB_GATE3_PUBLIC = '1'
+python source-hub-api/windows_security.py rotate $env:SOURCE_HUB_TOKEN_FILE
+python source-hub-api/private_store.py migrate
+python source-hub-api/ingest.py serve
+```
+
+In the second terminal with the credential file configured, run `python source-hub-api/codex_research_gate4.py`. The Windows CLI manages private paths by default. Rotation uses a generated 256-bit token, replaces the current-user DPAPI credential file and takes effect on service restart. Stop intake before rotating, then restart and reload the client credential. There is no time-based expiry. The DPAPI file protects the token at rest for the Windows user. SQLite databases and backups are ACL-protected and are not encrypted by this feature.
+
+Use the same backup, restore, verify and rollback commands described above, supplying fresh destinations under separate validated private directories. Do not copy a live SQLite file directly. A rejected or interrupted restore must not be promoted. Verify a separate known-good backup before recovering from corruption. The Windows CI job creates only disposable files, checks unsafe inherited directories and broad grants, exercises credential rotation and uses the existing real-source allowlist. No research archive, production service, or Windows user registry is migrated by CI.
+
+## GitHub journal intake and public access design
+
+Use GitHub as the journal-article intake queue. A reviewed change on the designated queue branch is the filing trigger. Each approved article becomes an entry in the public Source Hub that anyone can find and open without signing in. Keep journal articles separate from journal venue records. A public entry includes citation metadata, a stable DOI or canonical URL, and an authorized link to read the article. Where a verified open-access copy is available, prefer that link. Label publisher links that require a subscription. Host full text only when redistribution rights have been verified.
+
+A local importer should read reviewed queue revisions and submit approved articles to the existing authenticated loopback intake. Reuse stable source identifiers, DOI and URL deduplication, and filing receipts. Advance the local import checkpoint only after receipt verification. Send invalid items to review. Record explicit public approval in the reviewed GitHub entry so the same approval can drive publication after filing. The public projection must allowlist citation fields and reading links. Keep operator credentials, notes, receipts, attachments, and the live database local. Use the existing paginated Source Hub collection for public discovery.
+
+GitHub Actions can validate queue changes and test the importer and public projection against disposable registries. Before activation, verify that replay produces one public listing, that approved links are reachable, and that unapproved metadata and private operational fields are absent from public output.
+
+This section records the design. The trigger, importer, and real journal publication path still require implementation and end-to-end verification.

@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source Hub intake and registry",
+  "description": "Reference schemas. Runtime validation additionally canonicalizes synthetic URLs and DOIs. The exact Gate 2 IANA URL additionally requires local opt-in and workflow/project authorization. Gate 3 admission requires a reviewed exact entry and explicit opt-in.",
+  "$ref": "#/$defs/source_used",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "source_used": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_type",
+        "source_url",
+        "classification",
+        "used_at",
+        "project_ids",
+        "claim_ids",
+        "authors",
+        "evidence_type",
+        "publication_date",
+        "doi",
+        "title",
+        "publisher",
+        "originating_workflow",
+        "capture_method"
+      ],
+      "properties": {
+        "event_type": {
+          "const": "SOURCE_USED"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "source_url": {
+          "type": "string",
+          "anyOf": [
+            {
+              "pattern": "^https://example\\.org/synthetic/"
+            },
+            {
+              "const": "https://www.iana.org/help/example-domains"
+            },
+            {
+              "const": "https://www.rfc-editor.org/rfc/rfc2606.html"
+            },
+            {
+              "const": "https://www.rfc-editor.org/rfc/rfc6761.html"
+            }
+          ]
+        },
+        "classification": {
+          "const": "REVIEW_REQUIRED"
+        },
+        "used_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "project_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "claim_ids": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "external_ids": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "authors": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "evidence_type": {
+          "enum": [
+            "scholarly_article",
+            "pgdt_scenario",
+            "case_study",
+            "book",
+            "laboratory",
+            "historical_evidence",
+            "public_research_guidance",
+            "public_technical_guidance",
+            "public_governance_guidance"
+          ]
+        },
+        "pgdt_lens": {
+          "enum": [
+            null,
+            "People",
+            "Governance",
+            "Data",
+            "Technology"
+          ]
+        },
+        "preservation_requested": {
+          "type": "boolean"
+        },
+        "publication_date": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+            }
+          ]
+        },
+        "doi": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 256
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 256
+        },
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 256
+        },
+        "originating_workflow": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "capture_method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "required": [
+        "id",
+        "metadata",
+        "collection",
+        "classification",
+        "verification",
+        "preservation",
+        "publication",
+        "discovered_at",
+        "retrieved_at",
+        "original_checksum",
+        "rights"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Normalized source_url, DOI, title, authors, publisher, publication date, evidence type and PGDT lens."
+        },
+        "collection": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "DISCOVERED",
+            "CAPTURED",
+            "METADATA_VERIFIED",
+            "EVIDENCE_REVIEWED"
+          ]
+        },
+        "preservation": {
+          "type": "string"
+        },
+        "publication": {
+          "type": "string"
+        },
+        "discovered_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "retrieved_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "original_checksum": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "rights": {
+          "type": "string"
+        }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "required": [
+        "receipt",
+        "status",
+        "attempts",
+        "source_id",
+        "error"
+      ],
+      "properties": {
+        "receipt": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "filed",
+            "failed"
+          ]
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

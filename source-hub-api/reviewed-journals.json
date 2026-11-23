@@ -1,0 +1,123 @@
+[
+  {
+    "title": "The index of prediction accuracy: an intuitive measure useful for evaluating risk prediction models",
+    "url": "https://link.springer.com/article/10.1186/s41512-018-0029-2",
+    "doi": "10.1186/s41512-018-0029-2",
+    "authors": [
+      "Michael W. Kattan",
+      "Thomas A. Gerds"
+    ],
+    "publisher": "Diagnostic and Prognostic Research",
+    "publication_date": "2018-05-04",
+    "access": "open_access"
+  },
+  {
+    "title": "Calibration: the Achilles heel of predictive analytics",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6912996/",
+    "doi": "10.1186/s12916-019-1466-7",
+    "authors": [
+      "Ben Van Calster",
+      "David J. McLernon",
+      "Maarten van Smeden",
+      "Laure Wynants",
+      "Ewout W. Steyerberg"
+    ],
+    "publisher": "BMC Medicine",
+    "publication_date": "2019-12-16",
+    "access": "open_access"
+  },
+  {
+    "title": "Using the KBTA method for inferring computer and network security alerts from time-stamped, raw system metrics",
+    "url": "https://link.springer.com/article/10.1007/s11416-009-0125-5",
+    "doi": "10.1007/s11416-009-0125-5",
+    "authors": [
+      "Asaf Shabtai",
+      "Yuval Fledel",
+      "Yuval Elovici",
+      "Yuval Shahar"
+    ],
+    "publisher": "Journal in Computer Virology",
+    "publication_date": "2009-07-23",
+    "access": "subscription"
+  },
+  {
+    "title": "Empirical Study on Automation, AI Trust, and Framework Readiness in Cybersecurity Incident Response",
+    "url": "https://www.mdpi.com/1999-4893/19/1/62",
+    "doi": "10.3390/a19010062",
+    "authors": [
+      "Olufunsho I. Falowo",
+      "Jacques Bou Abdo"
+    ],
+    "publisher": "Algorithms",
+    "publication_date": "2026-01-11",
+    "access": "open_access"
+  },
+  {
+    "title": "Mitigating semantic label divergence in federated learning: Obfuscated encoding and alert filtering for security monitoring",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12747432/",
+    "doi": "10.1371/journal.pone.0338488",
+    "authors": [
+      "Yoonho Lee",
+      "Joonghyuk Im",
+      "Jisu Kim",
+      "Myungkeun Yoon"
+    ],
+    "publisher": "PLOS One",
+    "publication_date": "2025-12-29",
+    "access": "open_access"
+  },
+  {
+    "title": "On misconceptions about the Brier score in binary prediction models",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12818272/",
+    "doi": "10.1016/j.gloepi.2025.100242",
+    "authors": [
+      "Linard Hoessly"
+    ],
+    "publisher": "Global Epidemiology",
+    "publication_date": "2026-01-07",
+    "access": "open_access"
+  },
+  {
+    "title": "Prediction models for clustered data: comparison of a random intercept and standard regression model",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3658967/",
+    "doi": "10.1186/1471-2288-13-19",
+    "authors": [
+      "Walter Bouwmeester",
+      "Jos W. R. Twisk",
+      "Teus H. Kappen",
+      "Wilton A. van Klei",
+      "Karel G. M. Moons",
+      "Yvonne Vergouwe"
+    ],
+    "publisher": "BMC Medical Research Methodology",
+    "publication_date": "2013-02-15",
+    "access": "open_access"
+  },
+  {
+    "title": "Clustered flexible calibration plots for binary outcomes using random effects modeling",
+    "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/FE857DCCAD4A37B60EF819F26B2F9411/S175928792510046Xa.pdf/clustered_flexible_calibration_plots_for_binary_outcomes_using_random_effects_modeling.pdf",
+    "doi": "10.1017/rsm.2025.10046",
+    "authors": [
+      "Lasai Barreñada",
+      "Bavo De Cock Campo",
+      "Laure Wynants",
+      "Ben Van Calster"
+    ],
+    "publisher": "Research Synthesis Methods",
+    "publication_date": "2025-12-29",
+    "access": "open_access"
+  },
+  {
+    "title": "Systematic Literature Review of Security Event Correlation Methods",
+    "url": "https://ieeexplore.ieee.org/document/9760432/",
+    "doi": "10.1109/access.2022.3168976",
+    "authors": [
+      "Igor Kotenko",
+      "Diana Gaifulina",
+      "Igor Zelichenok"
+    ],
+    "publisher": "IEEE Access",
+    "publication_date": "2022-04-20",
+    "access": "open_access"
+  }
+]
