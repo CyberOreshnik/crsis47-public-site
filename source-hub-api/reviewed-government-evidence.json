@@ -53,5 +53,83 @@
       "Data",
       "Technology"
     ]
+  },
+  {
+    "title": "CMS — Continued Action on the Change Healthcare Cyberattack",
+    "url": "https://www.cms.gov/newsroom/press-releases/cms-statement-continued-action-respond-cyberattack-change-healthcare",
+    "description": "Case Study 006 · CMS announced Medicare payment support and directed contractors to expedite alternative clearinghouse arrangements and accept paper claims where needed.",
+    "status": "Public CMS response",
+    "publication_date": "2024-03-09",
+    "lenses": [
+      "Governance",
+      "Technology"
+    ]
+  },
+  {
+    "title": "CMS — Change Healthcare/Optum Payment Disruption Program FAQs",
+    "url": "https://www.cms.gov/newsroom/fact-sheets/change-healthcare-optum-payment-disruption-chopd-accelerated-advance-payments-part-providers-part-b",
+    "description": "Case Study 006 · Medicare eligibility, calculation, and recovery rules for emergency accelerated and advance payments. See questions 2 and 12–15 for repayment timing and offsets.",
+    "status": "Public CMS program guidance",
+    "publication_date": "2024-03-13",
+    "lenses": [
+      "Governance",
+      "Data"
+    ]
+  },
+  {
+    "title": "CMS — Change Healthcare Cybersecurity Incident and State Medicaid Flexibilities",
+    "url": "https://www.hhs.gov/guidance/document/change-healthcare-cybersecurity-incident-cms-response-and-state-flexibilities",
+    "description": "Case Study 006 · Federal guidance setting out limited Medicaid enforcement flexibility. The bulletin does not establish which options an individual state adopted.",
+    "status": "Public Medicaid guidance",
+    "publication_date": "2024-03-15",
+    "lenses": [
+      "People",
+      "Governance"
+    ]
+  },
+  {
+    "title": "U.S. Senate Finance Committee — Andrew Witty’s Change Healthcare Testimony",
+    "url": "https://www.finance.senate.gov/wp-content/uploads/meetings/78B31273-BC4A-06EF-54B4-84F7B588A49E/0501_witty_testimony.pdf",
+    "description": "Case Study 006 · Company testimony to Congress. Pages 4–5 distinguish pharmacy recovery, medical claims volume, payment-processing recovery, and provider funding.",
+    "status": "Public congressional testimony",
+    "publication_date": "2024-05-01",
+    "lenses": [
+      "People",
+      "Governance",
+      "Technology"
+    ]
+  },
+  {
+    "title": "CMS — Closing the Medicare Change Healthcare Payment Disruption Program",
+    "url": "https://www.cms.gov/newsroom/press-releases/cms-preparing-close-program-addressed-medicare-funding-issues-resulting-change-healthcare-cyber",
+    "description": "Case Study 006 · CMS reported Part A and Part B advance amounts and the share recovered by June 17. New applications ended after July 12, 2024.",
+    "status": "Public CMS program update",
+    "publication_date": "2024-06-17",
+    "lenses": [
+      "Governance",
+      "Data"
+    ]
+  },
+  {
+    "title": "UnitedHealth Group — 2024 Form 10-K, Change Healthcare Financial Impact",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176625000063/unh-20241231.htm",
+    "description": "Case Study 006 · Company disclosures on interest-free provider loans, direct response costs, and business-disruption impacts. These are distinct financial measures.",
+    "status": "Public SEC filing",
+    "publication_date": "2024-12-31",
+    "lenses": [
+      "Governance",
+      "Data"
+    ]
+  },
+  {
+    "title": "SEC filing — Provider repayment of Change Healthcare funding, Note 4",
+    "url": "https://www.sec.gov/Archives/edgar/data/1043961/000110465925112601/R10.htm",
+    "description": "Case Study 006 · One reporting company documents temporary assistance, a repayment notice following restored connectivity, and a balance still outstanding in September 2025. Use as a single-provider example.",
+    "status": "Public SEC filing",
+    "publication_date": "2025-09-30",
+    "lenses": [
+      "People",
+      "Data"
+    ]
   }
 ]
