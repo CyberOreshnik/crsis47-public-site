@@ -31,5 +31,27 @@
       "People",
       "Data"
     ]
+  },
+  {
+    "title": "CMS — Health Care Claim or Equivalent Encounter Information",
+    "url": "https://www.cms.gov/priorities/key-initiatives/burden-reduction/administrative-simplification/transactions/health-care-claim-equivalent-encounter-information",
+    "description": "Case Study 006 · CMS explains electronic claim submission standards, including X12 837 for medical claims and NCPDP D.0 for retail pharmacy claims. Payment system reference.",
+    "status": "Public CMS transaction standard",
+    "publication_date": null,
+    "lenses": [
+      "Data",
+      "Technology"
+    ]
+  },
+  {
+    "title": "CMS — Electronic Funds Transfer",
+    "url": "https://www.cms.gov/medicare/coding-billing/electronic-billing/electronic-funds-transfer",
+    "description": "Case Study 006 · CMS explains how Medicare sends electronic claim payments to a provider’s financial institution. Payment system reference for the settlement stage.",
+    "status": "Public CMS payment guidance",
+    "publication_date": null,
+    "lenses": [
+      "Data",
+      "Technology"
+    ]
   }
 ]
