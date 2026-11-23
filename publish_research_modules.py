@@ -93,6 +93,39 @@ def write_page(path, html, hashes):
     hashes[path] = hashlib.sha256(data).hexdigest()
 
 
+
+def install_public_journals(html):
+    manifest = Path("source-hub-api/reviewed-journals.json")
+    articles = json.loads(manifest.read_text(encoding="utf-8"))
+    records = []
+    for article in articles:
+        url = urlsplit(article["url"])
+        if url.scheme != "https" or not url.hostname or url.username is not None:
+            raise ValueError("Journal reading links must use public HTTPS URLs")
+        access = {
+            "open_access": "Open access",
+            "subscription": "Subscription required",
+            "unknown": "Access may vary",
+        }[article["access"]]
+        description = " · ".join(filter(None, [
+            ", ".join(article["authors"]), article["publisher"], article["doi"],
+        ]))
+        records.append({
+            "title": article["title"],
+            "type": "Journal article",
+            "url": article["url"],
+            "description": description,
+            "status": access,
+            "publication_date": article["publication_date"],
+            "lenses": [],
+        })
+    marker = "const records=["
+    if html.count(marker) != 1:
+        raise ValueError("Expected one Source Hub fallback record list")
+    # Escape markup delimiters before embedding JSON in the script.
+    entries = ",\n".join(json.dumps(record).replace("<", "\\u003c") for record in records)
+    return html.replace(marker, marker + ("\n" + entries + "," if entries else ""))
+
 def main():
     uniform_path = SITE / "uniform-manifest.json"
     deployment_path = SITE / "deployment-manifest.json"
@@ -118,6 +151,8 @@ def main():
             raise ValueError(f"{path}: duplicate research return link")
         return_path = "research/#division-detail-03" if module.startswith("labs/") else "research/"
         html = html.replace(OLD_BACK_LINK, BASE + return_path)
+        if module == "source-hub":
+            html = install_public_journals(html)
         write_page(path, html, hashes)
 
     for page in ("index.html", "research/index.html"):
