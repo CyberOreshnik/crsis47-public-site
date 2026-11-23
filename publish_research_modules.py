@@ -96,7 +96,7 @@ def write_page(path, html, hashes):
 
 
 
-def install_public_journals(html):
+def install_public_source_records(html):
     manifest = Path("source-hub-api/reviewed-journals.json")
     articles = json.loads(manifest.read_text(encoding="utf-8"))
     records = []
@@ -121,6 +121,18 @@ def install_public_journals(html):
             "publication_date": article["publication_date"],
             "lenses": [],
         })
+    evidence_manifest = Path("source-hub-api/reviewed-government-evidence.json")
+    evidence = json.loads(evidence_manifest.read_text(encoding="utf-8"))
+    fields = {"title", "url", "description", "status", "publication_date", "lenses"}
+    for entry in evidence:
+        if set(entry) != fields:
+            raise ValueError("Unexpected government evidence fields")
+        url = urlsplit(entry["url"])
+        if (url.scheme != "https" or not url.hostname or not url.hostname.endswith(".gov")
+            or url.username is not None):
+            raise ValueError("Government evidence links must use official HTTPS .gov URLs")
+        records.append(dict(entry, type="Primary evidence"))
+
     marker = "const records=["
     if html.count(marker) != 1:
         raise ValueError("Expected one Source Hub fallback record list")
@@ -154,7 +166,7 @@ def main():
         return_path = "research/#division-detail-03" if module.startswith("labs/") else "research/"
         html = html.replace(OLD_BACK_LINK, BASE + return_path)
         if module == "source-hub":
-            html = install_public_journals(html)
+            html = install_public_source_records(html)
         write_page(path, html, hashes)
 
     for page in ("index.html", "research/index.html"):
