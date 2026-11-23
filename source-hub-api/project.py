@@ -1,8 +1,12 @@
-"""Explicit local synthetic projection. No intake event can invoke publication."""
+"""Publish reviewed journal manifests and explicitly approved synthetic snapshots."""
 import argparse
 from contextlib import closing
+from datetime import date as datetime_date
+import hashlib
 import json
 from pathlib import Path
+import re
+from urllib.parse import urlsplit
 
 import ingest
 import server
@@ -63,12 +67,78 @@ def project_demo(private_path, source_id):
         import_snapshot(db, snapshot)
     return snapshot
 
+
+def import_public_journals(db, records):
+    """Import reviewed GitHub citation records into the public search index."""
+    if not isinstance(records, list):
+        raise ValueError("journal_manifest_must_be_a_list")
+    fields = {"title", "url", "doi", "authors", "publisher", "publication_date", "access"}
+    seen = set()
+    for record in records:
+        if not isinstance(record, dict) or set(record) != fields:
+            raise ValueError("invalid_journal_fields")
+        title, url, doi, authors, publisher, date, access = (
+            record[key] for key in ("title", "url", "doi", "authors", "publisher", "publication_date", "access")
+        )
+        if not isinstance(title, str) or not title.strip() or not isinstance(url, str):
+            raise ValueError("invalid_journal_title_or_url")
+        link = urlsplit(url)
+        if (link.scheme != "https" or not link.hostname or link.username or link.password
+            or link.query or link.fragment or any(char.isspace() for char in url)):
+            raise ValueError("invalid_public_reading_url")
+        if doi is not None and (not isinstance(doi, str) or not re.fullmatch(r"10\.\d{4,9}/\S+", doi)):
+            raise ValueError("invalid_journal_doi")
+        if (not isinstance(authors, list) or any(not isinstance(author, str) for author in authors)
+            or not isinstance(publisher, str) or access not in ("open_access", "subscription", "unknown")):
+            raise ValueError("invalid_journal_citation")
+        if date is not None:
+            if not isinstance(date, str) or not re.fullmatch(r"\d{4}(?:-\d{2}(?:-\d{2})?)?", date):
+                raise ValueError("invalid_journal_publication_date")
+            datetime_date.fromisoformat(date + {4: "-01-01", 7: "-01", 10: ""}[len(date)])
+        identity = doi.lower() if doi else url
+        if identity in seen:
+            raise ValueError("duplicate_journal_identity")
+        seen.add(identity)
+        source_id = "JOURNAL-" + hashlib.sha256(identity.encode()).hexdigest()[:32]
+        citation = dict(record, doi=doi.lower() if doi else None, source_url=url, source_id=source_id)
+        desc = " · ".join(filter(None, [", ".join(authors), publisher, doi, access.replace("_", " ")]))
+        values = (title, desc, date, url)
+        row = db.execute("SELECT source_row FROM public_provenance WHERE source_id=?", (source_id,)).fetchone()
+        if row:
+            row_id = row[0]
+            db.execute("UPDATE sources SET title=?,description=?,publication_date=?,url=? WHERE id=?",
+                       (*values, row_id))
+        else:
+            row_id = db.execute("""INSERT INTO sources(title,description,publication_date,url,
+                source_type,pgdt_lens,review_status,visibility)
+                VALUES(?,?,?,?,'Journal article','','approved','public')""", values).lastrowid
+        db.execute("""INSERT INTO public_provenance VALUES(?,?,'journal-articles','REVIEWED',?)
+            ON CONFLICT(source_row) DO UPDATE SET citation_json=excluded.citation_json""",
+                   (row_id, source_id, ingest.encode(citation)))
+
+def import_reviewed_manifest(path):
+    records = json.loads(Path(path).read_text(encoding="utf-8"))
+    server.initialize()
+    with closing(server.connect()) as db, db:
+        db.execute("PRAGMA foreign_keys=ON")
+        db.execute("BEGIN IMMEDIATE")
+        import_public_journals(db, records)
+    return len(records)
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--private-db", required=True)
-    parser.add_argument("source_id")
-    parser.add_argument("--approve-synthetic", required=True, action="store_true")
+    parser.add_argument("--private-db")
+    parser.add_argument("--reviewed-journal-manifest", metavar="PATH")
+    parser.add_argument("source_id", nargs="?")
+    parser.add_argument("--approve-synthetic", action="store_true")
     args = parser.parse_args()
+    if args.reviewed_journal_manifest:
+        if args.private_db or args.source_id or args.approve_synthetic:
+            parser.error("supply only the reviewed journal manifest")
+        print(ingest.encode({"journal_articles_imported": import_reviewed_manifest(args.reviewed_journal_manifest)}))
+        return
+    if not (args.private_db and args.source_id and args.approve_synthetic):
+        parser.error("synthetic projection requires --private-db, source ID and --approve-synthetic")
     ingest.initialize(args.private_db)
     server.initialize()
     print(ingest.encode(project_demo(args.private_db, args.source_id)))
