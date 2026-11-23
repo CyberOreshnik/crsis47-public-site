@@ -99,3 +99,61 @@ jobs:
           name: source-hub-gate5-windows-evidence
           path: ${{ runner.temp }}/gate5-evidence.jsonl
           if-no-files-found: error
+
+  journal-articles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify reviewed journal filing and anonymous public search
+        run: |
+          export SOURCE_HUB_DB="$RUNNER_TEMP/journal-public.db"
+          export PYTHONPATH="$GITHUB_WORKSPACE/source-hub-api"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+          from threading import Thread
+          from urllib.parse import urlencode
+          from urllib.request import urlopen
+
+          import server
+
+          manifest = Path(os.environ["RUNNER_TEMP"]) / "reviewed-journals.json"
+          article = {
+              "title": "Synthetic journal verification",
+              "authors": ["Example Author"],
+              "publisher": "Example Publisher",
+              "publication_date": "2026",
+              "doi": "10.9999/synthetic-journal-verification",
+              "url": "https://example.org/journal-verification",
+              "access": "open_access",
+          }
+          command = [sys.executable, "source-hub-api/project.py",
+                     "--reviewed-journal-manifest", str(manifest)]
+          manifest.write_text(json.dumps([article]), encoding="utf-8")
+          for _ in range(2):
+              subprocess.run(command, check=True)
+          manifest.write_text(json.dumps([
+              dict(article, doi="10.9999/rollback"),
+              dict(article, private_note="test marker"),
+          ]), encoding="utf-8")
+          rejected = subprocess.run(command, capture_output=True, text=True)
+          assert rejected.returncode and "invalid_journal_fields" in rejected.stderr
+
+          with server.ThreadingHTTPServer(("127.0.0.1", 0), server.Handler) as http:
+              worker = Thread(target=http.serve_forever, daemon=True)
+              worker.start()
+              try:
+                  query = urlencode({"type": "Journal article"})
+                  url = f"http://127.0.0.1:{http.server_port}/api/sources?{query}"
+                  with urlopen(url, timeout=5) as response:
+                      items = json.load(response)["items"]
+                  assert len(items) == 1 and items[0]["url"] == article["url"]
+                  assert "test marker" not in json.dumps(items)
+              finally:
+                  http.shutdown()
+                  worker.join()
+          PY
