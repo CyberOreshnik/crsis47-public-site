@@ -75,8 +75,6 @@ SOURCE_HUB = (
     '<details id="source-hub-resource"><summary>Source Hub</summary>'
     '<p><a href="' + BASE + "source-hub" + '/">'
     'Open the Source Hub →</a></p></details>'
-    '<p><a href="' + BASE + 'source-hub/?type=Journal+article">'
-    'Browse journal articles →</a></p>'
 )
 
 
