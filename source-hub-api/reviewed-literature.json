@@ -1,0 +1,292 @@
+[
+  {
+    "title": "The index of prediction accuracy: an intuitive measure useful for evaluating risk prediction models",
+    "url": "https://link.springer.com/article/10.1186/s41512-018-0029-2",
+    "doi": "10.1186/s41512-018-0029-2",
+    "authors": [
+      "Michael W. Kattan",
+      "Thomas A. Gerds"
+    ],
+    "publisher": "Diagnostic and Prognostic Research",
+    "publication_date": "2018-05-04",
+    "access": "open_access"
+  },
+  {
+    "title": "Calibration: the Achilles heel of predictive analytics",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6912996/",
+    "doi": "10.1186/s12916-019-1466-7",
+    "authors": [
+      "Ben Van Calster",
+      "David J. McLernon",
+      "Maarten van Smeden",
+      "Laure Wynants",
+      "Ewout W. Steyerberg"
+    ],
+    "publisher": "BMC Medicine",
+    "publication_date": "2019-12-16",
+    "access": "open_access"
+  },
+  {
+    "title": "Using the KBTA method for inferring computer and network security alerts from time-stamped, raw system metrics",
+    "url": "https://link.springer.com/article/10.1007/s11416-009-0125-5",
+    "doi": "10.1007/s11416-009-0125-5",
+    "authors": [
+      "Asaf Shabtai",
+      "Yuval Fledel",
+      "Yuval Elovici",
+      "Yuval Shahar"
+    ],
+    "publisher": "Journal in Computer Virology",
+    "publication_date": "2009-07-23",
+    "access": "subscription"
+  },
+  {
+    "title": "Empirical Study on Automation, AI Trust, and Framework Readiness in Cybersecurity Incident Response",
+    "url": "https://www.mdpi.com/1999-4893/19/1/62",
+    "doi": "10.3390/a19010062",
+    "authors": [
+      "Olufunsho I. Falowo",
+      "Jacques Bou Abdo"
+    ],
+    "publisher": "Algorithms",
+    "publication_date": "2026-01-11",
+    "access": "open_access"
+  },
+  {
+    "title": "Mitigating semantic label divergence in federated learning: Obfuscated encoding and alert filtering for security monitoring",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12747432/",
+    "doi": "10.1371/journal.pone.0338488",
+    "authors": [
+      "Yoonho Lee",
+      "Joonghyuk Im",
+      "Jisu Kim",
+      "Myungkeun Yoon"
+    ],
+    "publisher": "PLOS One",
+    "publication_date": "2025-12-29",
+    "access": "open_access"
+  },
+  {
+    "title": "On misconceptions about the Brier score in binary prediction models",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12818272/",
+    "doi": "10.1016/j.gloepi.2025.100242",
+    "authors": [
+      "Linard Hoessly"
+    ],
+    "publisher": "Global Epidemiology",
+    "publication_date": "2026-01-07",
+    "access": "open_access"
+  },
+  {
+    "title": "Prediction models for clustered data: comparison of a random intercept and standard regression model",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3658967/",
+    "doi": "10.1186/1471-2288-13-19",
+    "authors": [
+      "Walter Bouwmeester",
+      "Jos W. R. Twisk",
+      "Teus H. Kappen",
+      "Wilton A. van Klei",
+      "Karel G. M. Moons",
+      "Yvonne Vergouwe"
+    ],
+    "publisher": "BMC Medical Research Methodology",
+    "publication_date": "2013-02-15",
+    "access": "open_access"
+  },
+  {
+    "title": "Clustered flexible calibration plots for binary outcomes using random effects modeling",
+    "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/FE857DCCAD4A37B60EF819F26B2F9411/S175928792510046Xa.pdf/clustered_flexible_calibration_plots_for_binary_outcomes_using_random_effects_modeling.pdf",
+    "doi": "10.1017/rsm.2025.10046",
+    "authors": [
+      "Lasai Barreñada",
+      "Bavo De Cock Campo",
+      "Laure Wynants",
+      "Ben Van Calster"
+    ],
+    "publisher": "Research Synthesis Methods",
+    "publication_date": "2025-12-29",
+    "access": "open_access"
+  },
+  {
+    "title": "Systematic Literature Review of Security Event Correlation Methods",
+    "url": "https://ieeexplore.ieee.org/document/9760432/",
+    "doi": "10.1109/access.2022.3168976",
+    "authors": [
+      "Igor Kotenko",
+      "Diana Gaifulina",
+      "Igor Zelichenok"
+    ],
+    "publisher": "IEEE Access",
+    "publication_date": "2022-04-20",
+    "access": "open_access"
+  },
+  {
+    "title": "Pitfalls in Machine Learning for Computer Security",
+    "url": "https://doi.org/10.1145/3643456",
+    "doi": "10.1145/3643456",
+    "authors": [
+      "Daniel Arp",
+      "Erwin Quiring",
+      "Feargus Pendlebury",
+      "Alexander Warnecke",
+      "Fabio Pierazzi",
+      "Christian Wressnegger",
+      "Lorenzo Cavallaro",
+      "Konrad Rieck"
+    ],
+    "publisher": "Communications of the ACM",
+    "publication_date": "2024-10-25",
+    "access": "unknown",
+    "type": "Journal article",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "Data",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Alert Prioritisation in Security Operations Centres: A Systematic Survey on Criteria and Methods",
+    "url": "https://doi.org/10.1145/3695462",
+    "doi": "10.1145/3695462",
+    "authors": [
+      "Fatemeh Jalalvand",
+      "Mohan Baruwal Chhetri",
+      "Surya Nepal",
+      "Cécile Paris"
+    ],
+    "publisher": "ACM Computing Surveys",
+    "publication_date": "2025",
+    "access": "subscription",
+    "type": "Journal article",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "People",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Alert Fatigue in Security Operations Centres: Research Challenges and Opportunities",
+    "url": "https://doi.org/10.1145/3723158",
+    "doi": "10.1145/3723158",
+    "authors": [
+      "Shahroz Tariq",
+      "Mohan Baruwal Chhetri",
+      "Surya Nepal",
+      "Cécile Paris"
+    ],
+    "publisher": "ACM Computing Surveys",
+    "publication_date": "2025-04-04",
+    "access": "unknown",
+    "type": "Journal article",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "People",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Exploring automation bias in human–AI collaboration: a review and implications for explainable AI",
+    "url": "https://doi.org/10.1007/s00146-025-02422-7",
+    "doi": "10.1007/s00146-025-02422-7",
+    "authors": [
+      "Giuseppe Romeo",
+      "Daniela Conti"
+    ],
+    "publisher": "AI & Society",
+    "publication_date": "2026",
+    "access": "open_access",
+    "type": "Journal article",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "People",
+      "Governance"
+    ]
+  },
+  {
+    "title": "The vigilance paradox: automation reliance inside the modern SOC",
+    "url": "https://doi.org/10.1108/ICS-08-2025-0318",
+    "doi": "10.1108/ICS-08-2025-0318",
+    "authors": [
+      "Jack Tilbury",
+      "Stephen V. Flowerday"
+    ],
+    "publisher": "Information and Computer Security",
+    "publication_date": "2026",
+    "access": "unknown",
+    "type": "Journal article",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "People",
+      "Governance"
+    ]
+  },
+  {
+    "title": "Poisoning the Watchtower: Prompt Injection Attacks Against LLM-Augmented Security Operations Through Adversarial Log Content",
+    "url": "https://arxiv.org/abs/2605.24421",
+    "doi": "10.48550/arXiv.2605.24421",
+    "authors": [
+      "Rohan Pandey",
+      "Archit Bhujang"
+    ],
+    "publisher": "arXiv",
+    "publication_date": "2026-05-23",
+    "access": "open_access",
+    "type": "Preprint",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "Data",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Principles of AI Governance and Model Risk Management: Master the Techniques for Ethical and Transparent AI Systems",
+    "url": "https://link.springer.com/book/10.1007/979-8-8688-0983-5",
+    "doi": "10.1007/979-8-8688-0983-5",
+    "authors": [
+      "James Sayles"
+    ],
+    "publisher": "Apress",
+    "publication_date": "2024",
+    "access": "unknown",
+    "type": "Book",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Beyond the Algorithm: AI, Security, Privacy, and Ethics",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/beyond-the-algorithm-ai-security-privacy-and-ethics/P200000011818",
+    "doi": "",
+    "authors": [
+      "Omar Santos",
+      "Petar Radanliev"
+    ],
+    "publisher": "Addison-Wesley Professional",
+    "publication_date": "2024-01-30",
+    "access": "unknown",
+    "type": "Book",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "Governance",
+      "Data"
+    ]
+  },
+  {
+    "title": "Software Supply Chain Security",
+    "url": "https://www.oreilly.com/library/view/software-supply-chain/9781098133696/",
+    "doi": "",
+    "authors": [
+      "Cassie Crossley"
+    ],
+    "publisher": "O’Reilly Media",
+    "publication_date": "2024-02",
+    "access": "unknown",
+    "type": "Book",
+    "topic": "AI-assisted alert triage",
+    "lenses": [
+      "Governance",
+      "Technology"
+    ]
+  }
+]

@@ -17,17 +17,17 @@ footer{border-top:1px solid #80673f;margin-top:40px;color:var(--muted)}#count{ma
 </style></head>
 <body><header><div class="brand">CRSIS-47 | THE EVIDENCE CHAMBER</div><nav aria-label="Site navigation"><a href="../approved-website/index.html#research">Return to website</a></nav></header>
 <main><p class="meta">Research &amp; Laboratories / Scholarly infrastructure</p><h1>Source Hub</h1>
-<p class="lead">A governed discovery index for scholarly journals and investigative evidence. Listing a publication venue does not endorse every article it publishes. Individual research claims require independent source evaluation.</p>
+<p class="lead">A governed discovery index for scholarly literature and investigative evidence. Listing a publication venue does not endorse every article it publishes. Individual research claims require independent source evaluation.</p>
 <section aria-labelledby="browse"><h2 id="browse">Explore sources</h2><form class="tools" id="filters">
 <input id="search" type="search" aria-label="Search sources" placeholder="Search title, author, DOI, or source ID">
-<select id="type" aria-label="Filter by source type"><option value="">All source types</option><option value="Journal">Academic journals</option><option value="Journal article">Journal articles</option><option value="Article">Articles</option><option value="Primary evidence">Primary evidence</option></select>
+<select id="type" aria-label="Filter by source type"><option value="">All source types</option><option value="Journal">Academic journals</option><option value="Journal article">Journal articles</option><option value="Book">Books</option><option value="Preprint">Preprints</option><option value="Article">Articles</option><option value="Primary evidence">Primary evidence</option></select>
 <select id="lens" aria-label="Filter by PGDT lens"><option value="">All PGDT lenses</option><option>People</option><option>Governance</option><option>Data</option><option>Technology</option></select>
 <input id="collection" aria-label="Collection slug" placeholder="Collection" hidden disabled>
 <input id="project" aria-label="Project ID" placeholder="Project ID" hidden disabled>
 <select id="verification" aria-label="Verification status" hidden disabled><option value="">Any verification status</option><option>CAPTURED</option><option>METADATA_VERIFIED</option><option>EVIDENCE_REVIEWED</option></select>
 <button type="submit">Search</button>
 </form><p id="count" role="status" aria-live="polite"></p><div class="cards" id="results"></div><nav aria-label="Source result pages"><button type="button" id="first" hidden>First page</button> <button type="button" id="next" hidden>Next page</button></nav></section>
-<section aria-labelledby="policy"><h2 id="policy">Evidence governance</h2><p>Records distinguish <strong>publication venues</strong> from <strong>individual articles</strong>, primary evidence, and CRSIS-47 analysis. Entries are discovery candidates until a specific work is reviewed for provenance, methodology, relevance, limitations, and citation accuracy. Public records must not expose confidential doctoral or controlled research material.</p><p class="note">Version 0.1 — initial journal discovery. No experimental validation or publication endorsement is implied.</p></section></main>
+<section aria-labelledby="policy"><h2 id="policy">Evidence governance</h2><p>Records distinguish <strong>publication venues</strong> from <strong>individual works</strong>, primary evidence, and CRSIS-47 analysis. Entries are discovery candidates until a specific work is reviewed for provenance, methodology, relevance, limitations, and citation accuracy. Public records must not expose confidential doctoral or controlled research material.</p><p class="note">Version 0.1 — initial journal discovery. No experimental validation or publication endorsement is implied.</p></section></main>
 <footer>CRSIS-47 — Cyber Risk Security Intelligence System · Where Evidence Becomes Judgment.</footer>
 <script>
 const apiBase = document.querySelector('meta[name="source-hub-api"]').content;

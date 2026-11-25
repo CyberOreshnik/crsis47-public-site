@@ -77,6 +77,8 @@ SOURCE_HUB = (
     'Open the Source Hub →</a></p></details>'
     '<p><a href="' + BASE + 'source-hub/?type=Journal+article">'
     'Browse journal articles →</a></p>'
+    '<p><a href="' + BASE + 'source-hub/?q=AI-assisted+alert+triage">'
+    'AI-assisted alert triage reading list →</a></p>'
 )
 
 
@@ -97,29 +99,29 @@ def write_page(path, html, hashes):
 
 
 def install_public_source_records(html):
-    manifest = Path("source-hub-api/reviewed-journals.json")
+    manifest = Path("source-hub-api/reviewed-literature.json")
     articles = json.loads(manifest.read_text(encoding="utf-8"))
     records = []
     for article in articles:
         url = urlsplit(article["url"])
         if url.scheme != "https" or not url.hostname or url.username is not None:
-            raise ValueError("Journal reading links must use public HTTPS URLs")
+            raise ValueError("Literature links must use public HTTPS URLs")
         access = {
             "open_access": "Open access",
             "subscription": "Subscription required",
             "unknown": "Access may vary",
         }[article["access"]]
         description = " · ".join(filter(None, [
-            ", ".join(article["authors"]), article["publisher"], article["doi"],
+            ", ".join(article["authors"]), article["publisher"], article["doi"], article.get("topic"),
         ]))
         records.append({
             "title": article["title"],
-            "type": "Journal article",
+            "type": article.get("type", "Journal article"),
             "url": article["url"],
             "description": description,
             "status": access,
             "publication_date": article["publication_date"],
-            "lenses": [],
+            "lenses": article.get("lenses", []),
         })
     evidence_manifest = Path("source-hub-api/reviewed-government-evidence.json")
     evidence = json.loads(evidence_manifest.read_text(encoding="utf-8"))
