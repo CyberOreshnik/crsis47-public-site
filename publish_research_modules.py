@@ -77,8 +77,6 @@ SOURCE_HUB = (
     'Open the Source Hub →</a></p></details>'
     '<p><a href="' + BASE + 'source-hub/?type=Journal+article">'
     'Browse journal articles →</a></p>'
-    '<p><a href="' + BASE + 'source-hub/?q=AI-assisted+alert+triage">'
-    'AI-assisted alert triage reading list →</a></p>'
 )
 
 
