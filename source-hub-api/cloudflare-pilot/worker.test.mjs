@@ -21,3 +21,5 @@ test("journal filtering",async()=>{const body=await (await req("/api/sources?typ
 
 test("manifest authorization fails closed",async()=>{for(const revision of [undefined,"wrong"]){const e={...env,APPROVED_MANIFEST_REVISION:revision};assert.equal((await req("/api/sources","GET",e)).status,503);assert.equal((await req("/health","GET",e)).status,503);}});
 test("government multi-lens filtering",async()=>{for(const lens of ["People","Governance","Data","Technology"]){const body=await (await req("/api/sources?lens="+lens)).json();assert.deepEqual(body.items.map(x=>x.url).sort(),government.filter(x=>x.lenses.includes(lens)).map(x=>x.url).sort());}});
+
+test("unsupported project filter rejected",async()=>{const res=await req("/api/sources?project=unknown");assert.equal(res.status,400);assert.match((await res.json()).error,/not supported/);});
