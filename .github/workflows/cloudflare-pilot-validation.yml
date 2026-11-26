@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-save --package-lock=false --ignore-scripts miniflare@3.20250718.2 esbuild@0.25.8
       - run: node --test source-hub-api/cloudflare-pilot/*.test.mjs
 
       - run: node source-hub-api/cloudflare-pilot/navigation.test.cjs
