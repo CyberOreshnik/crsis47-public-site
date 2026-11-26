@@ -19,6 +19,7 @@ const vm = require("node:vm");
   const location = {href: "https://example.org/source-hub/?q=evidence", search: "?q=evidence"};
   const requested = [];
   let offline = false;
+  let failureStatus = 0;
   const history = {
     pushState(_, __, url) { location.href = url.href; location.search = url.search; }
   };
@@ -32,6 +33,7 @@ const vm = require("node:vm");
     fetch: async url => {
       requested.push(url);
       if (offline) throw new Error("offline");
+      if (failureStatus) return {ok:false,status:failureStatus};
       return {ok:true, json:async () => ({items:[],nextCursor:"signed-cursor"})};
     },
     URL, URLSearchParams, AbortController, location, history
@@ -58,5 +60,22 @@ const vm = require("node:vm");
   await handlers.popstate();
   await new Promise(setImmediate);
   assert.match(elements.count.textContent, /cannot apply these filters/);
-  console.log("PASS: navigation, offline preview, advanced-filter fail closed");
+  offline = false;
+  for (const status of [429, 403, 503, 500]) {
+    failureStatus = status;
+    location.search = "?q=evidence";
+    await handlers.popstate();
+    assert.match(elements.count.textContent, /Offline venue preview only/);
+    assert.equal(elements.next.hidden,true);
+  }
+  failureStatus = 409;
+  location.search = "?cursor=old";
+  await handlers.popstate();
+  assert.match(elements.count.textContent,/Choose First page/);
+  failureStatus = 0;
+  location.search = "?q=evidence";
+  await handlers.popstate();
+  assert.equal(elements.next.hidden,false);
+  assert.doesNotMatch(elements.count.textContent,/Offline/);
+  console.log("PASS: navigation, outage, quota, authorization denial, server error, stale cursor, restart");
 })().catch(error => { console.error(error); process.exitCode = 1; });
