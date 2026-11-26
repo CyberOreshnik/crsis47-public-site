@@ -35,6 +35,7 @@ export default {async fetch(request,env){
  const p=u.searchParams;
  for(const k of p.keys())if(!allowed.has(k)||p.getAll(k).length!==1||p.get(k).length>(k==="cursor"?512:128))return respond(400,{error:"Invalid parameters"});
  const f=Object.fromEntries(filters.map(k=>[k,(p.get(k)||"").trim()]));
+ if(f.project)return respond(400,{error:"Project filtering is not supported by this pilot"});
  const rawLimit=p.get("limit")||"25";
  if(!/^[0-9]+$/.test(rawLimit))return respond(400,{error:"Invalid limit"});
  const limit=Number(rawLimit);
