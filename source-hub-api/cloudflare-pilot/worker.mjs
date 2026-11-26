@@ -29,13 +29,15 @@ export default {async fetch(request,env){
  if(!["/api/sources","/health"].includes(u.pathname))return respond(404,{error:"Endpoint not found"});
  try{
  const {items,revision}=await getSnapshot();
- if(u.pathname==="/health")return respond(200,{status:"ok",revision,mode:"public-manifest-pilot"});
+ if(u.pathname==="/health")return respond(typeof env.CURSOR_SECRET==="string"&&env.CURSOR_SECRET.length>=32?200:503,{status:typeof env.CURSOR_SECRET==="string"&&env.CURSOR_SECRET.length>=32?"ok":"not-ready",revision,mode:"public-manifest-pilot"});
  if(typeof env.CURSOR_SECRET!=="string"||env.CURSOR_SECRET.length<32)return respond(503,{error:"Search temporarily unavailable"});
  const p=u.searchParams;
  for(const k of p.keys())if(!allowed.has(k)||p.getAll(k).length!==1||p.get(k).length>(k==="cursor"?512:128))return respond(400,{error:"Invalid parameters"});
  const f=Object.fromEntries(filters.map(k=>[k,(p.get(k)||"").trim()]));
- const limit=Number(p.get("limit")||25);
- if(!Number.isInteger(limit)||limit<1||limit>25||(f.q&&(f.q.length<3||f.q.includes("\\u0000"))))return respond(400,{error:"Invalid parameters"});
+ const rawLimit=p.get("limit")||"25";
+ if(!/^[0-9]+$/.test(rawLimit))return respond(400,{error:"Invalid limit"});
+ const limit=Number(rawLimit);
+ if(!Number.isInteger(limit)||limit<1||limit>25||(f.q&&(f.q.length<3||f.q.includes("\u0000"))))return respond(400,{error:"Invalid parameters"});
  for(const k of ["from","to"])if(f[k]&&(!/^\d{4}-\d{2}-\d{2}$/.test(f[k])||!Number.isFinite(Date.parse(f[k]))||new Date(f[k]).toISOString().slice(0,10)!==f[k]))return respond(400,{error:"Invalid date"});
  if(f.from&&f.to&&f.from>f.to)return respond(400,{error:"Invalid date range"});
  const fingerprint=await hash(JSON.stringify(f));let last="";
