@@ -7,6 +7,8 @@ const literature=await load("reviewed-literature.json"), government=await load("
 const source=await readFile(new URL("./worker.mjs",import.meta.url),"utf8");
 const worker=new Function("literature","government",source.replace(/^import .*;\n/gm,"").replace("export default","return"))(literature,government);
 const env={CURSOR_SECRET:"synthetic-test-only-secret-1234567890"};
+const readiness=await worker.fetch(new Request("https://pilot.invalid/health"),env);
+env.APPROVED_MANIFEST_REVISION=(await readiness.json()).revision;
 const req=(path,method="GET",e=env,headers={})=>worker.fetch(new Request("https://pilot.invalid"+path,{method,headers}),e);
 test("health",async()=>assert.equal((await req("/health")).status,200));
 test("deny writes and private routes",async()=>{for(const method of ["POST","PUT","PATCH","DELETE"])assert.equal((await req("/api/sources",method)).status,405);assert.equal((await req("/private")).status,404)});
@@ -16,3 +18,6 @@ test("public manifest membership and pagination",async()=>{let cursor=null;const
 test("cursor tampering and filter binding",async()=>{const {nextCursor}=await (await req("/api/sources?limit=1")).json();assert.ok(nextCursor);assert.equal((await req("/api/sources?cursor="+encodeURIComponent(nextCursor+"x"))).status,400);assert.equal((await req("/api/sources?q=CMS&cursor="+encodeURIComponent(nextCursor))).status,400)});
 test("CORS exact origin",async()=>{assert.equal((await req("/health","GET",env,{Origin:"https://cyberoreshnik.github.io"})).headers.get("Access-Control-Allow-Origin"),"https://cyberoreshnik.github.io");assert.equal((await req("/health","GET",env,{Origin:"https://other.invalid"})).headers.get("Access-Control-Allow-Origin"),null)});
 test("journal filtering",async()=>{const body=await (await req("/api/sources?type=Journal%20article")).json();assert.equal(body.items.length,literature.length)});
+
+test("manifest authorization fails closed",async()=>{for(const revision of [undefined,"wrong"]){const e={...env,APPROVED_MANIFEST_REVISION:revision};assert.equal((await req("/api/sources","GET",e)).status,503);assert.equal((await req("/health","GET",e)).status,503);}});
+test("government multi-lens filtering",async()=>{for(const lens of ["People","Governance","Data","Technology"]){const body=await (await req("/api/sources?lens="+lens)).json();assert.deepEqual(body.items.map(x=>x.url).sort(),government.filter(x=>x.lenses.includes(lens)).map(x=>x.url).sort());}});
