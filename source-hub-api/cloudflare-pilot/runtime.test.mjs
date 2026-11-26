@@ -4,7 +4,7 @@ import {Miniflare} from "miniflare";
 import {build} from "esbuild";
 const result=await build({entryPoints:["source-hub-api/cloudflare-pilot/worker.mjs"],bundle:true,format:"esm",write:false,platform:"browser"});
 const secret="synthetic-local-only-secret-1234567890";
-const options={modules:true,script:result.outputFiles[0].text,compatibilityDate:"2025-01-01",bindings:{CURSOR_SECRET:secret}};
+const options={modules:true,script:result.outputFiles[0].text,compatibilityDate:"2026-11-26",bindings:{CURSOR_SECRET:secret}};
 test("local workerd runtime",async()=>{
  const mf=new Miniflare(options);
  try {
