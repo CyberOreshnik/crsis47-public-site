@@ -27,3 +27,5 @@ jobs:
 
       - run: npx playwright install chromium
       - run: node source-hub-api/cloudflare-pilot/browser-check.mjs
+
+      - run: node source-hub-api/cloudflare-pilot/site-check.mjs
