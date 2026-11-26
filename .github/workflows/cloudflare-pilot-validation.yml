@@ -21,3 +21,5 @@ jobs:
         with:
           node-version: '22'
       - run: node --test source-hub-api/cloudflare-pilot/*.test.mjs
+
+      - run: node source-hub-api/cloudflare-pilot/navigation.test.cjs
