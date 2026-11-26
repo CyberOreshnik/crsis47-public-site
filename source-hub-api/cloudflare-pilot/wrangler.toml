@@ -1,0 +1,8 @@
+name = "crsis47-source-hub-pilot"
+main = "worker.mjs"
+compatibility_date = "2026-11-26"
+workers_dev = true
+preview_urls = false
+
+[observability]
+enabled = false
