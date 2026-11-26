@@ -12,7 +12,7 @@ jobs:
   validate:
     if: ${{ github.event.repository.private == false }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,7 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-save --package-lock=false --ignore-scripts miniflare@3.20250718.2 esbuild@0.25.8
+      - run: npm install --no-save --package-lock=false --ignore-scripts miniflare@3.20250718.2 esbuild@0.25.8 playwright@1.55.0
       - run: node --test source-hub-api/cloudflare-pilot/*.test.mjs
 
       - run: node source-hub-api/cloudflare-pilot/navigation.test.cjs
+
+      - run: npx playwright install chromium
+      - run: node source-hub-api/cloudflare-pilot/browser-check.mjs
