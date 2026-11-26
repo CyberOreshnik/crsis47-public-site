@@ -133,7 +133,21 @@ async function render() {
     nextCursor = page.nextCursor;
     $("next").hidden = !nextCursor;
   } catch (error) {
-    if (current === request && error.name !== "AbortError") $("count").textContent = "Search is unavailable. Try again.";
+    if (current === request && error.name !== "AbortError") {
+      nextCursor = null;
+      $("next").hidden = true;
+      const unsupported = ["collection","project","verification","from","to","status","cursor"].some(key => params.get(key));
+      if (unsupported) {
+        $("count").textContent = "Search unavailable. Offline preview cannot apply these filters. Choose First page or clear filters.";
+      } else {
+        const q = $("search").value.trim().toLowerCase();
+        show(records.filter(record =>
+          (!$("type").value || record.type === $("type").value) &&
+          (!$("lens").value || record.lenses.includes($("lens").value)) &&
+          [record.title, record.description, record.status, ...record.lenses].join(" ").toLowerCase().includes(q)));
+        $("count").textContent += " — Offline venue preview only; full Source Hub search unavailable.";
+      }
+    }
   }
 }
 function navigate(params) {
