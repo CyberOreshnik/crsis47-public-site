@@ -1,0 +1,6 @@
+# Restricted pilot acceptance — 2026-11-26
+Decision: development scope accepted; deployment HOLD.
+Scope: 18 literature and 12 government public manifest records; read-only search, pagination, exact-origin CORS, explicit revision authorization. No private registry access. Offline preview is limited to existing static venues.
+Deferred: historical government identifier equivalence and project associations; do not fabricate mappings. Project filtering is not an accepted pilot capability.
+Evidence: run 45880211852 reported 10/10; run 45881144153 reported 13/13 and navigation simulation PASS. Exact latter commit f01fde4a137d33afa31d1a0077a21f745975aec3 retrieves test blob 4c57f95f56466f016d265bdf2cc79843c17924a1 with 10 declarations. Discrepancy unresolved; do not certify 13 independently attributable tests.
+G05 proposed controls: zero paid services; one Worker, zero D1/KV/R2, zero cron, no paid observability, no production credentials in CI. Public standard GitHub runner only, 5-minute job timeout. Proposed operational request warning 49,000/day, escalation 59,500/day, stop target 66,500/day against internal 70,000/day ceiling. These are policy thresholds, not implemented hard limits. Verify Cloudflare account plan, current quotas and enforcement before provisioning. No automatic upgrade or paid plan change. Owner authorization required before deployment.
