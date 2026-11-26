@@ -42,8 +42,8 @@ const filters = {search:"q", type:"type", lens:"lens"};
 if (apiBase && $("collection")) {
   Object.assign(filters, {collection:"collection", project:"project", verification:"verification"});
   for (const id of ["collection", "project", "verification"]) {
-    $(id).hidden = false;
-    $(id).disabled = false;
+    $(id).hidden = id === "project";
+    $(id).disabled = id === "project";
   }
   for (const type of ["scholarly_article", "pgdt_scenario", "case_study", "book", "laboratory", "historical_evidence"]) {
     const option = document.createElement("option");
@@ -124,6 +124,10 @@ async function render() {
     if (current !== request) return;
     if (response.status === 409) {
       $("count").textContent = "Sources have changed. Choose First page to restart.";
+      return;
+    }
+    if (response.status === 400 && params.get("project")) {
+      $("count").textContent = "Project filtering is not supported by this pilot. Clear the project filter to search.";
       return;
     }
     if (!response.ok) throw new Error("Search unavailable");
