@@ -288,5 +288,23 @@
       "Governance",
       "Technology"
     ]
+  },
+  {
+    "title": "Intelligence-Driven Incident Response: Outwitting the Adversary (2nd Edition)",
+    "url": "https://www.oreilly.com/library/view/intelligence-driven-incident-response/9781098120672/",
+    "doi": "",
+    "authors": [
+      "Rebekah Brown",
+      "Scott J. Roberts"
+    ],
+    "publisher": "O’Reilly Media",
+    "publication_date": "2023-06",
+    "access": "unknown",
+    "type": "Book",
+    "topic": "Cyber threat intelligence and incident response",
+    "lenses": [
+      "Data",
+      "Technology"
+    ]
   }
 ]
