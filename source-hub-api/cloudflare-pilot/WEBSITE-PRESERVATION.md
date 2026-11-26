@@ -1,0 +1,5 @@
+# G07 website preservation — 2026-11-26
+Compared complete repository trees main 245761b3b83dcb17d1d9b0bc9180f01fb3df3c40 and pilot a1b6595a0a939ffcb5dfd75a777931479ad3ab75. Only existing changed blob: source-hub/index.html. Nine added pilot/workflow files. All other baseline blobs unchanged, including approved artwork, brand CSS, uniform CSS, approved website, case studies, language editions and collections/registry.json.
+Collection registry defines books, case-studies, timepiece, glossary, source-hub and research. Several are marked planned; preservation does not establish completed modular expansion.
+CI provenance exception resolved: exact pilot tree contains worker.test.mjs (10 declarations) and fallback.test.mjs (3 declarations); workflow glob *.test.mjs executes both. Run 45882108107 reports 13 pass, 0 fail and navigation recovery simulation PASS. This supersedes earlier unresolved count in ACCEPTANCE.md.
+G07 source preservation PASS; visual rendering, live links, accessibility and actual browser/provider acceptance remain pending. No deployment, no main mutation, no paid provisioning. G08 must retain operational HOLD.
