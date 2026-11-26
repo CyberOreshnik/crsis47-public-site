@@ -5,6 +5,7 @@ on:
     paths:
       - 'source-hub-api/cloudflare-pilot/**'
       - '.github/workflows/cloudflare-pilot-validation.yml'
+      - 'source-hub/index.html'
 permissions:
   contents: read
 jobs:
@@ -19,4 +20,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test source-hub-api/cloudflare-pilot/worker.test.mjs
+      - run: node --test source-hub-api/cloudflare-pilot/*.test.mjs
