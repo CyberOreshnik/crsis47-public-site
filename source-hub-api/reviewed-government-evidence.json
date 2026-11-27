@@ -204,5 +204,95 @@
     "lenses": [
       "Governance"
     ]
+  },
+  {
+    "title": "UnitedHealth Group Form 8-K (February 2024)",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176624000045/unh-20240221.htm",
+    "description": "Case Study 006 · UnitedHealth Group. UHG incident 8-K, February 22, Item 1.05.",
+    "status": "Public SEC filing",
+    "publication_date": "2024-02-22",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "UnitedHealth Group 2022 Form 10-K: Business Combinations",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176623000008/R22.htm",
+    "description": "Case Study 006 · UnitedHealth Group. UHG 2022 10-K, Note 3 business combinations.",
+    "status": "Public SEC filing",
+    "publication_date": "",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Change Healthcare Form 10-K/A",
+    "url": "https://www.sec.gov/Archives/edgar/data/1756497/000119312522206683/d324053d10ka.htm",
+    "description": "Case Study 006 · Change Healthcare. Change 2022 10-K/A, executive officers.",
+    "status": "Public SEC filing",
+    "publication_date": "",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Change Healthcare 2022 Proxy Statement",
+    "url": "https://www.sec.gov/Archives/edgar/data/1756497/000114036122007123/edge20002169x1_def14a.htm",
+    "description": "Case Study 006 · Change Healthcare. Change 2022 proxy, cybersecurity program.",
+    "status": "Public SEC filing",
+    "publication_date": "",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "UnitedHealth Group 2024 Proxy Statement",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000110465924050055/tm2332959d4_def14a.htm",
+    "description": "Case Study 006 · UnitedHealth Group. UHG 2024 proxy, Risk Oversight.",
+    "status": "Public SEC filing",
+    "publication_date": "2024-04-22",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "UnitedHealth Group Form 8-K (CEO succession)",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176625000134/unh-20250512.htm",
+    "description": "Case Study 006 · UnitedHealth Group. UHG May 2025 8-K, Item 5.02.",
+    "status": "Public SEC filing",
+    "publication_date": "",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "UnitedHealth Group CEO succession announcement",
+    "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176625000134/exhibit991.htm",
+    "description": "Case Study 006 · UnitedHealth Group. UHG succession announcement, Exhibit 99.1.",
+    "status": "Public SEC filing",
+    "publication_date": "2025-05-13",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Change Healthcare Cybersecurity Incident Frequently Asked Questions",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/special-topics/change-healthcare-cybersecurity-incident-frequently-asked-questions/index.html",
+    "description": "Case Study 006 · HHS Office for Civil Rights. HHS OCR breach FAQ, question 11.",
+    "status": "Public primary evidence",
+    "publication_date": "",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Healthcare Cybersecurity: HHS Continues to Have Challenges as Lead Agency",
+    "url": "https://www.gao.gov/products/gao-25-107755",
+    "description": "Case Study 006 · U.S. Government Accountability Office. GAO-25-107755, HHS oversight context.",
+    "status": "Public GAO report",
+    "publication_date": "2024-11-13",
+    "lenses": [
+      "Governance"
+    ]
   }
 ]
