@@ -58,6 +58,8 @@ def candidates(db, published):
         event = json.loads(payload)
         if event.get("originating_workflow") != "codex-gate3-public" or event.get("evidence_type") not in PUBLIC_TYPES:
             continue
+        if any(project.startswith("CRSIS47-GATE3") for project in event.get("project_ids", [])):
+            continue
         try:
             source_policy.validate_event(event)
         except ValueError:
