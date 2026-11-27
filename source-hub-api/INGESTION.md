@@ -130,3 +130,9 @@ A local importer should read reviewed queue revisions and submit approved articl
 GitHub Actions can validate queue changes and test the importer and public projection against disposable registries. Before activation, verify that replay produces one public listing, that approved links are reachable, and that unapproved metadata and private operational fields are absent from public output.
 
 This section records the design. The trigger, importer, and real journal publication path still require implementation and end-to-end verification.
+
+## Automatic publication review handoff
+
+In the authorized Windows Source Hub environment, set `SOURCE_HUB_PUBLIC_REVIEW=1` for the existing intake service. The worker reconciles durable, current-policy filings into `source-hub-public-review.json` next to the existing protected database on startup and at intervals of up to 30 seconds. This includes backfill and catches a missed refresh on restart. Failure to refresh is logged without changing a filing result. The worker excludes cases with inactive source authorization and deduplicates DOI and canonical URL against the checked-out public manifests and the current queue. Keep the checkout current to pick up public approvals. Each candidate contains citation metadata only. The queue remains private and is never consumed by the public site build.
+
+A publication reviewer uses the queue to update the existing reviewed public manifests through a reviewed pull request. The manifest and deployment workflow remain the public authority. Do not put receipt IDs, claims, private notes or document copies into public manifests. Links outside the government manifest's scope still require a reviewed placement. The setting adds no hosted intake or background connector to ordinary ChatGPT research. For that workflow, submit the source through the configured Source Hub intake first. Roll back by clearing the setting and restarting intake.
