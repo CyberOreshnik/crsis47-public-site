@@ -312,13 +312,23 @@ def http_service(path, token, port):
     return service
 
 def run_worker(path, stop):
+    review_enabled = os.getenv("SOURCE_HUB_PUBLIC_REVIEW") == "1"
+    review_due = 0
     while not stop.is_set():
         try:
-            if process_one(path):
-                continue
+            filed_or_processed = process_one(path)
         except sqlite3.Error:
             logging.warning("source_intake worker storage_unavailable")
-        stop.wait(0.25)
+            filed_or_processed = False
+        if review_enabled and time.monotonic() >= review_due:
+            from publication_review import refresh
+            try:
+                refresh(path)
+            except (OSError, ValueError, sqlite3.Error):
+                logging.warning("source_intake publication_review_refresh_failed")
+            review_due = time.monotonic() + 30
+        if not filed_or_processed:
+            stop.wait(0.25)
 
 def main():
     parser = argparse.ArgumentParser()
