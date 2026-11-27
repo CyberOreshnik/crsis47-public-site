@@ -131,5 +131,78 @@
       "People",
       "Data"
     ]
+  },
+  {
+    "title": "Testimony of Andrew Witty",
+    "url": "https://docs.house.gov/meetings/IF/IF02/20240501/117242/HHRG-118-IF02-Wstate-WittyS-20240501-U5.pdf",
+    "description": "Case Study 006 · House testimony on the reported initial access, ransomware timeline and ransom decision.",
+    "status": "Public primary evidence",
+    "publication_date": "2024-05-01",
+    "lenses": [
+      "Governance",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Hacking America's Health Care: Assessing the Change Healthcare Cyberattack and What's Next",
+    "url": "https://www.govinfo.gov/content/pkg/CHRG-118shrg63595/html/CHRG-118shrg63595.htm",
+    "description": "Case Study 006 · Official hearing record, including testimony on notification, response and oversight.",
+    "status": "Public primary evidence",
+    "publication_date": "2024-05-01",
+    "lenses": [
+      "Governance",
+      "People"
+    ]
+  },
+  {
+    "title": "Responses to Questions for the Record for Andrew Witty",
+    "url": "https://www.finance.senate.gov/wp-content/uploads/media/doc/responses_for_questions_for_the_record_to_andrew_witty.pdf",
+    "description": "Case Study 006 · Written responses on pre-incident multifactor authentication policy and post-discovery response.",
+    "status": "Public primary evidence",
+    "publication_date": null,
+    "lenses": [
+      "Governance",
+      "Technology"
+    ]
+  },
+  {
+    "title": "Senator Cassidy letter to Andrew Witty",
+    "url": "https://www.help.senate.gov/imo/media/doc/2024-05-14_letter_from_bc_to_uhg_andrew_witty_re_change_cyberattack.pdf",
+    "description": "Case Study 006 · Senate oversight letter requesting acquisition, integration and cybersecurity records.",
+    "status": "Public primary evidence",
+    "publication_date": "2024-05-14",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Senator Wyden letter to the FTC and SEC",
+    "url": "https://www.finance.senate.gov/wp-content/uploads/media/doc/wyden_letter_to_ftc_and_sec_on_uhg_cybersecuritypdf.pdf",
+    "description": "Case Study 006 · Senate letter requesting FTC and SEC investigation. The letter is a request for inquiry.",
+    "status": "Public primary evidence",
+    "publication_date": "2024-05-30",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "Senator Wyden follow-up letter to UnitedHealth Group",
+    "url": "https://www.finance.senate.gov/wp-content/uploads/media/doc/101724_wyden_letter_to_uhg_on_cyberattack_followup.pdf",
+    "description": "Case Study 006 · Senate follow-up requesting audit documentation and additional answers.",
+    "status": "Public primary evidence",
+    "publication_date": "2024-10-15",
+    "lenses": [
+      "Governance"
+    ]
+  },
+  {
+    "title": "United States v. UnitedHealth Group and Change Healthcare, Memorandum Opinion",
+    "url": "https://www.justice.gov/d9/2023-08/415418_1.pdf",
+    "description": "Case Study 006 · Federal district court memorandum opinion in the pre-incident merger litigation.",
+    "status": "Public primary evidence",
+    "publication_date": "2022-09-21",
+    "lenses": [
+      "Governance"
+    ]
   }
 ]
