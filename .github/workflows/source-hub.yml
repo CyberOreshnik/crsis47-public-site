@@ -15,6 +15,7 @@ jobs:
       - run: python3 source-hub-api/test_ingest.py
       - run: python3 source-hub-api/test_research_adapter.py
       - run: python3 source-hub-api/test_source_policy.py
+      - run: python3 source-hub-api/test_publication_review.py
       - run: python3 source-hub-api/test_codex_capture_e2e.py
       - run: python3 source-hub-api/load_test.py
       - run: node source-hub-api/navigation_test.js
