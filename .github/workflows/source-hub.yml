@@ -161,14 +161,23 @@ jobs:
         run: |
           export SOURCE_HUB_DB="$RUNNER_TEMP/reviewed-journals.db"
           export PYTHONPATH="$GITHUB_WORKSPACE/source-hub-api"
-          manifest=source-hub-api/reviewed-journals.json
-          python3 source-hub-api/project.py --reviewed-journal-manifest "$manifest"
           python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
           import server
+          from project import import_reviewed_manifest
 
-          articles = json.loads(Path("source-hub-api/reviewed-journals.json").read_text(encoding="utf-8"))
+          records = json.loads(Path("source-hub-api/reviewed-literature.json").read_text(encoding="utf-8"))
+          fields = ("title", "url", "doi", "authors", "publisher", "publication_date", "access")
+          articles = [
+              {field: record[field] for field in fields}
+              for record in records
+              if record.get("type", "Journal article") == "Journal article"
+          ]
+          manifest = Path(os.environ["RUNNER_TEMP"]) / "reviewed-journals.json"
+          manifest.write_text(json.dumps(articles), encoding="utf-8")
+          assert import_reviewed_manifest(manifest) == len(articles)
           assert articles
           for article in articles:
               results = server.search({"type": ["Journal article"], "q": [article["doi"]]})["items"]
